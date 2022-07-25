@@ -7,7 +7,7 @@ const compression = require('compression');
 const { swaggerUi, specs } = require("../swagger/swagger")
 
 
-const { pool:serviceDB } = require('./adapters/servicedb');
+const { pool:serviceDB } = require('./assets/servicedb');
 
 const {SERVER_HOST, SERVER_PORT} = process.env;
 
@@ -21,7 +21,7 @@ const server = (SERVER_PORT) => {
 
     const Router = require('./routes/index.js');
     app.use('/api', Router(serviceDB));
-    app.use('/api-docs', swagerUI.serve, swaggerUi.setup(specs));
+    app.use('/api-docs', swaggerUI.serve, swaggerUi.setup(specs));
 
     app.listen(SERVER_PORT), () => {
         console.log(`GridgeTestServer is now listening to http:${SERVER_HOST}:${SERVER_PORT}`);

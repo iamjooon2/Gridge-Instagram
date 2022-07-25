@@ -1,7 +1,6 @@
 # GridgeTestChallenge  
-```
-07.25 ~ 8.5 컴공선배팀 그릿지테스트
-```
+#### 07.25 ~ 8.5 컴공선배팀 그릿지테스트
+
 
 ## Package Structure
 ```
@@ -49,6 +48,7 @@ https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view
 ```
 
 ### 허접 이준희의 고민점
+
 - 어드민 페이지 구현은 어떻게 해야하는가? ()
   -> 회원 CRUD
   -> 게시글 CRUD
@@ -59,3 +59,4 @@ https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view
   조건별 중복조회(이름이 이준희이면서 회원가입 날짜가 22년 7월 25일인 경우) 쿼리 허접이라 조금 쫄림쓰
 - Swagger 적용하기
   고민까지는 아니고... 처음 적용하는거라 애좀 먹을 것 같습니다
+  
