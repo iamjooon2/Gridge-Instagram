@@ -1,4 +1,4 @@
-CREATE TABLE Gridge-ERD.user(
+CREATE TABLE `Gridge-ERD`.`user`(
     `userIdx`        BIGINT          NOT NULL    AUTO_INCREMENT, 
     `ID`             VARCHAR(45)     NOT NULL, 
     `password`       VARCHAR(300)    NULL, 
@@ -19,11 +19,11 @@ CREATE TABLE Gridge-ERD.user(
     PRIMARY KEY (userIdx)
 );
 
-ALTER TABLE Gridge-ERD.user COMMENT '사용자';
+ALTER TABLE `Gridge-ERD`.`user` COMMENT '사용자';
 
 
 -- comment Table Create SQL
-CREATE TABLE Gridge-ERD.comment
+CREATE TABLE `Gridge-ERD`.`comment`
 (
     `commentIdx`  BIGINT          NOT NULL    AUTO_INCREMENT, 
     `useridx`     BIGINT          NOT NULL, 
@@ -34,15 +34,16 @@ CREATE TABLE Gridge-ERD.comment
      PRIMARY KEY (commentIdx)
 );
 
-ALTER TABLE Gridge-ERD.comment COMMENT '댓글';
 
-ALTER TABLE Gridge-ERD.comment
+ALTER TABLE `Gridge-ERD`.`comment` COMMENT '댓글';
+
+ALTER TABLE `Gridge-ERD`.`comment`
     ADD CONSTRAINT FK_comment_useridx_user_userIdx FOREIGN KEY (useridx)
         REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- post Table Create SQL
-CREATE TABLE Gridge-ERD.post
+CREATE TABLE `Gridge-ERD`.`post`
 (
     `postIdx`          BIGINT          NOT NULL    AUTO_INCREMENT, 
     `userIdx`          BIGINT          NOT NULL, 
@@ -56,15 +57,15 @@ CREATE TABLE Gridge-ERD.post
      PRIMARY KEY (postIdx, userIdx)
 );
 
-ALTER TABLE Gridge-ERD.post COMMENT '게시글';
+ALTER TABLE `Gridge-ERD`.`post` COMMENT '게시글';
 
-ALTER TABLE Gridge-ERD.post
+ALTER TABLE `Gridge-ERD`.`post`
     ADD CONSTRAINT FK_post_userIdx_user_userIdx FOREIGN KEY (userIdx)
         REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- commentReport Table Create SQL
-CREATE TABLE Gridge-ERD.commentReport
+CREATE TABLE `Gridge-ERD`.`commentReport`
 (
     `commentReportIdx`  BIGINT          NOT NULL    AUTO_INCREMENT, 
     `reporterIdx`       BIGINT          NOT NULL, 
@@ -77,19 +78,19 @@ CREATE TABLE Gridge-ERD.commentReport
      PRIMARY KEY (commentReportIdx)
 );
 
-ALTER TABLE Gridge-ERD.commentReport COMMENT '댓글 신고 테이블';
+ALTER TABLE `Gridge-ERD`.`commentReport` COMMENT '댓글 신고 테이블';
 
-ALTER TABLE Gridge-ERD.commentReport
+ALTER TABLE `Gridge-ERD`.`commentReport`
     ADD CONSTRAINT FK_commentReport_commentWriter_comment_useridx FOREIGN KEY (commentWriter, commentIdx)
-        REFERENCES Gridge-ERD.comment (useridx, commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`comment` (useridx, commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.commentReport
+ALTER TABLE `Gridge-ERD`.`commentReport`
     ADD CONSTRAINT FK_commentReport_reporterIdx_user_userIdx FOREIGN KEY (reporterIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- postReport Table Create SQL
-CREATE TABLE Gridge-ERD.postReport
+CREATE TABLE `Gridge-ERD`.`postReport`
 (
     `postReportIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `reporterIdx`    BIGINT         NOT NULL, 
@@ -102,19 +103,19 @@ CREATE TABLE Gridge-ERD.postReport
      PRIMARY KEY (postReportIdx)
 );
 
-ALTER TABLE Gridge-ERD.postReport COMMENT '게시글 신고 테이블';
+ALTER TABLE `Gridge-ERD`.`postReport` COMMENT '게시글 신고 테이블';
 
-ALTER TABLE Gridge-ERD.postReport
+ALTER TABLE `Gridge-ERD`.`postReport`
     ADD CONSTRAINT FK_postReport_reporterIdx_user_userIdx FOREIGN KEY (reporterIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.postReport
+ALTER TABLE `Gridge-ERD`.`postReport`
     ADD CONSTRAINT FK_postReport_postIdx_post_postIdx FOREIGN KEY (postIdx, postWriter)
-        REFERENCES Gridge-ERD.post (postIdx, userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`post` (postIdx, userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- room Table Create SQL
-CREATE TABLE Gridge-ERD.room
+CREATE TABLE `Gridge-ERD`.`room`
 (
     `roomIdx`    BIGINT       NOT NULL    AUTO_INCREMENT, 
     `user_1`     BIGINT       NOT NULL, 
@@ -125,18 +126,18 @@ CREATE TABLE Gridge-ERD.room
      PRIMARY KEY (roomIdx)
 );
 
-ALTER TABLE Gridge-ERD.room COMMENT '채팅방';
+ALTER TABLE `Gridge-ERD`.`room` COMMENT '채팅방';
 
-ALTER TABLE Gridge-ERD.room
+ALTER TABLE `Gridge-ERD`.`room`
     ADD CONSTRAINT FK_room_user_1_user_userIdx FOREIGN KEY (user_1)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.room
+ALTER TABLE `Gridge-ERD`.`room`
     ADD CONSTRAINT FK_room_user_2_user_userIdx FOREIGN KEY (user_2)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- userProfileImg Table Create SQL
-CREATE TABLE Gridge-ERD.userProfileImg
+CREATE TABLE `Gridge-ERD`.`userProfileImg`
 (
     `userProfileImgIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `userIdx`            BIGINT       NOT NULL, 
@@ -147,15 +148,15 @@ CREATE TABLE Gridge-ERD.userProfileImg
      PRIMARY KEY (userProfileImgIdx)
 );
 
-ALTER TABLE Gridge-ERD.userProfileImg COMMENT '사용자 프로필 사진';
+ALTER TABLE `Gridge-ERD`.`userProfileImg` COMMENT '사용자 프로필 사진';
 
-ALTER TABLE Gridge-ERD.userProfileImg
+ALTER TABLE `Gridge-ERD`.`userProfileImg`
     ADD CONSTRAINT FK_userProfileImg_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- postImg Table Create SQL
-CREATE TABLE Gridge-ERD.postImg
+CREATE TABLE `Gridge-ERD`.`postImg`
 (
     `postimgIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `postIdx`     BIGINT       NULL, 
@@ -166,15 +167,15 @@ CREATE TABLE Gridge-ERD.postImg
      PRIMARY KEY (postimgIdx)
 );
 
-ALTER TABLE Gridge-ERD.postImg COMMENT '게시글 사진';
+ALTER TABLE `Gridge-ERD`.`postImg` COMMENT '게시글 사진';
 
-ALTER TABLE Gridge-ERD.postImg
+ALTER TABLE `Gridge-ERD`.`postImg`
     ADD CONSTRAINT FK_postImg_postIdx_post_postIdx FOREIGN KEY (postIdx)
-        REFERENCES Gridge-ERD.post (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`post` (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- following Table Create SQL
-CREATE TABLE Gridge-ERD.following
+CREATE TABLE `Gridge-ERD`.`following`
 (
     `followingIdx`   BIGINT       NOT NULL    AUTO_INCREMENT, 
     `userIdx`        BIGINT       NOT NULL, 
@@ -185,17 +186,17 @@ CREATE TABLE Gridge-ERD.following
      PRIMARY KEY (followingIdx)
 );
 
-ALTER TABLE Gridge-ERD.following
+ALTER TABLE `Gridge-ERD`.`following`
     ADD CONSTRAINT FK_following_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.following
+ALTER TABLE `Gridge-ERD`.`following`
     ADD CONSTRAINT FK_following_targetUserIdx_user_userIdx FOREIGN KEY (targetUserIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- follower Table Create SQL
-CREATE TABLE Gridge-ERD.follower
+CREATE TABLE `Gridge-ERD`.`follower`
 (
     `followerIdx`    BIGINT       NOT NULL    AUTO_INCREMENT, 
     `userIdx`        BIGINT       NOT NULL, 
@@ -206,17 +207,17 @@ CREATE TABLE Gridge-ERD.follower
      PRIMARY KEY (followerIdx)
 );
 
-ALTER TABLE Gridge-ERD.follower
+ALTER TABLE `Gridge-ERD`.`follower`
     ADD CONSTRAINT FK_follower_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.follower
+ALTER TABLE `Gridge-ERD`.`follower`
     ADD CONSTRAINT FK_follower_targetUserIdx_user_userIdx FOREIGN KEY (targetUserIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- commentLike Table Create SQL
-CREATE TABLE Gridge-ERD.commentLike
+CREATE TABLE `Gridge-ERD`.`commentLike`
 (
     `commentLikeIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `userIdx`         BIGINT       NOT NULL, 
@@ -227,19 +228,19 @@ CREATE TABLE Gridge-ERD.commentLike
      PRIMARY KEY (commentLikeIdx)
 );
 
-ALTER TABLE Gridge-ERD.commentLike COMMENT '댓글 좋아요';
+ALTER TABLE `Gridge-ERD`.`commentLike` COMMENT '댓글 좋아요';
 
-ALTER TABLE Gridge-ERD.commentLike
+ALTER TABLE `Gridge-ERD`.`commentLike`
     ADD CONSTRAINT FK_commentLike_commentIdx_comment_commentIdx FOREIGN KEY (commentIdx)
-        REFERENCES Gridge-ERD.comment (commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`comment` (commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.commentLike
+ALTER TABLE `Gridge-ERD`.`commentLike`
     ADD CONSTRAINT FK_commentLike_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- postLike Table Create SQL
-CREATE TABLE Gridge-ERD.postLike
+CREATE TABLE `Gridge-ERD`.`postLike`
 (
     `postLikeIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `userIdx`      BIGINT       NOT NULL, 
@@ -250,19 +251,19 @@ CREATE TABLE Gridge-ERD.postLike
      PRIMARY KEY (postLikeIdx)
 );
 
-ALTER TABLE Gridge-ERD.postLike COMMENT '게시글 좋아요';
+ALTER TABLE `Gridge-ERD`.`postLike` COMMENT '게시글 좋아요';
 
-ALTER TABLE Gridge-ERD.postLike
+ALTER TABLE `Gridge-ERD`.`postLike`
     ADD CONSTRAINT FK_postLike_postIdx_post_postIdx FOREIGN KEY (postIdx)
-        REFERENCES Gridge-ERD.post (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`post` (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.postLike
+ALTER TABLE `Gridge-ERD`.`postLike`
     ADD CONSTRAINT FK_postLike_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- message Table Create SQL
-CREATE TABLE Gridge-ERD.message
+CREATE TABLE `Gridge-ERD`.`message`
 (
     `messageIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `roomIdx`     BIGINT       NOT NULL, 
@@ -273,19 +274,19 @@ CREATE TABLE Gridge-ERD.message
      PRIMARY KEY (messageIdx)
 );
 
-ALTER TABLE Gridge-ERD.message COMMENT '메시지';
+ALTER TABLE `Gridge-ERD`.`message` COMMENT '메시지';
 
-ALTER TABLE Gridge-ERD.message
+ALTER TABLE `Gridge-ERD`.`message`
     ADD CONSTRAINT FK_message_roomIdx_room_roomIdx FOREIGN KEY (roomIdx)
-        REFERENCES Gridge-ERD.room (roomIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`room` (roomIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.message
+ALTER TABLE `Gridge-ERD`.`message`
     ADD CONSTRAINT FK_message_senderIdx_user_userIdx FOREIGN KEY (senderIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- userLog Table Create SQL
-CREATE TABLE Gridge-ERD.userLog
+CREATE TABLE `Gridge-ERD`.`userLog`
 (
     `userLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `userIdx`     BIGINT         NOT NULL, 
@@ -296,15 +297,15 @@ CREATE TABLE Gridge-ERD.userLog
      PRIMARY KEY (userLogIdx)
 );
 
-ALTER TABLE Gridge-ERD.userLog COMMENT '사용자 로그';
+ALTER TABLE `Gridge-ERD`.`userLog` COMMENT '사용자 로그';
 
-ALTER TABLE Gridge-ERD.userLog
+ALTER TABLE `Gridge-ERD`.`userLog`
     ADD CONSTRAINT FK_userLog_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- postLog Table Create SQL
-CREATE TABLE Gridge-ERD.postLog
+CREATE TABLE `Gridge-ERD`.`postLog`
 (
     `postLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `postIdx`     BIGINT         NOT NULL, 
@@ -315,15 +316,15 @@ CREATE TABLE Gridge-ERD.postLog
      PRIMARY KEY (postLogIdx)
 );
 
-ALTER TABLE Gridge-ERD.postLog COMMENT '게시글 로그';
+ALTER TABLE `Gridge-ERD`.`postLog` COMMENT '게시글 로그';
 
-ALTER TABLE Gridge-ERD.postLog
+ALTER TABLE `Gridge-ERD`.`postLog`
     ADD CONSTRAINT FK_postLog_postIdx_post_postIdx FOREIGN KEY (postIdx)
-        REFERENCES Gridge-ERD.post (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`post` (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- commentLog Table Create SQL
-CREATE TABLE Gridge-ERD.commentLog
+CREATE TABLE `Gridge-ERD`.`commentLog`
 (
     `commentLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `commentIdx`     BIGINT         NOT NULL, 
@@ -334,15 +335,15 @@ CREATE TABLE Gridge-ERD.commentLog
      PRIMARY KEY (commentLogIdx)
 );
 
-ALTER TABLE Gridge-ERD.commentLog COMMENT '댓글 로그';
+ALTER TABLE `Gridge-ERD`.`commentLog` COMMENT '댓글 로그';
 
-ALTER TABLE Gridge-ERD.commentLog
+ALTER TABLE `Gridge-ERD`.`commentLog`
     ADD CONSTRAINT FK_commentLog_commentIdx_comment_commentIdx FOREIGN KEY (commentIdx)
-        REFERENCES Gridge-ERD.comment (commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`comment` (commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- reportLog Table Create SQL
-CREATE TABLE Gridge-ERD.reportLog
+CREATE TABLE `Gridge-ERD`.`reportLog`
 (
     `reportIdx`         BIGINT         NOT NULL    AUTO_INCREMENT, 
     `postReportIdx`     BIGINT         NULL, 
@@ -354,14 +355,12 @@ CREATE TABLE Gridge-ERD.reportLog
      PRIMARY KEY (reportIdx)
 );
 
-ALTER TABLE Gridge-ERD.reportLog COMMENT '신고 로그';
+ALTER TABLE `Gridge-ERD`.`reportLog` COMMENT '신고 로그';
 
-ALTER TABLE Gridge-ERD.reportLog
+ALTER TABLE `Gridge-ERD`.`reportLog`
     ADD CONSTRAINT FK_reportLog_commentReportIdx_commentReport_commentReportIdx FOREIGN KEY (commentReportIdx)
-        REFERENCES Gridge-ERD.commentReport (commentReportIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+        REFERENCES `Gridge-ERD`.`commentReport` (commentReportIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE Gridge-ERD.reportLog
+ALTER TABLE `Gridge-ERD`.`reportLog`
     ADD CONSTRAINT FK_reportLog_postReportIdx_postReport_postReportIdx FOREIGN KEY (postReportIdx)
-        REFERENCES Gridge-ERD.postReport (postReportIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-
+        REFERENCES `Gridge-ERD`.`postReport` (postReportIdx) ON DELETE RESTRICT ON UPDATE RESTRICT

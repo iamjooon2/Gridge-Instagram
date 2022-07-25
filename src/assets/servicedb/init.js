@@ -1,9 +1,9 @@
 const fs = require('fs');
-const serviceDB = require('./servicedb');
+const { pool } = require('./index');
 
 const init = async () => {
     try {
-        const fileSQL = await fs.readFileSync('./init.sql', { encoding: 'utf8' });
+        const fileSQL = await fs.readFileSync('src/assets/servicedb/init.sql', { encoding: 'utf8' });
 
         const splits = fileSQL.split(';');
 
@@ -11,7 +11,7 @@ const init = async () => {
             const sql = splits[i];
 
             if (sql.indexOf('CREATE') !== -1) {
-                const [res] = await serviceDB.connection.promise().execute(sql)
+                const [res] = await pool.promise().execute(sql);
                 console.info(sql);
                 console.log(res);
             }
