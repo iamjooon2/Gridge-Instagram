@@ -8,11 +8,11 @@
 📂 git@iamjooon2/GridgeTestChallenge
   ┣📂 src
     ┣📂 adapters # 도커를 이용하여 데이터베이스 띄우는 디렉토리
-    ┣📂 controllers # req 통해 들어온 검사하여 Service Layer로 넘긴다, Controller Layer
+    ┣📂 controllers # req-검사-service service-검사-res, Controller Layer
     ┣📂 middlewares # 미들웨어들을 짱박아둔 디렉토리
     ┣📂 models # DB와 직접적으로 만나는 디렉토리, DataManager Layer
-    ┣📂 routers/v1 # 메서드 종류와 요청에 따른 분기를 다루는 곳
-    ┣📂 services # DB와 controller 사이를 중개해주는 곳, Service Layer
+    ┣📂 routers # 메서드 종류와 요청에 따른 분기를 다루는 곳
+    ┣📂 services # DB와 controller 사이를 중개한다, Service Layer
     ┣📂 utilities # response 관련 함수와 status들을 모아둔 곳
     ┣📜 index.js 
   ┣📂 swagger
