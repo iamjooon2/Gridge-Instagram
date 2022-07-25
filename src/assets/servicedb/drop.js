@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { pool } = require('./index');
+const { pool } = require('./db');
 
 const drop = async () => {
     try {
@@ -12,7 +12,7 @@ const drop = async () => {
 
             if (sql.indexOf('DROP') !== -1) {
                 const [res, err] = await pool.promise().execute(sql);
-                console.log('DB DROP COMPLETE');
+                console.log(`DB DROP COUNT: ${i}`);
             }
         }
     } catch(e) {

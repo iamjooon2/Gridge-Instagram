@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { pool } = require('./index');
+const { pool } = require('./db');
 
 const init = async () => {
     try {
@@ -12,7 +12,7 @@ const init = async () => {
 
             if (sql.indexOf('CREATE') !== -1) {
                 const [res] = await pool.promise().execute(sql);
-                console.log('DB INIT COMPLETE');
+                console.log(`DB INIT COUNT: ${i}`);
             }
         }
     } catch(e) {

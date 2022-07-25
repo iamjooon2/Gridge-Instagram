@@ -7,7 +7,7 @@ const compression = require('compression');
 const { swaggerUi, specs } = require("../swagger/swagger")
 
 
-const { pool:serviceDB } = require('./assets/servicedb');
+const { pool } = require('./assets/servicedb/db');
 
 const {SERVER_HOST, SERVER_PORT} = process.env;
 
@@ -20,7 +20,7 @@ const server = (SERVER_PORT) => {
     app.use(compression());
 
     const Router = require('./routes/index.js');
-    app.use('/api', Router(serviceDB));
+    app.use('/api', Router(pool));
     app.use('/api-docs', swaggerUI.serve, swaggerUi.setup(specs));
 
     app.listen(SERVER_PORT), () => {
