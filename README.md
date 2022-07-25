@@ -7,11 +7,11 @@
 📂 git@iamjooon2/GridgeTestChallenge
   ┣📂 src
     ┣📂 adapters # 도커를 이용하여 데이터베이스 띄우는 디렉토리
-    ┣📂 controllers # req 통해 들어온 검사하여 Service Layer로 넘긴다, Controller Layer
+    ┣📂 controllers # req-검사-service service-검사-res, Controller Layer
     ┣📂 middlewares # 미들웨어들을 짱박아둔 디렉토리
     ┣📂 models # DB와 직접적으로 만나는 디렉토리, DataManager Layer
-    ┣📂 routers/v1 # 메서드 종류와 요청에 따른 분기를 다루는 곳
-    ┣📂 services # DB와 controller 사이를 중개해주는 곳, Service Layer
+    ┣📂 routers # 메서드 종류와 요청에 따른 분기를 다루는 곳
+    ┣📂 services # DB와 controller 사이를 중개한다, Service Layer
     ┣📂 utilities # response 관련 함수와 status들을 모아둔 곳
     ┣📜 index.js 
   ┣📂 swagger
@@ -48,15 +48,16 @@ https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view
 ```
 
 ### 허접 이준희의 고민점
-
-- 어드민 페이지 구현은 어떻게 해야하는가? ()
+- Docker 잘 작동 되려나?
+  스크립트 한번만 확인해 주십셔...
+- 어드민 페이지 구현은 어떻게 해야하는가?
   -> 회원 CRUD
   -> 게시글 CRUD
   -> 댓글 CRUD
   -> 신고 CRUD
 이 로그를 볼수 있어야 한다는데.. 어떻게 구현해야할지 감이 잡히지 않습니다
+=> 각각 로그 테이블 생성 완료
 - 회원 조회하기
   조건별 중복조회(이름이 이준희이면서 회원가입 날짜가 22년 7월 25일인 경우) 쿼리 허접이라 조금 쫄림쓰
 - Swagger 적용하기
   고민까지는 아니고... 처음 적용하는거라 애좀 먹을 것 같습니다
-  
