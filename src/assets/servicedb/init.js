@@ -12,8 +12,7 @@ const init = async () => {
 
             if (sql.indexOf('CREATE') !== -1) {
                 const [res] = await pool.promise().execute(sql);
-                console.info(sql);
-                console.log(res);
+                console.log('DB INIT COMPLETE');
             }
         }
     } catch(e) {

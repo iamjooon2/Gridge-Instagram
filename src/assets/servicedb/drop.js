@@ -12,8 +12,7 @@ const drop = async () => {
 
             if (sql.indexOf('DROP') !== -1) {
                 const [res, err] = await pool.promise().execute(sql);
-                console.info(sql);
-                console.log(res);
+                console.log('DB DROP COMPLETE');
             }
         }
     } catch(e) {
@@ -23,4 +22,4 @@ const drop = async () => {
     }
 }
 
-drop()
+drop();
