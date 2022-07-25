@@ -39,7 +39,7 @@ https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view
 
 ## DB Scheme
 ```
-사진 : https://drive.google.com/file/d/1csx08T4W8gr90uM-hc6oiXaN8FM6eVOa/view?usp=sharing
+사진 : https://drive.google.com/file/d/1m9-lQGWDdEt3wz-udrPF9fyOt-K1cMzb/view?usp=sharing
 ```
 
 ## 특이사항
@@ -48,15 +48,13 @@ https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view
 ```
 
 ### 허접 이준희의 고민점
-- Docker 잘 작동 되려나?
-  스크립트 한번만 확인해 주십셔...
 - 어드민 페이지 구현은 어떻게 해야하는가?
   -> 회원 CRUD
   -> 게시글 CRUD
   -> 댓글 CRUD
   -> 신고 CRUD
-이 로그를 볼수 있어야 한다는데.. 어떻게 구현해야할지 감이 잡히지 않습니다
-=> 각각 로그 테이블 생성 완료
+이 로그를 볼수 있어야 한다는데..
+=> 각각 로그 테이블 생성하므로 해결
 - 회원 조회하기
   조건별 중복조회(이름이 이준희이면서 회원가입 날짜가 22년 7월 25일인 경우) 쿼리 허접이라 조금 쫄림쓰
 - Swagger 적용하기
