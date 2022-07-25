@@ -59,3 +59,5 @@ https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view
   조건별 중복조회(이름이 이준희이면서 회원가입 날짜가 22년 7월 25일인 경우) 쿼리 허접이라 조금 쫄림쓰
 - Swagger 적용하기
   고민까지는 아니고... 처음 적용하는거라 애좀 먹을 것 같습니다
+- Docker 잘 작동 되려나?
+  스크립트 한번만 확인해 주십셔...
