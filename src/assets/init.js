@@ -3,7 +3,7 @@ const { pool } = require('./db');
 
 const init = async () => {
     try {
-        const fileSQL = await fs.readFileSync('src/assets/servicedb/init.sql', { encoding: 'utf8' });
+        const fileSQL = await fs.readFileSync('src/assets/init.sql', { encoding: 'utf8' });
 
         const splits = fileSQL.split(';');
 

@@ -24,23 +24,24 @@
 
 ## 개발 가이드라인
 
-<a href=https://docs.google.com/spreadsheets/d/1kT9L-gJ9OjGQW34qrG5pVGpXoVafVRx-hFxxDgwXydc/edit?usp=sharing/>스프레드시트 바로가기</a>
+<a href=https://docs.google.com/spreadsheets/d/1kT9L-gJ9OjGQW34qrG5pVGpXoVafVRx-hFxxDgwXydc/>스프레드시트</a>
 
 
 ## 설계 요구사항 
 
-<a href=https://xd.adobe.com/view/5554835b-8966-41c8-888d-b648719e6485-0007/>링크 바로가기</a>
+<a href=https://xd.adobe.com/view/5554835b-8966-41c8-888d-b648719e6485-0007/>사진 링크</a>
 
 
 ## Swagger 최소 요구사항 
 
-<a href=https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view/>링크 바로가기</a>
+<a href=https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view/>사진 링크</a>
 
 
 ## DB Scheme
 
-<a href=https://drive.google.com/file/d/1m9-lQGWDdEt3wz-udrPF9fyOt-K1cMzb/view?usp=sharing/>사진 링크 바로가기</a>
-<a href=https://aquerytool.com/aquerymain/index/?rurl=18d4ee95-74d5-4465-8983-7df2e9b1799f/>DB설계 사이트 바로가기(비밀번호 : n4i5c2)</a>
+<a href=https://drive.google.com/file/d/1m9-lQGWDdEt3wz-udrPF9fyOt-K1cMzb/>사진 링크 바로가기</a> <br>
+https://aquerytool.com/aquerymain/index/?rurl=18d4ee95-74d5-4465-8983-7df2e9b1799f
+DB설계 페이지 (비밀번호 : n4i5c2)
 
 ## 특이사항
 ```
