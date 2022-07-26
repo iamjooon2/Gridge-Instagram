@@ -1,8 +1,8 @@
-const { PostController } = require('../controllers/post.controller');
+const postController = require('../controllers/post.controller');
 
 const postRouter = (router) =>{
 
-    router.get('/posts', (req, res) => PostController.postPost(req, res));
+    router.post('/posts', postController.postPost);
 }
 
 module.exports = postRouter;

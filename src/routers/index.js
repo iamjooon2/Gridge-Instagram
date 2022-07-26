@@ -7,8 +7,8 @@ const commentRouter = require('./comment.router');
 
 module.exports = () => {
     
-    router.use(postRouter);
-    router.use(commentRouter);
+    postRouter(router);
+    commentRouter(router);
 
     return router;
 }
