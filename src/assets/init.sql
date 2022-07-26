@@ -1,6 +1,6 @@
 CREATE TABLE `Gridge-ERD`.`user`(
     `userIdx`        BIGINT          NOT NULL    AUTO_INCREMENT, 
-    `ID`             VARCHAR(45)     NOT NULL, 
+    `ID`             VARCHAR(45)     NOT NULL UNIQUE, 
     `password`       VARCHAR(300)    NULL, 
     `name`           VARCHAR(45)     NULL, 
     `introduce`      VARCHAR(300)    NULL, 
@@ -14,10 +14,9 @@ CREATE TABLE `Gridge-ERD`.`user`(
     `createdAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`      TIMESTAMP       NULL        ON UPDATE current_timestamp, 
     `status`         TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제/2-관리자 비활성화', 
-    `IDhistory`      TIMESTAMP       NOT NULL, 
-    `nameHistory`    TIMESTAMP       NOT NULL, 
+    `IDhistory`      TIMESTAMP       NULL, 
+    `nameHistory`    TIMESTAMP       NULL, 
     PRIMARY KEY (userIdx)
-    UNIQUE INDEX `ID_UNIQUE` (`ID` ASC) VISIBLE
 );
 
 ALTER TABLE `Gridge-ERD`.`user` COMMENT '사용자';

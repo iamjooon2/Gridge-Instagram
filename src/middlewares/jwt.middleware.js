@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
-const secret_config = require('../config/secret');
+const dotenv = require('dotenv');
+dotenv.config();
 const { response, errResponse } = require('../util/response');
 const baseResponse = require('../util/baseResponseStatus');
 
 const jwtMiddleware = (req, res, next) => {
     
     let token = req.headers['x-access-token'] || req.headers['authorization'];
-
     token = token.replace(/^Bearer\s+/, "");
     
     if (!token){
@@ -16,7 +16,7 @@ const jwtMiddleware = (req, res, next) => {
     //토큰 검증
     const p = new Promise(
         (resolve, reject) => {
-            jwt.verify(token, secret_config.jwtsecret , (error, verifiedToken) => {
+            jwt.verify(token, process.env.JWT_SECRET , (error, verifiedToken) => {
                 if (error) {
                     reject(error);
                 }

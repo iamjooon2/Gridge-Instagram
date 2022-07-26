@@ -1,8 +1,67 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
-
+const dotenv = require('dotenv');
+dotenv.config();
+const userService = require('../services/user.service');
 const { response, errResponse }= require("../utilities/response");
 const baseResponse = require("../utilities/baseResponseStatus");
+
+const regexPassword = new RegExp('^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$'); // 특수문자 포함한 6~20자 허용하는 정규표현식
+
+const signIn = async (req, res) => {
+
+    const {userId, userPassword} = req.body;
+    
+    // userId Validation
+    if (!userId){
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    } else 
+    if (userId.length > 20) {
+        return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
+    } else if (userId.length < 3) {
+        return res.send(errResponse(baseResponse.USER_USERID_SHORT));
+    }
+
+    // userPassword Validation
+    if (!userPassword){
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY));
+    } else if (userPassword.length > 20) {
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    } else if (userPassword.length < 6) {
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    } else if (!regexPassword.test(userPassword)) {
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_REGEX));
+    }
+
+    // 사용자 아이디 존재 여부 확인
+    const userIdExistsResult = await userService.checkUserExists(userId);
+
+    if (!userIdExistsResult){
+        return res.send(errResponse(baseResponse.USER_USERID_NOT_EXIST));
+    }
+
+    // 사용자가 입력한 비밀번호와 DB 비밀번호 일치 여부 확인
+    const passwordCheckResult = await userService.checkUserPassWord(userId, userPassword);
+
+    if (!passwordCheckResult){
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG));
+    }
+
+    // 토큰 발행
+    let token = await jwt.sign({  
+        userId: userId
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: "30d",
+        subject: "userInfo",
+    });
+
+    // header에는 token, body에는 json을 담아 response
+    return res.header({'Authorization' : `Bearer ${token}`})
+                .send(response(baseResponse.SUCCESS));
+}
+
 
 const kakaoLogin = async (req, res) => {
     let user_kakao_profile;
@@ -52,7 +111,7 @@ const kakaoLogin = async (req, res) => {
         );
 
         // 로그인한 User 정보 출력
-        const loginUserResult = await userProvider.getUserInfoByUserIdx(kakaoId);
+        const loginUserResult = await userService.getUserInfoByUserIdx(kakaoId);
 
         console.log(`[Kakao Login API] login-userIdx: ${userIdx}, nickName: ${loginUserResult[0].nickName}`);
 
@@ -73,11 +132,8 @@ const kakaoLogin = async (req, res) => {
         }));
 };
 
-const checkUserIn = async (req, rs) => {
-    
-}
 
-
-export {
+module.exports = {
+    signIn,
     kakaoLogin,
 };

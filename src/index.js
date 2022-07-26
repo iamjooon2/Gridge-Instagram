@@ -19,7 +19,7 @@ const server = () => {
     app.use(compression());
 
     const Router = require('./routers/index.js');
-    app.use('/api', Router);
+    app.use('/api', Router());
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
     app.listen(SERVER_PORT, () => {

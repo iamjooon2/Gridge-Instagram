@@ -22,13 +22,13 @@ exports.postPost = async (req, res) => {
         return res.send(errResponse(baseResponse.POST_POSTIMGURLS_EMPTY));
     }
 
-    if(userIdx <= 0) {
+    if (userIdx <= 0) {
         return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
     } else if (content.length > 450) {
         return res.send(errResponse(baseResponse.POST_CONTENT_LENGTH));
     }
 
-    const createdPostResult = await this.postService.createPost(
+    const createdPostResult = await postService.createPost(
         userIdx,
         postImgUrls,
         content
