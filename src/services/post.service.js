@@ -13,7 +13,7 @@ exports.createPost = async (userIdx, postImgUrls, content) => {
         await connection.beginTransaction();
 
         const insertPostParams =  [userIdx, content];
-        const postResult = await postModel.inserPost(connection, insertPostParams);
+        const postResult = await postModel.insertPost(connection, insertPostParams);
 
         const postIdx = postResult[0].insertId;
 

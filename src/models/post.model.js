@@ -17,3 +17,8 @@ const insertPostImg = async (connection, insertPostImgParams) => {
 
     return insertPostImgRow;
 }
+
+module.exports = {
+    insertPost,
+    insertPostImg
+}
