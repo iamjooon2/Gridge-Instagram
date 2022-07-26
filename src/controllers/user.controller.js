@@ -7,41 +7,42 @@ const { response, errResponse }= require("../utilities/response");
 const baseResponse = require("../utilities/baseResponseStatus");
 
 const regexPassword = new RegExp('^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$'); // 특수문자 포함한 6~20자 허용하는 정규표현식
+const regexPhone = new RegExp('^[0-9]{1,10}$'); //숫자만 포함하여 1~10자 포함하는 정규표현식
 
 const signIn = async (req, res) => {
 
-    const {userId, userPassword} = req.body;
+    const {id, password} = req.body;
     
     // userId Validation
-    if (!userId){
+    if (!id){
         return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
     } else 
-    if (userId.length > 20) {
+    if (id.length > 20) {
         return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
-    } else if (userId.length < 3) {
+    } else if (id.length < 3) {
         return res.send(errResponse(baseResponse.USER_USERID_SHORT));
     }
 
     // userPassword Validation
-    if (!userPassword){
+    if (!password){
         return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY));
-    } else if (userPassword.length > 20) {
+    } else if (password.length > 20) {
         return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
-    } else if (userPassword.length < 6) {
+    } else if (password.length < 6) {
         return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
-    } else if (!regexPassword.test(userPassword)) {
+    } else if (!regexPassword.test(password)) {
         return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_REGEX));
     }
 
     // 사용자 아이디 존재 여부 확인
-    const userIdExistsResult = await userService.checkUserExists(userId);
+    const userIdExistsResult = await userService.checkUserExists(id);
 
     if (!userIdExistsResult){
         return res.send(errResponse(baseResponse.USER_USERID_NOT_EXIST));
     }
 
     // 사용자가 입력한 비밀번호와 DB 비밀번호 일치 여부 확인
-    const passwordCheckResult = await userService.checkUserPassWord(userId, userPassword);
+    const passwordCheckResult = await userService.checkUserPassWord(id, password);
 
     if (!passwordCheckResult){
         return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG));
@@ -49,7 +50,7 @@ const signIn = async (req, res) => {
 
     // 토큰 발행
     let token = await jwt.sign({  
-        userId: userId
+        id: id
     },
     process.env.JWT_SECRET,
     {
@@ -135,5 +136,6 @@ const kakaoLogin = async (req, res) => {
 
 module.exports = {
     signIn,
+    signUp,
     kakaoLogin,
 };
