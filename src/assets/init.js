@@ -11,7 +11,7 @@ const init = async () => {
             const sql = splits[i];
 
             if (sql.indexOf('CREATE') !== -1) {
-                const [res] = await pool.promise().execute(sql);
+                const [res] = await pool.execute(sql);
                 console.log(`DB INIT COUNT: ${i}`);
             }
         }

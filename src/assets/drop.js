@@ -11,7 +11,7 @@ const drop = async () => {
             const sql = splits[i]
 
             if (sql.indexOf('DROP') !== -1) {
-                const [res, err] = await pool.promise().execute(sql);
+                const [res, err] = await pool.execute(sql);
                 console.log(`DB DROP COUNT: ${i}`);
             }
         }
