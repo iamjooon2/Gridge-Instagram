@@ -8,6 +8,7 @@ const baseResponse = require('../utilities/baseResponseStatus');
 const checkUserIdExists = async (userId) => {
     try {
         const connection = await pool.getConnection((connection) => connection);
+        await connection.beginTransaction();
         const checkedUser = await userModel.checkUserExistsByUserId(connection, userId);
 
         connection.release();
@@ -28,6 +29,7 @@ const checkUserPassword = async (userId, userPassword) => {
 
     try {
         const connection = await pool.getConnection((connection) => connection);
+        await connection.beginTransaction();
         const checkedUserPassword = await userModel.checkUserPassword(connection, userId);
 
         connection.release();
@@ -52,6 +54,7 @@ const postSignUp = async (phone, name, password, birth, id) => {
         // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
         const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         
         const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id);
 
@@ -68,6 +71,7 @@ const postSignUp = async (phone, name, password, birth, id) => {
 const checkSocialId = async (socialId) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const checkedResult = await userModel.getSocialId(conn, socialId);
 
         connection.release();
@@ -87,6 +91,7 @@ const checkSocialId = async (socialId) => {
 const retrieveUserIdxByKakaoId = async (socialId) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const userIdxResult = await userModel.getUserIdxBySocialId(connection, socialId);
 
         connection.release();
@@ -102,6 +107,8 @@ const retrieveUserIdxByKakaoId = async (socialId) => {
 const retrieveUserIdxById = async (userId) =>{
     try {
         const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+
         const userIdx = await userModel.getUserIdxByUserId(connection, userId);
 
         connection.release();
