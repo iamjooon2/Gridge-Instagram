@@ -11,11 +11,11 @@ const checkUserExists = async (userId) => {
         const checkedUser = await userModel.selectByUserId(connection, userId);
 
         connection.release();
-
+        
+        // 사용자가 존재하지 않을 때
         if (checkedUser == 0){
             return false;
         }
-
         return true;
 
     } catch (e) {
@@ -28,7 +28,6 @@ const checkUserPassWord = async (userId, userPassword) => {
 
     try {
         const connection = await pool.getConnection((connection) => connection);
-        //const hashed = await bcrypt.hash(userPassword, 10);
         const checkedUserPassword = await userModel.checkUserPassword(connection, userId);
 
         connection.release();
@@ -39,7 +38,6 @@ const checkUserPassWord = async (userId, userPassword) => {
         if (!match){
             return false;
         }
-        
         return true;
 
     } catch (e) {
@@ -50,19 +48,25 @@ const checkUserPassWord = async (userId, userPassword) => {
 }
 
 
-// const postSignIn = async (userId, userPassword) => {
-//     try {
-//         const connection = await pool.getConnection(async (connection) => connection);
-//         const loginResult = await userModel.select 
+const postSignUp = async (phone, name, password, birth, id) => {
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const connection = await pool.getConnection(async (connection) => connection);
+        
+        const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id);
 
-//     } catch (e){
+        connection.release();
 
-//     } finally{
+        return  
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    } 
 
-//     }
-// }
+}
 
 module.exports = {
     checkUserExists,
-    checkUserPassWord
+    checkUserPassWord,
+    postSignUp
 };

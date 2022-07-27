@@ -6,32 +6,32 @@ const userService = require('../services/user.service');
 const { response, errResponse }= require("../utilities/response");
 const baseResponse = require("../utilities/baseResponseStatus");
 
-const regexPassword = new RegExp('^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$'); // 특수문자 포함한 6~20자 허용하는 정규표현식
-const regexPhone = new RegExp('^[0-9]{1,10}$'); //숫자만 포함하여 1~10자 포함하는 정규표현식
+const regexPassword = new RegExp(/^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$/); // 특수문자 포함한 6~20자 허용하는 정규표현식
+const regexPhone = new RegExp(/^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/); //전화버놓 형식 확인 정규표현식
+const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/); // 날짜 정규표현식
 
-const signIn = async (req, res) => {
+const logIn = async (req, res) => {
 
     const {id, password} = req.body;
     
-    // userId Validation
+    // id Validation
     if (!id){
         return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
-    } else 
-    if (id.length > 20) {
+    } else if (id.length > 20) {
         return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
     } else if (id.length < 3) {
         return res.send(errResponse(baseResponse.USER_USERID_SHORT));
     }
 
-    // userPassword Validation
+    // password Validation
     if (!password){
-        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY));
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_EMPTY));
     } else if (password.length > 20) {
-        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_LENGTH));
     } else if (password.length < 6) {
-        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_LENGTH));
     } else if (!regexPassword.test(password)) {
-        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_REGEX));
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_REGEX));
     }
 
     // 사용자 아이디 존재 여부 확인
@@ -65,19 +65,67 @@ const signIn = async (req, res) => {
 
 const signUp = async (req, res) => {
 
-    const { phone, name, password, birth, id } = req.body;
+    const { phone, authNumber, name, password, birth, id } = req.body;
 
     // phone validation
     if (!phone){
-        return res.send(errResponse(baseResponse.));
-    } else if (phone.length > 10) {
-        return res.send(errResponse(baseResponse.));
-    } else if (phone.length < 1) {
-        return res.send(errResponse(baseResponse.));
+        return res.send(errResponse(baseResponse.USER_PHONENUMBER_EMPTY));
+    } else if (phone.length !== 11) {
+        return res.send(errResponse(baseResponse.USER_PHONENUMBER_LENGTH));
     } else if (!regexPhone.test(phone)) {
-        return res.send(errResponse(baseResponse.));
+        return res.send(errResponse(baseResponse.USER_PHONENUMBER_NOT_MATCH));
     }
 
+    // phone authentication 
+    if (authNumber!==123456){
+        return res.send(errResponse(baseResponse.AUTH_NUMBER_WRONG))
+    } 
+
+    // name validation
+    if (!name){
+        return res.send(errResponse(baseResponse.USER_NAME_EMPTY));
+    } else if (name.length > 20) {
+        return res.send(errResponse(baseResponse.USER_NAME_LENGTH));
+    } 
+
+    // password validation
+    if (!password){
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY));
+    } else if (password.length > 20) {
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    } else if (password.length < 6) {
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    } else if (!regexPassword.test(password)) {
+        return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_REGEX));
+    }
+
+    // birth validation
+    if (!birth){
+        return res.send(errResponse(baseResponse.SIGNUP_BIRTH_EMPTY));
+    } else if (!regexDate.test(birth)) {
+        return res.send(errResponse(baseResponse.SIGNUP_BIRTH_REGEX));
+    }
+
+    // id Validation
+    if (!id){
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    } else if (id.length > 20) {
+        return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
+    } else if (id.length < 3) {
+        return res.send(errResponse(baseResponse.USER_USERID_SHORT));
+    }
+
+    // 사용자 아이디 존재 여부 확인
+    const userIdExistsResult = await userService.checkUserExists(id);
+
+    if (userIdExistsResult){
+        return res.send(errResponse(baseResponse.USER_USERID_EXIST));
+    }
+    
+    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id);
+
+
+    return res.send(response(baseResponse.SUCCESS));
 
 }
 
@@ -145,13 +193,13 @@ const kakaoLogin = async (req, res) => {
     }
     else   // 신규 유저라면
         return res.send(response(baseResponse.KAKAO_SIGN_UP, {
-            
+
         }));
 };
 
 
 module.exports = {
-    signIn,
-    signUp,
+    logIn,
     kakaoLogin,
+    signUp,
 };

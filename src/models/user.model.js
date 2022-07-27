@@ -5,7 +5,7 @@ const selectByUserId =  async (conn, userId) => {
         WHERE ID = ?
     `;
     const [userRow] = await conn.query(selectByUserIdQuery, userId);
-    console.log(userRow);
+    
     return userRow;
 }
 
@@ -20,7 +20,18 @@ const checkUserPassword = async (conn, userId) => {
     return checkRow;
 }
 
+const insertUser = async (conn, phone, name, hashedPassword, birth, id) => {
+    const insertUserQuery = `
+        INSERT INTO user(phone, name, password, birth, ID)
+        VALUES(?,?,?,?,?)
+    ;`;
+    const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id]);
+
+    return insertedRow;
+}
+
 module.exports = {
     selectByUserId,
-    checkUserPassword
+    checkUserPassword,
+    insertUser
 }

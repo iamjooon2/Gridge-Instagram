@@ -18,21 +18,30 @@ module.exports = {
     SIGNUP_PASSWORD_REGEX : { "isSuccess": false, "code": 2030, "message":"비밀번호는 특수문자를 포함해야 합니다." },
     SIGNUP_NICKNAME_EMPTY : { "isSuccess": false, "code": 2006, "message":"닉네임을 입력 해주세요." },
     SIGNUP_NICKNAME_LENGTH : { "isSuccess": false,"code": 2007,"message":"닉네임은 최대 20자리를 입력해주세요." },
+    SIGNUP_BIRTH_EMPTY : { "isSuccess": false, "code": 2006, "message":"생일을 입력 해주세요." },
+    SIGNUP_BIRTH_REGEX : { "isSuccess": false,"code": 2007,"message":"생일을 날짜 형식에 맞게 입력해주세요." },
 
-    SIGNIN_EMAIL_EMPTY : { "isSuccess": false, "code": 2008, "message":"이메일을 입력해주세요" },
+    SIGNIN_USERNAME_EMPTY : { "isSuccess": false, "code": 2008, "message":"이메일을 입력해주세요" },
     SIGNIN_EMAIL_LENGTH : { "isSuccess": false, "code": 2009, "message":"이메일은 30자리 미만으로 입력해주세요." },
     SIGNIN_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2010, "message":"이메일을 형식을 정확하게 입력해주세요." },
     SIGNIN_PASSWORD_EMPTY : { "isSuccess": false, "code": 2011, "message": "비밀번호를 입력 해주세요." },
+    SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2005, "message":"비밀번호는 6~20자리를 입력해주세요." },
+    SIGNIN_PASSWORD_REGEX : { "isSuccess": false, "code": 2030, "message":"비밀번호는 특수문자를 포함해야 합니다." },
 
     USER_USERID_EMPTY : { "isSuccess": false, "code": 2012, "message": "userId를 입력해주세요." },
     USER_USERID_NOT_EXIST : { "isSuccess": false, "code": 2013, "message": "해당 회원이 존재하지 않습니다." },
+    USER_USERID_EXIST : { "isSuccess": false, "code": 2013, "message": "해당 아이디를 사용한 회원이 존재합니다." },
     USER_USERID_LENGTH : { "isSuccess": false, "code": 2014, "message": "userId는 최대 20자리를 입력해주세요." },
     USER_USERID_SHORT : { "isSuccess": false, "code": 2014, "message": "userId는 최소 3자리 이상 입력해주세요." },
 
-    USER_USEREMAIL_EMPTY : { "isSuccess": false, "code": 2015, "message": "이메일을 입력해주세요." },
-    USER_USEREMAIL_NOT_EXIST : { "isSuccess": false, "code": 2016, "message": "해당 이메일을 가진 회원이 존재하지 않습니다." },
+    USER_PHONENUMBER_EMPTY : { "isSuccess": false, "code": 2015, "message": "전화번호를 입력해주세요." },
+    USER_PHONENUMBER_LENGTH : { "isSuccess": false, "code": 2015, "message": "전화번호 길이를 확인해주세요." },
+    USER_PHONENUMBER_NOT_MATCH : { "isSuccess": false, "code": 2016, "message": "전화번호는 숫자만 입력해주세요." },
     USER_ID_NOT_MATCH : { "isSuccess": false, "code": 2017, "message": "유저 아이디 값을 확인해주세요" },
     USER_NICKNAME_EMPTY : { "isSuccess": false, "code": 2018, "message": "변경할 닉네임 값을 입력해주세요" },
+
+    USER_NAME_EMPTY : { "isSuccess": false, "code": 2015, "message": "이름을 입력해주세요." },
+    USER_NAME_LENGTH : { "isSuccess": false, "code": 2015, "message": "이름 길이를 확인해주세요." },
 
     USER_STATUS_EMPTY : { "isSuccess": false, "code": 2019, "message": "회원 상태값을 입력해주세요" },
 
@@ -46,7 +55,7 @@ module.exports = {
     POST_POSTIDX_LENGTH: { "isSuccess": false, "code": 2025, "message": "postIdx는 0보다 큰 값으로 입력해주세요." },
     POST_CONTENT_EMPTY : { "isSuccess": false, "code": 2026, "message": "content를 입력해주세요." },
 
-    SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2027, "message": "비밀번호의 길이는 8자리 이상으로 입력해주세요." },
+    SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2027, "message": "비밀번호의 길이는 6자리 이상으로 입력해주세요." },
 
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
@@ -58,6 +67,7 @@ module.exports = {
     SIGNIN_WITHDRAWAL_ACCOUNT : { "isSuccess": false, "code": 3006, "message": "탈퇴 된 계정입니다. 고객센터에 문의해주세요." },
 
     POST_STATUS_INACTIVE : { "isSuccess": false, "code": 3007, "message": "이미 삭제된 게시물입니다." },
+    AUTH_NUMBER_WRONG : { "isSuccess": false, "code": 3008, "message": "인증번호가 잘못되었습니다" },
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR : { "isSuccess": false, "code": 4000, "message": "데이터 베이스 에러"},
