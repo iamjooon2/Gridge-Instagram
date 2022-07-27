@@ -98,6 +98,7 @@ const retrieveUserIdxByKakaoId = async (socialId) => {
     }
 }
 
+// ID로 유저 식별자 가지고오기
 const retrieveUserIdxById = async (userId) =>{
     try {
         const connection = await pool.getConnection(async (connection) => connection);
