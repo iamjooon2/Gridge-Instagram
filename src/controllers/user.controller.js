@@ -63,10 +63,29 @@ const signIn = async (req, res) => {
                 .send(response(baseResponse.SUCCESS));
 }
 
+const signUp = async (req, res) => {
+
+    const { phone, name, password, birth, id } = req.body;
+
+    // phone validation
+    if (!phone){
+        return res.send(errResponse(baseResponse.));
+    } else if (phone.length > 10) {
+        return res.send(errResponse(baseResponse.));
+    } else if (phone.length < 1) {
+        return res.send(errResponse(baseResponse.));
+    } else if (!regexPhone.test(phone)) {
+        return res.send(errResponse(baseResponse.));
+    }
+
+
+}
 
 const kakaoLogin = async (req, res) => {
+
     let user_kakao_profile;
-    const accessToken = req.headers.Authorization;
+    let accessToken = req.headers.Authorization;
+    accessToken = token.replace(/^Bearer\s+/, "");
 
     /* Validation */
     if (!accessToken) {
@@ -104,7 +123,7 @@ const kakaoLogin = async (req, res) => {
         let token = await jwt.sign({  // 토큰의 내용 (payload)
                 userIdx: userIdx
             },
-            secret_key.jwtsecret,   // 비밀키
+            process.env.JWT_SECRET,
             {
                 expiresIn: "30d",
                 subject: "userInfo",
@@ -116,10 +135,9 @@ const kakaoLogin = async (req, res) => {
 
         console.log(`[Kakao Login API] login-userIdx: ${userIdx}, nickName: ${loginUserResult[0].nickName}`);
 
-        return res.send(response(baseResponse.KAKAO_LOGIN_SUCCESS, {
+        return res.header({'Authorization' : `Bearer ${token}`})
+                    .send(response(baseResponse.KAKAO_LOGIN_SUCCESS, {
                 'userIdx': userIdx,
-                'jwt': token,
-                'email': loginUserResult[0].email,
                 'nickName': loginUserResult[0].nickName,
                 'profileImgUrl': loginUserResult[0].profileImgUrl,
                 'kakaoId': loginUserResult[0].kakaoId,
@@ -127,9 +145,7 @@ const kakaoLogin = async (req, res) => {
     }
     else   // 신규 유저라면
         return res.send(response(baseResponse.KAKAO_SIGN_UP, {
-            'email': email,
-            'profileImgUrl': s3_profileUrl.Location,
-            'kakaoId': kakaoId,
+            
         }));
 };
 
