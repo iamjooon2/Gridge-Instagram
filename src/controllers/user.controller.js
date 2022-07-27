@@ -179,7 +179,7 @@ const signUp = async (req, res) => {
     }
 
     // 사용자 아이디 존재 여부 확인
-    const userIdExistsResult = await userService.checkUserExists(id);
+    const userIdExistsResult = await userService.checkUserIdExists(id);
 
     if (userIdExistsResult){
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
@@ -243,10 +243,34 @@ const socialSignUp = async (req, res) => {
     return res.send(response(baseResponse.SUCCESS));
 }
 
+// 사용자 계정 사용 가능 확인
+const checkIdAvailable = async (req, res) => {
+
+    const id = req.body.id;
+    // id Validation
+    if (!id){
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    } else if (id.length > 20) {
+        return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
+    } else if (id.length < 3) {
+        return res.send(errResponse(baseResponse.USER_USERID_SHORT));
+    }
+
+    // 사용자 아이디 존재 여부 확인
+    const userIdExistsResult = await userService.checkUserIdExists(id);
+
+    if (userIdExistsResult){
+        return res.send(errResponse(baseResponse.USER_USERID_EXIST));
+    }
+
+    return res.send(response(baseResponse.SUCCESS));
+}
+
 module.exports = {
     logIn,
     kakaoLogin,
     autoLogin,
     signUp,
-    socialSignUp
+    socialSignUp,
+    checkIdAvailable
 };
