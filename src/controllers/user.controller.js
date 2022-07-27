@@ -36,7 +36,7 @@ const logIn = async (req, res) => {
     }
 
     // 사용자 아이디 존재 여부 확인
-    const userIdExistsResult = await userService.checkUserExists(id);
+    const userIdExistsResult = await userService.checkUserIdExists(id);
 
     if (!userIdExistsResult){
         return res.send(errResponse(baseResponse.USER_USERID_NOT_EXIST));
@@ -70,8 +70,8 @@ const logIn = async (req, res) => {
 const kakaoLogin = async (req, res) => {
 
     let user_kakao_profile;
-    let accessToken = req.headers.Authorization;
-    accessToken = token.replace(/^Bearer\s+/, "");
+    let accessToken = req.headers['x-access-token'] || req.headers['authorization'];
+    accessToken = accessToken.replace(/^Bearer\s+/, "");
     // 프론트에서 받은 access token을 카카오 서버로 보내서 사용자 정보 가져옴
     try {
         user_kakao_profile = await axios({
@@ -121,8 +121,8 @@ const kakaoLogin = async (req, res) => {
 // 자동로그인
 const autoLogin = async (req, res) => {
     const userIdFromJWT = req.verifiedToken.userIdx;
-    logger.info(`[Auto-Login API] userIdx: ${userIdFromJWT}`);
-    return res.send(response(baseResponse.AUTO_LOGIN_SUCCESS));
+    console.log(`[Auto-Login API] userIdx: ${userIdFromJWT}`);
+    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
 
 // 회원가입

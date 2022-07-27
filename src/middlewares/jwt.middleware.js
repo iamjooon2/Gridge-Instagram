@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
-const { response, errResponse } = require('../util/response');
-const baseResponse = require('../util/baseResponseStatus');
+const { response, errResponse } = require('../utilities/response');
+const baseResponse = require('../utilities/baseResponseStatus');
 
 const jwtMiddleware = (req, res, next) => {
     
-    let token = req.headers['x-access-token'] || req.headers['Authorization'];
-    token = token.replace(/^Bearer\s+/, "");
-    
+    let accessToken = req.headers['x-access-token'] || req.headers['authorization'];
+    const token = accessToken.replace(/^Bearer\s+/, '');
+
     if (!token){
         return res.send(errResponse(baseResponse.TOKEN_EMPTY));
     }
