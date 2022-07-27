@@ -67,7 +67,45 @@ const patchPost = async (req, res) => {
 
     return res.send(editPostResponse);
 }
+
+// 게시글 조회
+const getPosts = async (req, res) => {
+
+    const userIdx = req.query.userIdx;
+
+    // validation
+    if(!userIdx) {
+        return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
+    }
+    if (userIdx <= 0) {
+        return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
+    }
+
+    const postListResult = await postService.retrievePostLists(userIdx);
+
+    return res.send(response(baseResponse.SUCCESS, postListResult));
+}
+
+// 게시글 삭제
+const patchPostStatus = async (req ,res) => {
+
+    const postIdx = req.params.postIdx;
+    
+    // validation
+    if (!postIdx) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx <= 0) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const editPostStatusResponse = await postService.updatePostStatus(postIdx);
+
+    return res.send(editPostStatusResponse);
+}
+
 module.exports = {
     postPost,
-    patchPost
+    patchPost,
+    getPosts,
+    patchPostStatus
 };

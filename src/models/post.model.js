@@ -50,10 +50,38 @@ const selectUserIdxByPostIdx = async (connection, postIdx) => {
 
     return selectedUserRow;
 }
+
+const selectPostStatus = async (connection, postIdx) => {
+    const selectPostStatusQuery = `
+        SELECT status
+        FROM post
+        WHERE postIdx = ?;
+    `;
+
+    const [postStatusRow] = await connection.query(selectPostStatusQuery, postIdx);
+
+    return postStatusRow;
+}
+
+const updatePostStatus = async (connection, postIdx) => {
+    const updatePostStatusQuery = `
+        UPDATE post
+        SET status = 1
+        WHERE postIdx = ?;
+    `;
+
+    const updatePostStatusRow = await connection.query(updatePostStatusQuery, postIdx);
+
+    return updatePostStatusRow[0];
+}
+
+
 module.exports = {
     insertPost,
     insertPostImg,
     updatePost,
     selectPostByPostIdx,
-    selectUserIdxByPostIdx
+    selectUserIdxByPostIdx,
+    selectPostStatus,
+    updatePostStatus
 }

@@ -4,7 +4,7 @@ const postModel = require('../models/post.model');
 const baseResponse = require('../utilities/baseResponseStatus')
 const { errResponse, response } = require('../utilities/response');
 
-
+// 게시물 생성
 const createPost = async ( userIdx, postImgUrls, content) => {
     const connection = await pool.getConnection(async (connection) => connection);
     try {
@@ -32,6 +32,7 @@ const createPost = async ( userIdx, postImgUrls, content) => {
     }
 }
 
+// 게시물 수정
 const updatePost = async (content, postIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
@@ -51,6 +52,7 @@ const updatePost = async (content, postIdx) => {
     }
 }
 
+// 게시물 작성자 확인
 const retrieveUserIdx = async (postIdx) =>{
     try {
         const connection = await pool.getConnection(async (connection) => connection);
@@ -65,8 +67,31 @@ const retrieveUserIdx = async (postIdx) =>{
     }
 }
 
+// 게시물 상태 비활성화로 변경(사용자입장 삭제)
+const updatePostStatus = async (postIdx) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        const postStatusResult = await postModel.selectPostStatus(connection, postIdx);
+
+        if (postStatusResult[0].status !== 0) {
+            return errResponse(baseResponse.POST_STATUS_INACTIVE);
+        }
+
+        const editPostStatusResult = await postModel.updatePostStatus(connection, postIdx);
+
+        return response(baseResponse.SUCCESS);
+    } catch(e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
+
 module.exports ={
     createPost,
     updatePost,
-    retrieveUserIdx
+    retrieveUserIdx,
+    updatePostStatus
 }
