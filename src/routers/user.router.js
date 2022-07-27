@@ -13,7 +13,7 @@ const userRouter = (router) =>{
     router.get('/kakao-login', userController.kakaoLogin);
 
     // 회원가입 API
-    router.post('/signup', userController.signUp);
+    router.post('/signUp', userController.signUp);
 
     // 소셜 회원가입 API
     router.post('/social-signUp', userController.socialSignUp);

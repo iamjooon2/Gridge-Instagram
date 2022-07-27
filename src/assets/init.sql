@@ -50,7 +50,6 @@ CREATE TABLE `Gridge-ERD`.`post`
     `userIdx`          BIGINT          NOT NULL, 
     `content`          VARCHAR(300)    NOT NULL, 
     `location`         VARCHAR(45)     NULL, 
-    `postImg`          VARCHAR(45)     NULL, 
     `createdAt`        TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`        TIMESTAMP       NULL        ON UPDATE current_timestamp, 
     `status`           TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨/2-비활성화', 
