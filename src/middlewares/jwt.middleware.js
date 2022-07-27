@@ -6,7 +6,7 @@ const baseResponse = require('../util/baseResponseStatus');
 
 const jwtMiddleware = (req, res, next) => {
     
-    let token = req.headers['x-access-token'] || req.headers['authorization'];
+    let token = req.headers['x-access-token'] || req.headers['Authorization'];
     token = token.replace(/^Bearer\s+/, "");
     
     if (!token){

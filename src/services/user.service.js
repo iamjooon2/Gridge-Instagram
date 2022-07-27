@@ -1,14 +1,14 @@
 const bcrypt = require('bcrypt');
 const { pool } = require('../assets/db');
 const userModel = require('../models/user.model');
-const {errResponse, response} = require('../utilities/response');
+const { errResponse } = require('../utilities/response');
 const baseResponse = require('../utilities/baseResponseStatus');
 
-const checkUserExists = async (userId) => {
-
+// 사용자의 ID가 존재하는지 확인
+const checkUserIdExists = async (userId) => {
     try {
         const connection = await pool.getConnection((connection) => connection);
-        const checkedUser = await userModel.selectByUserId(connection, userId);
+        const checkedUser = await userModel.checkUserExistsByUserId(connection, userId);
 
         connection.release();
         
@@ -17,14 +17,14 @@ const checkUserExists = async (userId) => {
             return false;
         }
         return true;
-
     } catch (e) {
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
     }
 }
 
-const checkUserPassWord = async (userId, userPassword) => {
+// 사용자의 비밀번호가 일치하는지 확인
+const checkUserPassword = async (userId, userPassword) => {
 
     try {
         const connection = await pool.getConnection((connection) => connection);
@@ -39,7 +39,6 @@ const checkUserPassWord = async (userId, userPassword) => {
             return false;
         }
         return true;
-
     } catch (e) {
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -47,9 +46,10 @@ const checkUserPassWord = async (userId, userPassword) => {
 
 }
 
-
+// 회원정보 데이터베이스에 넣기
 const postSignUp = async (phone, name, password, birth, id) => {
     try {
+        // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
         const connection = await pool.getConnection(async (connection) => connection);
         
@@ -57,7 +57,55 @@ const postSignUp = async (phone, name, password, birth, id) => {
 
         connection.release();
 
-        return  
+        return
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 소셜 회원 검증
+const checkSocialId = async (socialId) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const checkedResult = await userModel.getSocialId(conn, socialId);
+
+        connection.release();
+        
+        // 사용자가 존재하지 않을 때
+        if (checkedResult == 0){
+            return false;
+        }
+        return true;
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    } 
+}
+
+// 카카오ID로 유저 식별자 가지고오기
+const retrieveUserIdxByKakaoId = async (socialId) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const userIdxResult = await userModel.getUserIdxBySocialId(connection, socialId);
+
+        connection.release();
+
+        return userIdxResult;
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+const retrieveUserIdxById = async (userId) =>{
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const userIdx = await userModel.getUserIdxByUserId(connection, userId);
+
+        connection.release();
+
+        return userIdx;
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -66,7 +114,10 @@ const postSignUp = async (phone, name, password, birth, id) => {
 }
 
 module.exports = {
-    checkUserExists,
-    checkUserPassWord,
-    postSignUp
+    checkUserIdExists,
+    checkUserPassword,
+    postSignUp,
+    checkSocialId,
+    retrieveUserIdxByKakaoId,
+    retrieveUserIdxById
 };
