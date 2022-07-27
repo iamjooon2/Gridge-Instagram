@@ -90,7 +90,7 @@ const kakaoLogin = async (req, res) => {
 
     /**
      * 사용자의 socialId 고유번호가 DB에 존재하는지 체크
-     * 존재하면? -> 기존에 있던 유저 -> 바로 JWT 발급 및 로그인 처리 + 사용자 status 수정
+     * 존재하면? -> 기존에 있던 유저 -> 바로 JWT 발급 및 로그인 처리
      * 존재하지 않는다면? -> 회원가입 API 진행
      */
     const isKakaoExist = await userService.checkSocialId(kakaoId);
