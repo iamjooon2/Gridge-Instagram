@@ -282,7 +282,7 @@ const getUserInfo = async (req, res) => {
     
     if (!page) {
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
-    } else  if (page <= 0) {
+    } else if (page <= 0) {
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     }
 

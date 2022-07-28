@@ -27,7 +27,7 @@ const postPost = async (req, res) => {
         return res.send(errResponse(baseResponse.POST_POSTIMGURLS_EMPTY));
     }
 
-    if (content.length = 0 ){
+    if (!content){
         return res.send(errResponse(baseResponse.POST_CONTENT_EMPTY));
     } else if (content.length > 1000) {
         return res.send(errResponse(baseResponse.POST_CONTENT_LENGTH));
@@ -74,18 +74,24 @@ const patchPost = async (req, res) => {
 
 // 게시글 조회
 const getPosts = async (req, res) => {
-
+    
     const userIdx = req.params.userIdx;
+    const page = req.query.page;
 
     // validation
     if(!userIdx) {
         return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
-    }
-    if (userIdx <= 0) {
+    } else if (userIdx <= 0) {
         return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
     }
 
-    const postListResult = await postService.retrievePostLists(userIdx);
+    if (!page) {
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else  if (page <= 0) {
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const postListResult = await postService.retrievePostLists(userIdx, page);
 
     return res.send(response(baseResponse.SUCCESS, postListResult));
 }

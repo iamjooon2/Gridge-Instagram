@@ -68,19 +68,22 @@ const retrieveUserIdx = async (postIdx) => {
 }
 
 // 게시글 목록 조회
-const retrievePostLists = async (userIdx) => {
-    const connection = await pool.getConnection(async (conn) => conn);
-    const postListResult = await postModel.selectUserPosts(connection, userIdx);
+const retrievePostLists = async (userIdx, page) => {
 
-    for (post of postListResult){
-        const postIdx = post.postIdx;
-        const postImgResult = await postModel.selectPostImgs(connection, postIdx);
-        post.imgs = postImgResult;
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const offset = (page-1)*9;
+        const postListResult = await postModel.selectUserPosts(connection, userIdx, offset);
+        
+        
+        connection.release()
+
+        return postListResult;
+
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
     }
-
-    connection.release();
-
-    return postListResult;
 }
 
 // 게시물 상태 비활성화로 변경(사용자입장 삭제)
