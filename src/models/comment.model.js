@@ -1,20 +1,20 @@
-const insertComment = async (conn, userIdx, postIdx, content) => {
+const insertComment = async (conn, commentParmas) => {
     const insertCommentQuery = `
         INSERT INTO comment(userIdx, postIdx, content)
         values(?,?,?)
     `;
-    const [commentRow] = await conn.query(insertCommentQuery, userIdx, postIdx, content);
+    const [commentRow] = await conn.query(insertCommentQuery, commentParmas);
 
     return commentRow;
 }
 
-const updateComment = async (conn, content, commentIdx) => {
+const updateComment = async (conn, updateCommentParam) => {
     const updateCommentQuery = `
         UPDATE comment
         SET content = ?
         WHERE commentIdx = ?
     `;
-    const [commentRow] = await conn.query(updateCommentQuery, content, commentIdx);
+    const [commentRow] = await conn.query(updateCommentQuery, updateCommentParam);
 
     return commentRow;
 }

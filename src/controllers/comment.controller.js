@@ -10,17 +10,12 @@ const postComment = async (req, res) => {
     const token = req.verifiedToken.idx;
     const userIdxFromToken = token[0].userIdx;
 
-    const { userIdx, postIdx, content} = req.body;
-
-    // Authentication
-    if ( userIdxFromToken != userIdx){
-        return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-    }
+    const { postIdx, content} = req.body;
 
     // validation
-    if (!userIdx) {
+    if (!userIdxFromToken) {
         return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
-    } else  if (userIdx <= 0) {
+    } else  if (userIdxFromToken <= 0) {
         return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
     }
 
@@ -37,7 +32,7 @@ const postComment = async (req, res) => {
     }
 
     const createdCommentResult = await commentService.createComment(
-        userIdx,
+        userIdxFromToken,
         postIdx,
         content
     );
@@ -70,7 +65,7 @@ const patchComment = async (req, res) => {
     const commentIdx = req.params.commentIdx;
     const content = req.body.content;
 
-    const writerOfComment = await commentService.retrieveUserIdx(postIdx);
+    const writerOfComment = await commentService.retrieveUserIdx(commentIdx);
 
     // Authentication
     if (writerOfComment[0].userIdx !== idx[0].userIdx) {
@@ -90,7 +85,7 @@ const patchComment = async (req, res) => {
         return res.send(errResponse(baseResponse.COMMENT_CONTENT_LENGTH));
     } 
 
-    const editCommentResponse = await commentService.updateComment(content, postIdx);
+    const editCommentResponse = await commentService.updateComment(content, commentIdx);
 
     return res.send(editCommentResponse);
 }
@@ -101,7 +96,7 @@ const patchCommentStatus = async (req ,res) => {
     const token = req.verifiedToken.idx;
     const commentIdx = req.params.commentIdx;
 
-    const writerOfComment = await commentService.retrieveUserIdx(postIdx);
+    const writerOfComment = await commentService.retrieveUserIdx(commentIdx);
 
     // Authentication
     if (writerOfComment[0].userIdx !== token[0].userIdx) {
@@ -115,7 +110,7 @@ const patchCommentStatus = async (req ,res) => {
         return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
     }
 
-    const editCommentStatusResponse = await commentService.updateCommentStatus(postIdx);
+    const editCommentStatusResponse = await commentService.updateCommentStatus(commentIdx);
 
     return res.send(editCommentStatusResponse);
 }

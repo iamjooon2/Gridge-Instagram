@@ -8,7 +8,8 @@ const { errResponse, response } = require('../utilities/response');
 const createComment = async ( userIdx, postIdx, content) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
-        const commentResult = await commentModel.insertComment(connection, userIdx, postIdx, content);
+        const commentParmas = [userIdx, postIdx, content];
+        const commentResult = await commentModel.insertComment(connection, commentParmas);
 
         connection.release();
         
@@ -24,7 +25,10 @@ const createComment = async ( userIdx, postIdx, content) => {
 const updateComment = async (content, commentIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
-        const editCommentResult = await commentModel.updateComment(connection, content, commentIdx);
+
+        const updateCommentParam = [content, commentIdx];
+
+        const editCommentResult = await commentModel.updateComment(connection, updateCommentParam);
 
         if (!editCommentResult) {
             return errResponse(baseResponse.DB_ERROR);

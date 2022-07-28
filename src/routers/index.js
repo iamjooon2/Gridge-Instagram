@@ -10,6 +10,7 @@ module.exports = () => {
     
     postRouter(router);
     userRouter(router);
-
+    commentRouter(router);
+    
     return router;
 }

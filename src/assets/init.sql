@@ -27,6 +27,7 @@ ALTER TABLE `Gridge-ERD`.`user` COMMENT '사용자';
 CREATE TABLE `Gridge-ERD`.`comment`
 (
     `commentIdx`  BIGINT          NOT NULL    AUTO_INCREMENT, 
+    `postIdx`     BIGINT          NOT NULL
     `useridx`     BIGINT          NOT NULL, 
     `content`     VARCHAR(300)    NULL, 
     `createdAt`   TIMESTAMP       NULL        DEFAULT current_timestamp, 
@@ -41,6 +42,10 @@ ALTER TABLE `Gridge-ERD`.`comment` COMMENT '댓글';
 ALTER TABLE `Gridge-ERD`.`comment`
     ADD CONSTRAINT FK_comment_useridx_user_userIdx FOREIGN KEY (useridx)
         REFERENCES Gridge-ERD.user (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE `Gridge-ERD`.`comment`
+    ADD CONSTRAINT FK_comment_postIdx_post_postIdx FOREIGN KEY (postIdx)
+        REFERENCES Gridge-ERD.user (postIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- post Table Create SQL
