@@ -158,13 +158,13 @@ ALTER TABLE `Gridge-ERD`.`userProfileImg`
 -- postImg Table Create SQL
 CREATE TABLE `Gridge-ERD`.`postImg`
 (
-    `postimgIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
+    `postImgIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `postIdx`     BIGINT       NULL, 
     `imgUrl`      TEXT         NULL, 
     `createdAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP    NULL        ON UPDATE current_timestamp, 
     `status`      TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
-     PRIMARY KEY (postimgIdx)
+     PRIMARY KEY (postImgIdx)
 );
 
 ALTER TABLE `Gridge-ERD`.`postImg` COMMENT '게시글 사진';

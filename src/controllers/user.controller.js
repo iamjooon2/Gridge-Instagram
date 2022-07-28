@@ -266,11 +266,37 @@ const checkIdAvailable = async (req, res) => {
     return res.send(response(baseResponse.SUCCESS));
 }
 
+// 본인 정보 보기
+const getUserInfo = async (req, res) => {
+    
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const page = req.query.page;
+
+    // validation
+    if (!userIdx) {
+        return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
+    } else  if (userIdx <= 0) {
+        return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
+    }
+    
+    if (!page) {
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else  if (page <= 0) {
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const userInfoResult = await userService.getUserInfo(userIdx, page);
+
+    return res.send(response(baseResponse.SUCCESS, userInfoResult));
+}
+
 module.exports = {
     logIn,
     kakaoLogin,
     autoLogin,
     signUp,
     socialSignUp,
-    checkIdAvailable
+    checkIdAvailable,
+    getUserInfo
 };

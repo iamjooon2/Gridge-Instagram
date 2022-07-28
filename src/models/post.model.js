@@ -51,6 +51,38 @@ const selectUserIdxByPostIdx = async (connection, postIdx) => {
     return selectedUserRow;
 }
 
+const selectUserPosts = async (connection, userIdx, page) => {
+    const selectUserPostsQuery = `
+        SELECT p.postIdx as postIdx, pi.imgUrl as postImgUrl
+        FROM post as p
+            join postImg as pi
+                on pi.postIdx = p.postIdx and pi.status = 0
+            join user as u 
+                on u.userIdx = p.userIdx
+        WHERE p.status = 0 and u.userIdx = ?
+        ORDER BY p.postIdx
+        LIMIT 9 OFFSET ${page}
+    `;
+    const [postRows] = await connection.query(selectUserPostsQuery, userIdx);
+
+    return postRows;
+
+}
+
+const selectPostImgs = async (connection, postIdx) => {
+    const selectPostImgsQuery = `
+        SELECT pi.postImgIdx, pi.imgUrl
+        FROM postImg as pi
+            join post as p on p.postIdx = pi.postIdx
+        WHERE pi.status = 0 and p.postIdx = ?;
+        ORDER BY p.postIdx
+    `;
+
+    const [postImgRows] = await connection.query(selectPostImgsQuery, postIdx);
+
+    return postImgRows;
+}
+
 const selectPostStatus = async (connection, postIdx) => {
     const selectPostStatusQuery = `
         SELECT status
@@ -63,7 +95,7 @@ const selectPostStatus = async (connection, postIdx) => {
     return postStatusRow;
 }
 
-const updatePostStatus = async (connection, postIdx) => {
+const updatePostStatusInactive = async (connection, postIdx) => {
     const updatePostStatusQuery = `
         UPDATE post
         SET status = 1
@@ -82,6 +114,9 @@ module.exports = {
     updatePost,
     selectPostByPostIdx,
     selectUserIdxByPostIdx,
+    selectUserPosts,
+    selectPostImgs,
     selectPostStatus,
-    updatePostStatus
+    updatePostStatusInactive,
 }
+    

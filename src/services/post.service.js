@@ -53,7 +53,7 @@ const updatePost = async (content, postIdx) => {
 }
 
 // 게시물 작성자 확인
-const retrieveUserIdx = async (postIdx) =>{
+const retrieveUserIdx = async (postIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const userIdx = await postModel.selectUserIdxByPostIdx(connection, postIdx);
@@ -67,6 +67,23 @@ const retrieveUserIdx = async (postIdx) =>{
     }
 }
 
+// 게시글 목록 조회
+const retrievePostLists = async (userIdx) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const postListResult = await postModel.selectUserPosts(connection, userIdx);
+
+    for (post of postListResult){
+        const postIdx = post.postIdx;
+        const postImgResult = await postModel.selectPostImgs(connection, postIdx);
+        post.imgs = postImgResult;
+    }
+
+    connection.release();
+
+    return postListResult;
+}
+
+
 // 게시물 상태 비활성화로 변경(사용자입장 삭제)
 const updatePostStatus = async (postIdx) => {
     const connection = await pool.getConnection(async (conn) => conn);
@@ -77,7 +94,7 @@ const updatePostStatus = async (postIdx) => {
             return errResponse(baseResponse.POST_STATUS_INACTIVE);
         }
 
-        const editPostStatusResult = await postModel.updatePostStatus(connection, postIdx);
+        const editPostStatusResult = await postModel.updatePostStatusInactive(connection, postIdx);
 
         return response(baseResponse.SUCCESS);
     } catch(e) {
@@ -89,9 +106,11 @@ const updatePostStatus = async (postIdx) => {
     }
 }
 
+
 module.exports ={
     createPost,
     updatePost,
     retrieveUserIdx,
+    retrievePostLists,  
     updatePostStatus
 }

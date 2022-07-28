@@ -20,6 +20,10 @@ const userRouter = (router) =>{
 
     // 사용자 아이디 사용 확인 API
     router.get('/checkId', userController.checkIdAvailable);
+
+    // 내 정보 불러오는 API
+    router.get('/profile', jwtMiddleware, userController.getUserInfo);
+
 }
 
 module.exports = userRouter;

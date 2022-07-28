@@ -73,6 +73,38 @@ const getUserIdxByUserId = async (conn, userId) => {
     return userRow;
 }
 
+const getUserProfile = async (conn, userIdx) => {
+    const selectUserProfileQuery = `
+        SELECT id, name, introduce, profileImgUrl, website,
+            if (postCount is null, 0, postCount) as postCount,
+            if (followerCount is null, 0, followerCount) as followerCount,
+            if (followingCount is null, 0, followingCount) as followingCount
+        FROM user
+            INNER JOIN (
+                SELECT userIdx, COUNT(postIdx) as postCount
+                FROM post
+                WHERE status = 0
+                GROUP BY userIdx
+                ) post ON user.userIdx = post.userIdx
+            INNER JOIN (
+                SELECT userIdx, COUNT(followerIdx) as followerCount
+                FROM follower
+                WHERE status = 0
+                GROUP BY userIdx
+                ) follower on follower.userIdx = user.userIdx
+            INNER JOIN (
+                SELECT userIdx, COUNT(followingIdx) as followingCount
+                FROM following
+                WHERE status = 0
+                GROUP BY userIdx
+                ) following on following.userIdx = user.userIdx
+        WHERE user.userIdx = ?
+    `;
+    const [userProfileRow] = await conn.query(selectUserProfileQuery, userIdx);
+
+    return userProfileRow;
+}
+
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -80,5 +112,6 @@ module.exports = {
     insertSocialUser,
     getSocialId,
     getUserIdxBySocialId,
-    getUserIdxByUserId
+    getUserIdxByUserId,
+    getUserProfile
 }

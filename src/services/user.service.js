@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { pool } = require('../assets/db');
 const userModel = require('../models/user.model');
+const postModel = require('../models/post.model');
 const { errResponse } = require('../utilities/response');
 const baseResponse = require('../utilities/baseResponseStatus');
 
@@ -83,7 +84,7 @@ const checkSocialId = async (socialId) => {
     } 
 }
 
-// 카카오ID로 유저 식별자 가지고오기
+// 카카오ID로 유저 식별자 가지고 오기
 const retrieveUserIdxByKakaoId = async (socialId) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
@@ -99,7 +100,7 @@ const retrieveUserIdxByKakaoId = async (socialId) => {
     }
 }
 
-// ID로 유저 식별자 가지고오기
+// ID로 유저 식별자 가지고 오기
 const retrieveUserIdxById = async (userId) =>{
     try {
         const connection = await pool.getConnection(async (connection) => connection);
@@ -114,11 +115,33 @@ const retrieveUserIdxById = async (userId) =>{
     }
 }
 
+// 사용자 본인 프로필 정보 가지고 오기
+const getUserInfo = async (userIdx, page) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const userProfileResult = await userModel.getUserProfile(connection, userIdx);
+
+        const offset = (page-1)*9;
+        
+        const userPostResult = await postModel.selectUserPosts(connection, userIdx, offset);
+
+        connection.release();
+
+        const userResult = { userProfileResult, userPostResult };
+
+        return userResult;
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 module.exports = {
     checkUserIdExists,
     checkUserPassword,
     postSignUp,
     checkSocialId,
     retrieveUserIdxByKakaoId,
-    retrieveUserIdxById
+    retrieveUserIdxById,
+    getUserInfo
 };

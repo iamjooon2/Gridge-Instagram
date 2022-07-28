@@ -19,12 +19,16 @@ const postPost = async (req, res) => {
     // validation
     if (!userIdx) {
         return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
-    } else if(postImgUrls.length <= 0) {
+    } else  if (userIdx <= 0) {
+        return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
+    } 
+
+    if (postImgUrls.length <= 0) {
         return res.send(errResponse(baseResponse.POST_POSTIMGURLS_EMPTY));
     }
 
-    if (userIdx <= 0) {
-        return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
+    if (content.length = 0 ){
+        return res.send(errResponse(baseResponse.POST_CONTENT_EMPTY));
     } else if (content.length > 1000) {
         return res.send(errResponse(baseResponse.POST_CONTENT_LENGTH));
     }
