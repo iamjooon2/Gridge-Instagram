@@ -107,20 +107,27 @@ const updatePostStatus = async (postIdx) => {
     }
 }
 
+// 게시물 내용 조회
 const retrievePostContent = async (postIdx) => {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
+
+        const checkPostRealizeList = await postModel.selectPostByPostIdx(connection, postIdx);
+        
+        if (!checkPostRealizeList) {
+            return errResponse(baseResponse.DB_ERROR);
+        }
+
         const postContentResult = await postModel.selectPostContent(connection, postIdx);
         
         connection.release()
 
-        return postContentResult;
+        return response(baseResponse.SUCCESS, postContentResult);
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
     }
 }
-
 
 module.exports ={
     createPost,

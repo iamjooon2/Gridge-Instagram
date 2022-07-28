@@ -109,10 +109,20 @@ const updatePostStatusInactive = async (connection, postIdx) => {
 
 const selectPostContent = async (connection, postIdx) => {
     const selectPostContentQuery = `
-        SELECT user.id, post.content, post.updatedAt
+        SELECT user.id, post.content, 
+            case
+                when timestampdiff(minute, post.createdAt, current_timestamp) < 60
+                    then CONCAT(TIMESTAMPDIFF(minute, post.createdAt , NOW()), '분')
+                when timestampdiff(hour , post.createdAt, current_timestamp) < 24
+                    then CONCAT(TIMESTAMPDIFF(hour, post.createdAt , NOW()), '시간')
+                when timestampdiff(day, post.createdAt, current_timestamp) < 30 
+                    then CONCAT(TIMESTAMPDIFF(day, post.createdAt, NOW()), '일')
+                else 
+                    timestampdiff(year , post.createdAt, current_timestamp)
+            end as uploadTime
         FROM post
             join user on post.userIdx = user.userIdx
-        WHERE post.postIdx = ?;
+        WHERE post.postIdx = ?
     `;
     const [postContentRow] = await connection.query(selectPostContentQuery, postIdx);
 

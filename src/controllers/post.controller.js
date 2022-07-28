@@ -110,7 +110,7 @@ const getPostContent = async (req, res) => {
 
     const postContent = await postService.retrievePostContent(postIdx);
 
-    return res.send(response(baseResponse.SUCCESS, postContent));
+    return res.send(postContent);
 
 }
 
