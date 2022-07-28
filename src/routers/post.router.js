@@ -7,7 +7,7 @@ const postRouter = (router) =>{
     router.post('/posts', jwtMiddleware, postController.postPost);
 
     // 게시글 조회 API
-    router.get('/posts/:postIdx', postController.getPosts);
+    router.get('/posts/:userIdx', postController.getPosts);
 
     // 게시글 수정 API
     router.patch('/posts/:postIdx', jwtMiddleware, postController.patchPost);

@@ -56,6 +56,7 @@ module.exports = {
     POST_POSTIDX_LENGTH: { "isSuccess": false, "code": 2025, "message": "postIdx는 0보다 큰 값으로 입력해주세요." },
     POST_CONTENT_EMPTY : { "isSuccess": false, "code": 2026, "message": "content를 입력해주세요." },
 
+    PAGENATION_ERROR : {"isSuccess": false, "code": 2026, "message": "보고싶은 페이지를 입력해주세요. "},
     SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2027, "message": "비밀번호의 길이는 6자리 이상으로 입력해주세요." },
 
     // Response error

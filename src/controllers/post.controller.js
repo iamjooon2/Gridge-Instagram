@@ -75,7 +75,7 @@ const patchPost = async (req, res) => {
 // 게시글 조회
 const getPosts = async (req, res) => {
 
-    const userIdx = req.query.userIdx;
+    const userIdx = req.params.userIdx;
 
     // validation
     if(!userIdx) {
