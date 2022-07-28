@@ -96,6 +96,24 @@ const getPosts = async (req, res) => {
     return res.send(response(baseResponse.SUCCESS, postListResult));
 }
 
+// 게시글 내용 조회
+const getPostContent = async (req, res) => {
+
+    const postIdx = req.params.postIdx;
+
+    // validation
+    if (!postIdx){
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if(postIdx < 1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const postContent = await postService.retrievePostContent(postIdx);
+
+    return res.send(response(baseResponse.SUCCESS, postContent));
+
+}
+
 // 게시글 삭제
 const patchPostStatus = async (req ,res) => {
 
@@ -125,5 +143,6 @@ module.exports = {
     postPost,
     patchPost,
     getPosts,
+    getPostContent,
     patchPostStatus
 };

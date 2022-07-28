@@ -69,7 +69,6 @@ const retrieveUserIdx = async (postIdx) => {
 
 // 게시글 목록 조회
 const retrievePostLists = async (userIdx, page) => {
-
     try {
         const connection = await pool.getConnection(async (conn) => conn);
         const offset = (page-1)*9;
@@ -108,11 +107,26 @@ const updatePostStatus = async (postIdx) => {
     }
 }
 
+const retrievePostContent = async (postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const postContentResult = await postModel.selectPostContent(connection, postIdx);
+        
+        connection.release()
+
+        return postContentResult;
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 
 module.exports ={
     createPost,
     updatePost,
     retrieveUserIdx,
     retrievePostLists,  
-    updatePostStatus
+    updatePostStatus,
+    retrievePostContent
 }

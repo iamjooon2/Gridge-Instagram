@@ -107,6 +107,17 @@ const updatePostStatusInactive = async (connection, postIdx) => {
     return updatePostStatusRow[0];
 }
 
+const selectPostContent = async (connection, postIdx) => {
+    const selectPostContentQuery = `
+        SELECT user.id, post.content, post.updatedAt
+        FROM post
+            join user on post.userIdx = user.userIdx
+        WHERE post.postIdx = ?;
+    `;
+    const [postContentRow] = await connection.query(selectPostContentQuery, postIdx);
+
+    return postContentRow
+}
 
 module.exports = {
     insertPost,
@@ -118,5 +129,6 @@ module.exports = {
     selectPostImgs,
     selectPostStatus,
     updatePostStatusInactive,
+    selectPostContent
 }
     
