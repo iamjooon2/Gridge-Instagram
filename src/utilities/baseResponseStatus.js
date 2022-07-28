@@ -54,7 +54,15 @@ module.exports = {
 
     POST_POSTIDX_EMPTY: { "isSuccess": false, "code": 2024, "message": "postIdx를 입력해주세요." },
     POST_POSTIDX_LENGTH: { "isSuccess": false, "code": 2025, "message": "postIdx는 0보다 큰 값으로 입력해주세요." },
-    POST_CONTENT_EMPTY : { "isSuccess": false, "code": 2026, "message": "content를 입력해주세요." },
+    
+    POST_CONTENT_EMPTY : { "isSuccess": false, "code": 2026, "message": "게시글 내용을 입력해주세요." },
+
+    COMMENT_CONTENT_LENGTH : { "isSuccess": false, "code": 2026, "message": "입력 가능한 댓글 길이를 초과했습니다." },
+    COMMENT_CONTENT_EMPTY : { "isSuccess": false, "code": 2026, "message": "댓글 내용을 입력해주세요." },
+    COMMENT_COMMENTIDX_EMPTY : { "isSuccess": false, "code": 2020, "message": "commentIdx를 입력해주세요." },
+    COMMENT_COMMENTIDX_LENGTH : { "isSuccess": false, "code": 2021, "message": "commentIdx는 0보다 큰 값으로 입력해주세요." },
+
+
 
     PAGENATION_ERROR : {"isSuccess": false, "code": 2026, "message": "보고싶은 페이지를 입력해주세요. "},
     SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2027, "message": "비밀번호의 길이는 6자리 이상으로 입력해주세요." },

@@ -83,7 +83,6 @@ const retrievePostLists = async (userIdx) => {
     return postListResult;
 }
 
-
 // 게시물 상태 비활성화로 변경(사용자입장 삭제)
 const updatePostStatus = async (postIdx) => {
     const connection = await pool.getConnection(async (conn) => conn);

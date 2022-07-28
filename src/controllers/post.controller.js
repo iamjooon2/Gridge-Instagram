@@ -93,7 +93,15 @@ const getPosts = async (req, res) => {
 // 게시글 삭제
 const patchPostStatus = async (req ,res) => {
 
+    const idx = req.verifiedToken.idx;
     const postIdx = req.params.postIdx;
+
+    const writerOfPost = await postService.retrieveUserIdx(postIdx);
+
+    // Authentication
+    if (writerOfPost[0].userIdx !== idx[0].userIdx) {
+        return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    }
     
     // validation
     if (!postIdx) {
