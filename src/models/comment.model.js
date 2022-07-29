@@ -45,7 +45,7 @@ const selectPostComments = async (conn, postIdx) => {
         end as uploadTime
         FROM comment
         join user on comment.userIdx = user.userIdx
-        WHERE comment.postIdx = ?
+        WHERE comment.postIdx = ? and comment.status = 0
         
     `;
     const [selectedCommentsRow] = await conn.query(selectPostCommentsQuery, postIdx);
