@@ -87,7 +87,7 @@ const patchComment = async (req, res) => {
 
     const editCommentResponse = await commentService.updateComment(content, commentIdx);
 
-    return res.send(editCommentResponse);
+    return editCommentResponse;
 }
 
 // 댓글 삭제

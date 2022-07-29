@@ -81,7 +81,7 @@ const updateCommentStatus = async (commentIdx) => {
 
         const editCommentStatusResult = await commentModel.updateCommentStatusInactive(connection, commentIdx);
 
-        return response(baseResponse.SUCCESS);
+        return response(baseResponse.SUCCESS)
     } catch(e) {
         console.log(e);
 

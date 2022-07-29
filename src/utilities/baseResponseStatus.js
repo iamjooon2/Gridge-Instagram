@@ -61,6 +61,7 @@ module.exports = {
     COMMENT_CONTENT_EMPTY : { "isSuccess": false, "code": 2026, "message": "댓글 내용을 입력해주세요." },
     COMMENT_COMMENTIDX_EMPTY : { "isSuccess": false, "code": 2020, "message": "commentIdx를 입력해주세요." },
     COMMENT_COMMENTIDX_LENGTH : { "isSuccess": false, "code": 2021, "message": "commentIdx는 0보다 큰 값으로 입력해주세요." },
+    COMMENT_STATUS_INACTIVE : {"isSuccess": false, "code": 2022, "message": "이미 삭제된 댓글입니다."},
 
 
 

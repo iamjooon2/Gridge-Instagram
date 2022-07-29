@@ -6,7 +6,7 @@ const commentRouter = (router) =>{
     // 댓글 업로드 API
     router.post('/comment', jwtMiddleware, commentController.postComment);
 
-    // 댓글 조회 API
+    // 댓글 목록 조회 API
     router.get('/comment/:postIdx', commentController.getComments);
 
     // 댓글 수정 API

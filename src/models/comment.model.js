@@ -32,9 +32,21 @@ const selectUserIdxByCommentIdx = async (conn, commentIdx) => {
 
 const selectPostComments = async (conn, postIdx) => {
     const selectPostCommentsQuery = `
-        SELECT comment
-        FROM post
-        WHERE postIdx = ?
+        SELECT user.id, comment.content, 
+        case
+            when timestampdiff(minute, comment.createdAt, current_timestamp) < 60
+                then CONCAT(TIMESTAMPDIFF(minute, comment.createdAt , NOW()), '분')
+            when timestampdiff(hour , comment.createdAt, current_timestamp) < 24
+                then CONCAT(TIMESTAMPDIFF(hour, comment.createdAt , NOW()), '시간')
+            when timestampdiff(day, comment.createdAt, current_timestamp) < 30 
+                then CONCAT(TIMESTAMPDIFF(day, comment.createdAt, NOW()), '일')
+            else 
+                timestampdiff(year , comment.createdAt, current_timestamp)
+        end as uploadTime
+        FROM comment
+        join user on comment.userIdx = user.userIdx
+        WHERE comment.postIdx = ?
+        
     `;
     const [selectedCommentsRow] = await conn.query(selectPostCommentsQuery, postIdx);
 
