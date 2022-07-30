@@ -12,12 +12,15 @@ const postMessage = async (userIdx, partnerIdx, content) => {
         await connection.beginTransaction();
 
         const userParams = [userIdx, partnerIdx];
-        const selectedRoomInfoResult = await roomModel.selectRoom(connection, userParams);
+        const userDoubleParams = [userIdx, partnerIdx, partnerIdx, userIdx];
+        let selectedRoomInfoResult = await roomModel.selectRoom(connection, userDoubleParams);
 
         if (!selectedRoomInfoResult){
             await roomModel.startMessageRoom(connection, userParams);
-        }
 
+            selectedRoomInfoResult = await roomModel.selectRoom(connection, userDoubleParams);
+        }
+        
         const roomIdx = selectedRoomInfoResult[0].roomIdx;
         const postMessageParams = [roomIdx, userIdx, content];
 

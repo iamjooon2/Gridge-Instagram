@@ -16,7 +16,7 @@ const selectRoom = async (connection, userParmas) => {
         WHERE (user_1 = ? and user_2 = ?) or (user_2 = ? and user_1 = ?) 
     `;
     
-    const [selectRoomResult] = await connection.query(selectRoomQuery, userParmas, userParmas);
+    const [selectRoomResult] = await connection.query(selectRoomQuery, userParmas);
 
     return selectRoomResult;
 }

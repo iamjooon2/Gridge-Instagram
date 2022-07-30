@@ -6,7 +6,7 @@ const {errResponse, response} = require('../utilities/response');
 const postMessage = async (req, res) => {
     const toeknIdxData = req.verifiedToken.idx;
     const userIdx = toeknIdxData[0].userIdx;
-    const partnerIdx = req.body.userIdx;
+    const partnerIdx = req.body.partnerIdx;
     const content = req.body.content;
 
     // validation
