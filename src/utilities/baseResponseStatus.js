@@ -63,7 +63,10 @@ module.exports = {
     COMMENT_COMMENTIDX_LENGTH : { "isSuccess": false, "code": 2021, "message": "commentIdx는 0보다 큰 값으로 입력해주세요." },
     COMMENT_STATUS_INACTIVE : {"isSuccess": false, "code": 2022, "message": "이미 삭제된 댓글입니다."},
 
-
+    MESSAGE_USERIDX_EMPTY : {"isSuccess": false, "code": 2040, "message": "메시지 상대 userIdx가 오지 않았습니다."},
+    MESSAGE_USERIDX_LENGTH: {"isSuccess": false, "code": 2041, "message": "메시지 상대 userIdx길이를 확인해주세요"},
+    MESSAGE_CONTENT_EMPTY: {"isSuccess": false, "code": 2042, "message": "메시지 내용을 입력해주세요"},
+    MESSAGE_CONTENT_LENGTH: {"isSuccess": false, "code": 2043, "message": "메시지 내용은 200자 이하로 입력해주세요."},
 
     PAGENATION_ERROR : {"isSuccess": false, "code": 2026, "message": "보고싶은 페이지를 입력해주세요. "},
     SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2027, "message": "비밀번호의 길이는 6자리 이상으로 입력해주세요." },
