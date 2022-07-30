@@ -61,15 +61,6 @@ const retrieveUserIdx = async (commentIdx) => {
 // 댓글 목록 조회
 const retrieveCommentLists = async (postIdx, cursorTime) => {
     const connection = await pool.getConnection(async (conn) => conn);
-
-    const lastestCommentIdxResult = await commentModel.selectLatestCommentIdx(connection, postIdx);
-
-    console.log(cursorTime);
-    if (lastestCommentIdxResult[0] === undefined){
-        return [];
-    }
-
-    const lastestCommentIdx = lastestCommentIdxResult[0].commentIdx;
     const commentListResult = await commentModel.selectPostComments(connection, postIdx, cursorTime);
 
     connection.release();
