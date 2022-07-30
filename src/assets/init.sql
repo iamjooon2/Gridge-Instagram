@@ -13,7 +13,7 @@ CREATE TABLE `Gridge-ERD`.`user`(
     `userType`       TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-자체로그인/1-카카오로그인/2-네이버 등등...', 
     `socialId`       VARCHAR(45)     NULL,
     `createdAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`      TIMESTAMP       NULL        ON UPDATE current_timestamp, 
+    `updatedAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp,
     `status`         TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제/2-관리자 비활성화', 
     `IDhistory`      TIMESTAMP       NULL, 
     `nameHistory`    TIMESTAMP       NULL, 
@@ -31,7 +31,7 @@ CREATE TABLE `Gridge-ERD`.`comment`
     `useridx`     BIGINT          NOT NULL, 
     `content`     VARCHAR(300)    NULL, 
     `createdAt`   TIMESTAMP       NULL        DEFAULT current_timestamp, 
-    `updatedAt`   TIMESTAMP       NULL        ON UPDATE current_timestamp, 
+    `updatedAt`   TIMESTAMP       NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp,
     `status`      TINYINT         NULL        DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (commentIdx)
 );
@@ -56,7 +56,7 @@ CREATE TABLE `Gridge-ERD`.`post`
     `content`          VARCHAR(300)    NOT NULL, 
     `location`         VARCHAR(45)     NULL, 
     `createdAt`        TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`        TIMESTAMP       NULL        ON UPDATE current_timestamp, 
+    `updatedAt`        TIMESTAMP       NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp,
     `status`           TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨/2-비활성화', 
     `invisibleStatus`  TINYINT         NULL        DEFAULT 0 COMMENT '0-해당없음/1-신고먹고안보임', 
      PRIMARY KEY (postIdx, userIdx)
@@ -103,7 +103,7 @@ CREATE TABLE `Gridge-ERD`.`postReport`
     `postIdx`        BIGINT         NOT NULL, 
     `content`        VARCHAR(45)    NOT NULL, 
     `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`      TIMESTAMP      NULL        ON UPDATE current_timestamp, 
+    `updatedAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp,
     `status`         TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (postReportIdx)
 );
@@ -126,7 +126,7 @@ CREATE TABLE `Gridge-ERD`.`room`
     `user_1`     BIGINT       NOT NULL, 
     `user_2`     BIGINT       NOT NULL, 
     `createdAt`  TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`  TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`  TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`     TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제', 
      PRIMARY KEY (roomIdx)
 );
@@ -148,7 +148,7 @@ CREATE TABLE `Gridge-ERD`.`userProfileImg`
     `userIdx`            BIGINT       NOT NULL, 
     `imgUrl`             TEXT         NOT NULL, 
     `createdAt`          TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`          TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`          TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`             TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (userProfileImgIdx)
 );
@@ -167,7 +167,7 @@ CREATE TABLE `Gridge-ERD`.`postImg`
     `postIdx`     BIGINT       NULL, 
     `imgUrl`      TEXT         NULL, 
     `createdAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`   TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (postImgIdx)
 );
@@ -186,7 +186,7 @@ CREATE TABLE `Gridge-ERD`.`following`
     `userIdx`        BIGINT       NOT NULL, 
     `targetUserIdx`  BIGINT       NOT NULL, 
     `createdAt`      TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`      TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`      TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`         TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제/2-승인대기', 
      PRIMARY KEY (followingIdx)
 );
@@ -207,7 +207,7 @@ CREATE TABLE `Gridge-ERD`.`follower`
     `userIdx`        BIGINT       NOT NULL, 
     `targetUserIdx`  BIGINT       NOT NULL, 
     `createdAt`      TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`      TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`      TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`         TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제/2-승인대기중', 
      PRIMARY KEY (followerIdx)
 );
@@ -227,8 +227,8 @@ CREATE TABLE `Gridge-ERD`.`commentLike`
     `commentLikeIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `userIdx`         BIGINT       NOT NULL, 
     `commentIdx`      BIGINT       NOT NULL, 
-    `createdAt`       TIMESTAMP    NULL        DEFAULT current_timestamp, 
-    `updatedAt`       TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `createdAt`       TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
+    `updatedAt`       TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`          TINYINT      NULL        DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (commentLikeIdx)
 );
@@ -251,7 +251,7 @@ CREATE TABLE `Gridge-ERD`.`postLike`
     `userIdx`      BIGINT       NOT NULL, 
     `postIdx`      BIGINT       NOT NULL, 
     `createdAt`    TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`    TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`       TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (postLikeIdx)
 );
@@ -274,7 +274,7 @@ CREATE TABLE `Gridge-ERD`.`message`
     `roomIdx`     BIGINT       NOT NULL, 
     `senderIdx`   BIGINT       NOT NULL, 
     `createdAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`   TIMESTAMP    NULL        ON UPDATE current_timestamp, 
+    `updatedAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제', 
      PRIMARY KEY (messageIdx)
 );
@@ -297,7 +297,7 @@ CREATE TABLE `Gridge-ERD`.`userLog`
     `userIdx`     BIGINT         NOT NULL, 
     `content`     VARCHAR(45)    NOT NULL, 
     `createdAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`   TIMESTAMP      NULL        ON UPDATE current_timestamp, 
+    `updatedAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (userLogIdx)
 );
@@ -316,7 +316,7 @@ CREATE TABLE `Gridge-ERD`.`postLog`
     `postIdx`     BIGINT         NOT NULL, 
     `content`     VARCHAR(45)    NOT NULL, 
     `createdAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`   TIMESTAMP      NULL        ON UPDATE current_timestamp, 
+    `updatedAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (postLogIdx)
 );
@@ -335,7 +335,7 @@ CREATE TABLE `Gridge-ERD`.`commentLog`
     `commentIdx`     BIGINT         NOT NULL, 
     `content`        VARCHAR(45)    NOT NULL, 
     `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`      TIMESTAMP      NULL        ON UPDATE current_timestamp, 
+    `updatedAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`         TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (commentLogIdx)
 );
@@ -355,7 +355,7 @@ CREATE TABLE `Gridge-ERD`.`reportLog`
     `commentReportIdx`  BIGINT         NULL, 
     `content`           VARCHAR(45)    NOT NULL, 
     `createdAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`         TIMESTAMP      NULL        ON UPDATE current_timestamp, 
+    `updatedAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`            TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
      PRIMARY KEY (reportIdx)
 );
