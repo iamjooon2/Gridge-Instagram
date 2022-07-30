@@ -1,4 +1,3 @@
-
 const { pool } = require('../assets/db');
 
 const messageModel = require('../models/message.model');
@@ -50,9 +49,8 @@ const getMessages = async (userIdx, partnerIdx) => {
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
-    } finally {
-
     }
+
 }
 
 module.exports = {

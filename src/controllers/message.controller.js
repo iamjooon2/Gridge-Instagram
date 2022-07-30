@@ -35,6 +35,7 @@ const getMessages = async (req, res) => {
     const userIdx = toeknIdxData[0].userIdx;
     const partnerIdx = req.body.user;
 
+    // validation
     if (!partnerIdx) {
         return res.send(errResponse(baseResponse.MESSAGE_USERIDX_EMPTY));
     } else if (partnerIdx < 0){
