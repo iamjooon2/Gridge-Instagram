@@ -55,19 +55,6 @@ const selectPostComments = async (conn, postIdx, cursorTime) => {
     return selectedCommentsRow;
 }
 
-const selectLatestCommentIdx = async (conn, postIdx) => {
-    const selectLatestCommentIdxQuery = `
-        SELECT commentIdx
-        FROM comment
-        WHERE postIdx = ?
-        ORDER BY createdAt desc
-        limit 1
-    `;
-    const [selectedCommentIdxRow] = await conn.query(selectLatestCommentIdxQuery, postIdx);
-
-    return selectedCommentIdxRow;
-}
-
 const selectCommentStatus = async (conn, commentIdx) => {
     const selectCommentStatusQuery = `
         SELECT status
@@ -96,6 +83,5 @@ module.exports = {
     selectUserIdxByCommentIdx,
     selectPostComments,
     selectCommentStatus,
-    selectLatestCommentIdx,
     updateCommentStatusInactive
 }
