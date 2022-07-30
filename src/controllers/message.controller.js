@@ -33,7 +33,7 @@ const getMessages = async (req, res) => {
 
     const toeknIdxData = req.verifiedToken.idx;
     const userIdx = toeknIdxData[0].userIdx;
-    const partnerIdx = req.body.user;
+    const partnerIdx = req.body.partnerIdx;
 
     // validation
     if (!partnerIdx) {

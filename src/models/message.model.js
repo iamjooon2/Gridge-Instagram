@@ -25,7 +25,7 @@ const selectMessages = async (connection, userParams) => {
         ORDER BY message.createdAt ASC;
     `;
 
-    const [messageRow] = await connection.query(selectMessagesQuery, userParams, userParams);
+    const [messageRow] = await connection.query(selectMessagesQuery, userParams);
 
     return messageRow;
 }

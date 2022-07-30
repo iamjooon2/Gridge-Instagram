@@ -43,7 +43,7 @@ const getMessages = async (userIdx, partnerIdx) => {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
         
-        const memberParams = [userIdx, partnerIdx];
+        const memberParams = [userIdx, partnerIdx, partnerIdx, userIdx];
         const getMessageResult = await messageModel.selectMessages(connection, memberParams);
         
         connection.release();
