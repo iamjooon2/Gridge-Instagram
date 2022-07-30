@@ -30,9 +30,9 @@ const selectUserIdxByCommentIdx = async (conn, commentIdx) => {
     return selectedUserRow;
 }
 
-const selectPostComments = async (conn, postIdx) => {
+const selectPostComments = async (conn, postIdx, cursorTime) => {
     const selectPostCommentsQuery = `
-        SELECT user.id, comment.content, 
+        SELECT user.id, comment.commentIdx, comment.content, 
         case
             when timestampdiff(minute, comment.createdAt, current_timestamp) < 60
                 then CONCAT(TIMESTAMPDIFF(minute, comment.createdAt , NOW()), '분')
@@ -44,13 +44,28 @@ const selectPostComments = async (conn, postIdx) => {
                 timestampdiff(year , comment.createdAt, current_timestamp)
         end as uploadTime
         FROM comment
-        join user on comment.userIdx = user.userIdx
-        WHERE comment.postIdx = ? and comment.status = 0
-        
+            join user 
+                on comment.userIdx = user.userIdx
+        WHERE comment.postIdx = ${postIdx} and comment.status = 0 and comment.createdAt <= ${cursorTime} 
+        ORDER BY comment.commentIdx ASC
+        limit 10
     `;
-    const [selectedCommentsRow] = await conn.query(selectPostCommentsQuery, postIdx);
+    const [selectedCommentsRow] = await conn.query(selectPostCommentsQuery);
 
     return selectedCommentsRow;
+}
+
+const selectLatestCommentIdx = async (conn, postIdx) => {
+    const selectLatestCommentIdxQuery = `
+        SELECT commentIdx
+        FROM comment
+        WHERE postIdx = ?
+        ORDER BY createdAt desc
+        limit 1
+    `;
+    const [selectedCommentIdxRow] = await conn.query(selectLatestCommentIdxQuery, postIdx);
+
+    return selectedCommentIdxRow;
 }
 
 const selectCommentStatus = async (conn, commentIdx) => {
@@ -81,5 +96,6 @@ module.exports = {
     selectUserIdxByCommentIdx,
     selectPostComments,
     selectCommentStatus,
+    selectLatestCommentIdx,
     updateCommentStatusInactive
 }

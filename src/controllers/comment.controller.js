@@ -44,16 +44,22 @@ const postComment = async (req, res) => {
 const getComments = async (req, res) => {
 
     const postIdx = req.params.postIdx;
+    const cursorTime = req.query.cursorTime;
 
     // validation
     if(!postIdx) {
         return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
-    }
-    if (postIdx <= 0) {
+    } else if (postIdx <= 0) {
         return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
     }
 
-    const commentListResult = await commentService.retrieveCommentLists(postIdx);
+    if(!cursorTime) {
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else if (cursorTime <= 0) {
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const commentListResult = await commentService.retrieveCommentLists(postIdx, cursorTime);
 
     return res.send(response(baseResponse.SUCCESS, commentListResult));
 }
