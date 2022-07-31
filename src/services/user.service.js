@@ -136,26 +136,50 @@ const getUserInfo = async (userIdx, page) => {
     }
 }
 
-// 사용자 팬드폰번호로 비밀번호 업데이트하기
+// 사용자 핸드폰번호로 비밀번호 업데이트하기
 const patchPassword = async (phone, password) => {
+    const connection = await pool.getConnection(async(connection) => connection);
     try {
-        const connection = await pool.getConnection(async(connection) => connection);
+        await connection.beginTransaction();
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const userPhoneCheckResult = await userModel.getUserIdxByPhone(connection, phone);
 
+        // 전화번호에 해당하는 userIdx 확인
         if (!userPhoneCheckResult){
+            await connection.commit();
+
             return errResponse(baseResponse.USER_PHONENUMBER_NOT_MATCH);
         }
-
         const userIdx = userPhoneCheckResult[0].userIdx;
 
         const passwordParams = [ hashedPassword, userIdx ];
-        const changeedPasswordResult = await userModel.updatePassword(connection, passwordParams);
+        await userModel.updatePassword(connection, passwordParams);
+
+        await connection.commit();
 
         return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
+
+// 사용자 프로필 업데이트하기
+const changeUserProfile = async (profileImgUrl, name, id, website, introduce, userIdx) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const updatedProfileResult = await userModel.updateUserProfile(connection, profileImgUrl, name, id, website, introduce, userIdx);
+        
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (e){
+        console.log(e);
+
         return errResponse(baseResponse.DB_ERROR);
     }
 }
@@ -168,5 +192,6 @@ module.exports = {
     retrieveUserIdxByKakaoId,
     retrieveUserIdxById,
     getUserInfo,
-    patchPassword
+    patchPassword,
+    changeUserProfile
 };

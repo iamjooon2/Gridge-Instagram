@@ -27,6 +27,9 @@ const userRouter = (router) =>{
     // 비밀번호 변경 API
     router.patch('/password', userController.patchPassword);
 
+    // 프로필 변경 API
+    router.patch('/profile', jwtMiddleware, userController.patchProfile);
+
 }
 
 module.exports = userRouter;

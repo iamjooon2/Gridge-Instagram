@@ -279,7 +279,8 @@ const getUserInfo = async (req, res) => {
     } else  if (userIdx <= 0) {
         return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
     }
-    
+
+    // 
     if (!page) {
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     } else if (page <= 0) {
@@ -321,6 +322,43 @@ const patchPassword = async (req, res) => {
     return res.send(changedPasswordResult)
 }
 
+// 내 프로필 정보 변경
+const patchProfile = async (req, res) => {
+
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    // 웹사이트나 소개를 지우는 경우, 프론트단에서 ""로 받는다
+    const { profileImgUrl, name, id, website, introduce } = req.body;
+
+    console.log(userIdx);
+    // validation
+    if (!name){
+        return res.send(errResponse(baseResponse.USER_NAME_EMPTY));
+    } else if (name.length > 20) {
+        return res.send(errResponse(baseResponse.USER_NAME_LENGTH));
+    }
+
+    // validation
+    if (!id){
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    } else if (id.length > 20) {
+        return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
+    } else if (id.length < 3) {
+        return res.send(errResponse(baseResponse.USER_USERID_SHORT));
+    }
+
+    // 변경하려는 아이디 존재 여부 확인
+    const userIdExistsResult = await userService.checkUserIdExists(id);
+
+    if (userIdExistsResult){
+        return res.send(errResponse(baseResponse.USER_USERID_EXIST));
+    }
+
+    const changeProfileResult = await userService.changeUserProfile(profileImgUrl, name, id, website, introduce, userIdx);
+
+    return res.send(changeProfileResult);
+}
+
 module.exports = {
     logIn,
     kakaoLogin,
@@ -329,5 +367,6 @@ module.exports = {
     socialSignUp,
     checkIdAvailable,
     getUserInfo,
-    patchPassword
+    patchPassword,
+    patchProfile
 };

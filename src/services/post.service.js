@@ -181,7 +181,7 @@ const createPostReport = async (userIdx, postIdx, reportCode) => {
         await connection.beginTransaction();
 
         const postReportResult = await postModel.checkPostReport(connection, userIdx, postIdx);
-        console.log(postReportResult);
+
         // 이미 신고된 게시물이라면
          if (postReportResult[0].success == 1){
             await connection.commit();
