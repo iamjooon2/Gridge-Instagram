@@ -124,7 +124,7 @@ const patchPostStatus = async (req ,res) => {
 
     // Authentication
     if (writerOfPost[0].userIdx !== idx[0].userIdx) {
-        return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+        return res.send(errResponse(baseResponse.WRITER_NOT_MATCH));
     }
     
     // validation
