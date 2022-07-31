@@ -129,11 +129,59 @@ const retrievePostContent = async (postIdx) => {
     }
 }
 
+// 게시글 좋아요 
+const createPostLike = async (userIdx, postIdx) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await connection.beginTransaction();
+
+        const checkedPostLikeResult = await postModel.checkPostLike(connection, userIdx, postIdx);
+
+        if (!checkedPostLikeResult){
+            const postLikeResult = await postModel.insertPostLike(connection, userIdx, postIdx);
+
+            await connection.commit();
+            return response(baseResponse.SUCCESS);
+        }
+
+        const postLikeResult = await postModel.updatePostLike(connection, userIdx, postIdx);
+
+        await connection.commit();
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        await connection.rollback();
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
+
+// 게시글 좋아요 해제
+const createPostDislike = async (userIdx, postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const postLikeResult = await postModel.updatePostDislike(connection, userIdx, postIdx);
+
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+
 module.exports ={
     createPost,
     updatePost,
     retrieveUserIdx,
     retrievePostLists,  
     updatePostStatus,
-    retrievePostContent
+    retrievePostContent,
+    createPostLike,
+    createPostDislike
 }

@@ -129,6 +129,52 @@ const selectPostContent = async (connection, postIdx) => {
     return postContentRow
 }
 
+const checkPostLike = async (connection, userIdx, postIdx) => {
+    const checkPostLikeQuery = `
+        SELECT status
+        FROM postLike
+        WHERE postIdx = ? and userIdx = ?
+    `;
+
+    const [postLikeResult] = await connection.query(checkPostLikeQuery, [postIdx, userIdx]);
+
+    return postLikeResult;
+}
+
+const updatePostLike = async (connection, userIdx, postIdx) => {
+    const checkPostLikeQuery = `
+        UPDATE postLike
+        SET status = 0
+        WHERE postIdx = ? and userIdx = ?
+    `;
+
+    const [updatedPostLikeResult] = await connection.query(checkPostLikeQuery, [postIdx, userIdx]);
+
+    return updatedPostLikeResult;
+}
+
+const insertPostLike = async (connection, userIdx, postIdx) => {
+    const insertPostLikeQuery = `
+        INSERT INTO postLike(userIdx, postIdx)
+        values(?,?)
+    `;
+    const [insertedPostLikeResult] = await connection.query(insertPostLikeQuery, [userIdx, postIdx]);
+
+    return insertedPostLikeResult;
+}
+
+const updatePostDislike = async (connection, userIdx, postIdx) => {
+    const checkPostLikeQuery = `
+        UPDATE postLike
+        SET status = 1
+        WHERE postIdx = ? and userIdx = ?
+    `;
+
+    const [updatedPostLikeResult] = await connection.query(checkPostLikeQuery, [postIdx, userIdx]);
+
+    return updatedPostLikeResult;
+}
+
 module.exports = {
     insertPost,
     insertPostImg,
@@ -139,6 +185,10 @@ module.exports = {
     selectPostImgs,
     selectPostStatus,
     updatePostStatusInactive,
-    selectPostContent
+    selectPostContent,
+    checkPostLike,
+    updatePostLike,
+    insertPostLike,
+    updatePostDislike
 }
     

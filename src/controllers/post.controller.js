@@ -139,10 +139,49 @@ const patchPostStatus = async (req ,res) => {
     return res.send(editPostStatusResponse);
 }
 
+// 게시글 좋아요
+const postPostLike = async (req, res) => {
+
+    const idx = req.verifiedToken.idx;
+    const postIdx = req.params.postIdx;
+
+    const userIdx = idx[0].userIdx;
+
+    if(!postIdx) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx < 1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const postLikeResponse = await postService.createPostLike(userIdx, postIdx);
+
+    return res.send(postLikeResponse);
+}
+
+// 게시글 좋아요 해제
+const postPostDislike = async (req, res) => {
+    const idx = req.verifiedToken.idx;
+    const postIdx = req.params.postIdx;
+
+    const userIdx = idx[0].userIdx;
+
+    if(!postIdx) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx < 1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const postDislikeResponse = await postService.createPostDislike(userIdx, postIdx);
+
+    return res.send(postDislikeResponse);
+}   
+
 module.exports = {
     postPost,
     patchPost,
     getPosts,
     getPostContent,
-    patchPostStatus
+    patchPostStatus,
+    postPostLike,
+    postPostDislike
 };
