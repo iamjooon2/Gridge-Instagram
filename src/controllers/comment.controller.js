@@ -106,7 +106,7 @@ const patchCommentStatus = async (req ,res) => {
 
     // Authentication
     if (writerOfComment[0].userIdx !== token[0].userIdx) {
-        return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+        return res.send(errResponse(baseResponse.WRITER_NOT_MATCH));
     }
     
     // validation
