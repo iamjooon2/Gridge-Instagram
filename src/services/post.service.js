@@ -137,8 +137,8 @@ const createPostLike = async (userIdx, postIdx) => {
 
         const checkedPostLikeResult = await postModel.checkPostLike(connection, userIdx, postIdx);
 
-        if (!checkedPostLikeResult){
-            const postLikeResult = await postModel.insertPostLike(connection, userIdx, postIdx);
+        if (checkedPostLikeResult[0].status == null){
+            await postModel.insertPostLike(connection, userIdx, postIdx);
 
             await connection.commit();
             return response(baseResponse.SUCCESS);

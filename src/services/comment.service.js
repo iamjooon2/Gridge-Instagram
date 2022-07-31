@@ -98,8 +98,8 @@ const createCommentLike = async (userIdx, commentIdx) => {
 
         const checkedCommentLikeResult = await commentModel.checkCommentLike(connection, userIdx, commentIdx);
 
-        if (!checkedCommentLikeResult){
-            const commentLikeResult = await commentModel.insertCommentLike(connection, userIdx, commentIdx);
+        if (checkedCommentLikeResult[0].status == null){
+            await commentModel.insertCommentLike(connection, userIdx, commentIdx);
 
             await connection.commit();
             return response(baseResponse.SUCCESS);
@@ -120,6 +120,7 @@ const createCommentLike = async (userIdx, commentIdx) => {
     }
 }
 
+// 댓글 좋아요 취소
 const createCommentDislike = async (userIdx, commentIdx) => {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
@@ -133,7 +134,6 @@ const createCommentDislike = async (userIdx, commentIdx) => {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
-
 
 module.exports ={
     createComment,
