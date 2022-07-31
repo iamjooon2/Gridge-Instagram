@@ -7,7 +7,7 @@ const { response, errResponse }= require("../utilities/response");
 const baseResponse = require("../utilities/baseResponseStatus");
 
 const regexPassword = new RegExp(/^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$/); // 특수문자 포함한 6~20자 허용하는 정규표현식
-const regexPhone = new RegExp(/^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/); //전화버놓 형식 확인 정규표현식
+const regexPhone = new RegExp(/^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/); //전화번호 형식 확인 정규표현식
 const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/); // 날짜 정규표현식
 
 // 로그인
@@ -291,6 +291,36 @@ const getUserInfo = async (req, res) => {
     return res.send(response(baseResponse.SUCCESS, userInfoResult));
 }
 
+// 전화번호로 비밀번호 변경하기
+const patchPassword = async (req, res) => {
+    
+    const { phone, password } = req.body;
+
+    // phone validation
+    if (!phone){
+        return res.send(errResponse(baseResponse.USER_PHONENUMBER_EMPTY));
+    } else if (phone.length !== 11) {
+        return res.send(errResponse(baseResponse.USER_PHONENUMBER_LENGTH));
+    } else if (!regexPhone.test(phone)) {
+        return res.send(errResponse(baseResponse.USER_PHONENUMBER_NOT_MATCH));
+    }
+
+    // password Validation
+    if (!password){
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_EMPTY));
+    } else if (password.length > 20) {
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_LENGTH));
+    } else if (password.length < 6) {
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_LENGTH));
+    } else if (!regexPassword.test(password)) {
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_REGEX));
+    }
+
+    const changedPasswordResult = await userService.patchPassword(phone, password);
+
+    return res.send(changedPasswordResult)
+}
+
 module.exports = {
     logIn,
     kakaoLogin,
@@ -298,5 +328,6 @@ module.exports = {
     signUp,
     socialSignUp,
     checkIdAvailable,
-    getUserInfo
+    getUserInfo,
+    patchPassword
 };

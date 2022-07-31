@@ -273,6 +273,7 @@ CREATE TABLE `Gridge-ERD`.`message`
     `messageIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `roomIdx`     BIGINT       NOT NULL, 
     `senderIdx`   BIGINT       NOT NULL, 
+    `content`     VARCHAR(300) NOT NULL
     `createdAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제', 

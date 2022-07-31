@@ -24,6 +24,9 @@ const userRouter = (router) =>{
     // 내 정보 불러오는 API
     router.get('/profile', jwtMiddleware, userController.getUserInfo);
 
+    // 비밀번호 변경 API
+    router.patch('/password', userController.patchPassword);
+
 }
 
 module.exports = userRouter;

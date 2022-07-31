@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const { pool } = require('../assets/db');
 const userModel = require('../models/user.model');
 const postModel = require('../models/post.model');
-const { errResponse } = require('../utilities/response');
+const { response, errResponse } = require('../utilities/response');
 const baseResponse = require('../utilities/baseResponseStatus');
 
 // 사용자의 ID가 존재하는지 확인
@@ -58,7 +58,7 @@ const postSignUp = async (phone, name, password, birth, id) => {
 
         connection.release();
 
-        return
+        return response(signUpResult);
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -136,6 +136,30 @@ const getUserInfo = async (userIdx, page) => {
     }
 }
 
+// 사용자 팬드폰번호로 비밀번호 업데이트하기
+const patchPassword = async (phone, password) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const userPhoneCheckResult = await userModel.getUserIdxByPhone(connection, phone);
+
+        if (!userPhoneCheckResult){
+            return errResponse(baseResponse.USER_PHONENUMBER_NOT_MATCH);
+        }
+
+        const userIdx = userPhoneCheckResult[0].userIdx;
+
+        const passwordParams = [ hashedPassword, userIdx ];
+        const changeedPasswordResult = await userModel.updatePassword(connection, passwordParams);
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 module.exports = {
     checkUserIdExists,
     checkUserPassword,
@@ -143,5 +167,6 @@ module.exports = {
     checkSocialId,
     retrieveUserIdxByKakaoId,
     retrieveUserIdxById,
-    getUserInfo
+    getUserInfo,
+    patchPassword
 };

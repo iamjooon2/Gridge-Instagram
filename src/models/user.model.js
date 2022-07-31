@@ -105,6 +105,29 @@ const getUserProfile = async (conn, userIdx) => {
     return userProfileRow;
 }
 
+const getUserIdxByPhone = async (conn, userIdx) => {
+    const getUserPhoneQuery = `
+        SELECT userIdx
+        FROM user
+        WHERE phone = ?
+    `;
+
+    const [userRow] = await conn.query(getUserPhoneQuery, userIdx);
+
+    return userRow;
+}
+
+const updatePassword = async (conn, userParams) => {
+    const updatePasswordQuery = `
+        UPDATE user
+        SET password = ?
+        WHERE userIdx = ?    
+    `;
+    const [userRow] = await conn.query(updatePasswordQuery, userParams);
+
+    return userRow;
+}
+
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -113,5 +136,7 @@ module.exports = {
     getSocialId,
     getUserIdxBySocialId,
     getUserIdxByUserId,
-    getUserProfile
+    getUserProfile,
+    getUserIdxByPhone,
+    updatePassword
 }

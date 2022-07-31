@@ -53,7 +53,6 @@ const getMessages = async (userIdx, partnerIdx) => {
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
     }
-
 }
 
 module.exports = {
