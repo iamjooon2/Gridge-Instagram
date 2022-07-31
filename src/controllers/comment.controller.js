@@ -157,11 +157,36 @@ const postCommentDislike = async (req, res) => {
     return res.send(commentDislikeResponse);
 }
 
+// 댓글 신고
+const postCommentReport = async (req, res) => {
+    const idx = req.verifiedToken.idx;
+    const commentIdx = req.params.commentIdx;
+    // 신고구분: 1-욕설, 2-스팸 등의 형식으로 종류를 구분한 코드를 클라이언트로부터 넘겨받는다 가정
+    const reportCode = req.query.reportCode;
+
+    const userIdx = idx[0].userIdx;
+
+    // 댓글 validation
+    if(!commentIdx) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
+    } else if (commentIdx < 1) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+    // 신고구분 validation
+    if(!reportCode) {
+        return res.send(errResponse(baseResponse.REPORT_CODE_EMPTY));
+    }
+
+    const commentReportResponse = await commentService.createCommentReport(userIdx, commentIdx, reportCode);
+
+    return res.send(commentReportResponse);
+}
 module.exports = {
     postComment,
     patchComment,
     getComments,
     patchCommentStatus,
     postCommentLike,
-    postCommentDislike
+    postCommentDislike,
+    postCommentReport
 };

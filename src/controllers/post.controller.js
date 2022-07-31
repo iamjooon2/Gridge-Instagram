@@ -175,8 +175,34 @@ const postPostDislike = async (req, res) => {
     const postDislikeResponse = await postService.createPostDislike(userIdx, postIdx);
 
     return res.send(postDislikeResponse);
-}   
+}  
 
+// 게시글 신고
+const postPostReport = async (req, res) => {
+
+    const idx = req.verifiedToken.idx;
+    const postIdx = req.params.postIdx;
+    // 신고구분: 1-욕설, 2-스팸 등의 숫자로 구분한 코드를 클라이언트로부터 넘겨받는다 가정
+    const reportCode = req.query.reportCode;
+
+    const userIdx = idx[0].userIdx;
+
+    // postIdx validation
+    if (!postIdx) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx < 1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    // 신고구분 validation
+    if(!reportCode) {
+        return res.send(errResponse(baseResponse.REPORT_CODE_EMPTY));
+    }
+
+    const postReportResponse = await postService.createPostReport(userIdx, postIdx, reportCode);
+
+    return res.send(postReportResponse);
+}
 module.exports = {
     postPost,
     patchPost,
@@ -184,5 +210,6 @@ module.exports = {
     getPostContent,
     patchPostStatus,
     postPostLike,
-    postPostDislike
+    postPostDislike,
+    postPostReport
 };

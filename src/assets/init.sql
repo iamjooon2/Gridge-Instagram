@@ -74,7 +74,6 @@ CREATE TABLE `Gridge-ERD`.`commentReport`
 (
     `commentReportIdx`  BIGINT          NOT NULL    AUTO_INCREMENT, 
     `reporterIdx`       BIGINT          NOT NULL, 
-    `commentWriter`     BIGINT          NOT NULL, 
     `commentIdx`        BIGINT          NOT NULL, 
     `reason`            VARCHAR(300)    NOT NULL, 
     `createdAt`         TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
@@ -85,9 +84,6 @@ CREATE TABLE `Gridge-ERD`.`commentReport`
 
 ALTER TABLE `Gridge-ERD`.`commentReport` COMMENT '댓글 신고 테이블';
 
-ALTER TABLE `Gridge-ERD`.`commentReport`
-    ADD CONSTRAINT FK_commentReport_commentWriter_comment_useridx FOREIGN KEY (commentWriter, commentIdx)
-        REFERENCES `Gridge-ERD`.`comment` (useridx, commentIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 ALTER TABLE `Gridge-ERD`.`commentReport`
     ADD CONSTRAINT FK_commentReport_reporterIdx_user_userIdx FOREIGN KEY (reporterIdx)
@@ -99,7 +95,6 @@ CREATE TABLE `Gridge-ERD`.`postReport`
 (
     `postReportIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `reporterIdx`    BIGINT         NOT NULL, 
-    `postWriter`     BIGINT         NOT NULL, 
     `postIdx`        BIGINT         NOT NULL, 
     `content`        VARCHAR(45)    NOT NULL, 
     `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
@@ -113,10 +108,6 @@ ALTER TABLE `Gridge-ERD`.`postReport` COMMENT '게시글 신고 테이블';
 ALTER TABLE `Gridge-ERD`.`postReport`
     ADD CONSTRAINT FK_postReport_reporterIdx_user_userIdx FOREIGN KEY (reporterIdx)
         REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-ALTER TABLE `Gridge-ERD`.`postReport`
-    ADD CONSTRAINT FK_postReport_postIdx_post_postIdx FOREIGN KEY (postIdx, postWriter)
-        REFERENCES `Gridge-ERD`.`post` (postIdx, userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- room Table Create SQL

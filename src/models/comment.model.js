@@ -79,9 +79,12 @@ const updateCommentStatusInactive = async (conn, commentIdx) => {
 
 const checkCommentLike = async (connection, userIdx, commentIdx) => {
     const checkCommentLikeQuery = `
-        SELECT status
-        FROM commentLike
-        WHERE commentIdx = ? and userIdx = ?
+        SELECT EXISTS (
+            SELECT commentLikeIdx
+            FROM commentLike
+            WHERE commentIdx = ? and userIdx = ? and status = 0
+            limit 1
+        ) as success
     `;
 
     const [commentLikeResult] = await connection.query(checkCommentLikeQuery, [commentIdx, userIdx]);
@@ -123,6 +126,33 @@ const updateCommentDislike = async (connection, userIdx, commentIdx) => {
     return updatedPostLikeResult;
 }
 
+const checkCommentReport = async (connection, commentIdx, userIdx) => {
+    const checkCommentReportQuery = `
+        SELECT EXISTS (
+            SELECT commentReportIdx
+            FROM commentReport
+            WHERE commentIdx = ? and reporterIdx = ?
+            limit 1
+        ) as success
+    `;
+
+    const [commentReportResult] = await connection.query(checkCommentReportQuery, [commentIdx, userIdx]);
+
+    return commentReportResult;
+}
+
+const insertCommentReport = async (connection, userIdx, commentIdx, reportCode) => {
+    const insertCommentReportQuery = `
+        INSERT INTO commentReport(reporterIdx, commentIdx, reportCode)
+        VALUES(?,?,?)
+    `;
+
+    const [postReportResult] = await connection.query(insertCommentReportQuery, [userIdx, commentIdx, reportCode]);
+
+    return postReportResult;
+}
+
+
 module.exports = {
     insertComment,
     updateComment,
@@ -133,5 +163,7 @@ module.exports = {
     checkCommentLike,
     updateCommentLike,
     insertCommentLike,
-    updateCommentDislike
+    updateCommentDislike,
+    checkCommentReport,
+    insertCommentReport
 }

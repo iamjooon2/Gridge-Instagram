@@ -23,6 +23,9 @@ const postRouter = (router) =>{
 
     // 게시글 좋아요 취소 API
     router.patch('/posts/:postIdx/like', jwtMiddleware, postController.postPostDislike);
+
+    // 게시글 신고 API
+    router.post('/posts/:postIdx/report', jwtMiddleware, postController.postPostReport);
 }
 
 module.exports = postRouter;

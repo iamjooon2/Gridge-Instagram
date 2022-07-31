@@ -131,9 +131,12 @@ const selectPostContent = async (connection, postIdx) => {
 
 const checkPostLike = async (connection, userIdx, postIdx) => {
     const checkPostLikeQuery = `
-        SELECT status
-        FROM postLike
-        WHERE postIdx = ? and userIdx = ?
+        SELECT EXISTS (
+            SELECT postLikeIdx
+            FROM postLike
+            WHERE postIdx = ? and userIdx = ?
+            limit 1
+        ) as success
     `;
 
     const [postLikeResult] = await connection.query(checkPostLikeQuery, [postIdx, userIdx]);
@@ -175,6 +178,32 @@ const updatePostDislike = async (connection, userIdx, postIdx) => {
     return updatedPostLikeResult;
 }
 
+const checkPostReport = async (connection, userIdx, postIdx) => {
+    const checkPostReportQuery = `
+        SELECT EXISTS (
+            SELECT postReportIdx
+            FROM postReport
+            WHERE reporterIdx = ? and postIdx = ? 
+            limit 1
+        ) as success
+    `;
+
+    const [postCheckResult] = await connection.query(checkPostReportQuery, [userIdx, postIdx]);
+
+    return postCheckResult;
+}
+
+const insertPostReport = async (connection, userIdx, postIdx, reportCode) => {
+    const insertPostReportQuery = `
+        INSERT INTO postReport(reporterIdx, postIdx, reportCode)
+        VALUES(?,?,?)
+    `;
+
+    const [postReportResult] = await connection.query(insertPostReportQuery, [userIdx, postIdx, reportCode]);
+
+    return postReportResult;
+}
+
 module.exports = {
     insertPost,
     insertPostImg,
@@ -189,6 +218,8 @@ module.exports = {
     checkPostLike,
     updatePostLike,
     insertPostLike,
-    updatePostDislike
+    updatePostDislike,
+    checkPostReport,
+    insertPostReport
 }
     

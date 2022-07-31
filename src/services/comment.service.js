@@ -98,13 +98,16 @@ const createCommentLike = async (userIdx, commentIdx) => {
 
         const checkedCommentLikeResult = await commentModel.checkCommentLike(connection, userIdx, commentIdx);
 
-        if (checkedCommentLikeResult[0].status == null){
+        // 처음 좋아요 누르는 것이라면
+        if (checkedCommentLikeResult[0].success == 0){
+            // 칼럼 추가
             await commentModel.insertCommentLike(connection, userIdx, commentIdx);
 
             await connection.commit();
             return response(baseResponse.SUCCESS);
         }
 
+        // 한 번 취소된 상태라면 이미 존재하는 status를 업데이트
         const commentLikeResult = await commentModel.updateCommentLike(connection, userIdx, commentIdx);
 
         await connection.commit();
@@ -135,6 +138,35 @@ const createCommentDislike = async (userIdx, commentIdx) => {
     }
 }
 
+// 댓글 신고
+const createCommentReport = async (userIdx, commentIdx, reportCode) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await connection.beginTransaction();
+
+        const commentReportResult = await commentModel.checkCommentReport(connection, userIdx, commentIdx);
+
+        // 이미 신고된 댓글이라면
+        if (commentReportResult[0].success == 1){
+            await connection.commit();
+            
+            // 이미 신고된 댓글임을 사용자에게 알리기
+            return errResponse(baseResponse.REPORT_ENTERED);
+        }
+        await commentModel.insertCommentReport(connection, userIdx, commentIdx, reportCode);
+
+        await connection.commit();
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        await connection.rollback();
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
+
 module.exports ={
     createComment,
     updateComment,
@@ -142,5 +174,6 @@ module.exports ={
     retrieveCommentLists,
     updateCommentStatus,
     createCommentLike,
-    createCommentDislike
+    createCommentDislike,
+    createCommentReport
 }

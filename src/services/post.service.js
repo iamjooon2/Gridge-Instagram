@@ -137,7 +137,7 @@ const createPostLike = async (userIdx, postIdx) => {
 
         const checkedPostLikeResult = await postModel.checkPostLike(connection, userIdx, postIdx);
 
-        if (checkedPostLikeResult[0].status == null){
+        if (checkedPostLikeResult[0].success == 0){
             await postModel.insertPostLike(connection, userIdx, postIdx);
 
             await connection.commit();
@@ -174,6 +174,34 @@ const createPostDislike = async (userIdx, postIdx) => {
     }
 }
 
+// 게시글 신고
+const createPostReport = async (userIdx, postIdx, reportCode) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await connection.beginTransaction();
+
+        const postReportResult = await postModel.checkPostReport(connection, userIdx, postIdx);
+        console.log(postReportResult);
+        // 이미 신고된 게시물이라면
+         if (postReportResult[0].success == 1){
+            await connection.commit();
+            
+            // 이미 신고된 게시물임을 사용자에게 알리기
+            return errResponse(baseResponse.REPORT_ENTERED);
+        }
+        await postModel.insertPostReport(connection, userIdx, postIdx, reportCode);
+
+        await connection.commit();
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        await connection.rollback();
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
 
 module.exports ={
     createPost,
@@ -183,5 +211,6 @@ module.exports ={
     updatePostStatus,
     retrievePostContent,
     createPostLike,
-    createPostDislike
+    createPostDislike,
+    createPostReport
 }

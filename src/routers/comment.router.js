@@ -20,6 +20,9 @@ const commentRouter = (router) =>{
 
     // 댓글 좋아요 취소 API
     router.patch('/comment/:commentIdx/like', jwtMiddleware, commentController.postCommentDislike);
+
+    // 댓글 신고 API
+    router.post('/comment/:commentIdx/report', jwtMiddleware, commentController.postCommentReport);
 }
 
 module.exports = commentRouter;

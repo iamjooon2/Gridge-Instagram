@@ -71,6 +71,9 @@ module.exports = {
     PAGENATION_ERROR : {"isSuccess": false, "code": 2026, "message": "보고싶은 페이지를 입력해주세요. "},
     SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2027, "message": "비밀번호의 길이는 6자리 이상으로 입력해주세요." },
 
+    REPORT_CODE_EMPTY : { "isSuccess": false, "code": 2027, "message": "신고 구분이 입력되지 않았습니다" },
+    REPORT_ENTERED: { "isSuccess": false, "code": 2027, "message": "이미 신고되었습니다" },
+
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },
