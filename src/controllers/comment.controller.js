@@ -121,9 +121,47 @@ const patchCommentStatus = async (req ,res) => {
     return res.send(editCommentStatusResponse);
 }
 
+// 댓글 좋아요
+const postCommentLike = async (req, res) => {
+    const idx = req.verifiedToken.idx;
+    const commentIdx = req.params.commentIdx;
+
+    const userIdx = idx[0].userIdx;
+
+    if(!commentIdx) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
+    } else if (commentIdx < 1) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+
+    const commentLikeResponse = await commentService.createCommentLike(userIdx, commentIdx);
+
+    return res.send(commentLikeResponse);
+}
+
+// 댓글 좋아요 해제
+const postCommentDislike = async (req, res) => {
+    const idx = req.verifiedToken.idx;
+    const commentIdx = req.params.commentIdx;
+
+    const userIdx = idx[0].userIdx;
+
+    if(!commentIdx) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
+    } else if (commentIdx < 1) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+
+    const commentDislikeResponse = await commentService.createCommentDislike(userIdx, commentIdx);
+
+    return res.send(commentDislikeResponse);
+}
+
 module.exports = {
     postComment,
     patchComment,
     getComments,
-    patchCommentStatus
+    patchCommentStatus,
+    postCommentLike,
+    postCommentDislike
 };

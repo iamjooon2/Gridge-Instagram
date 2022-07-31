@@ -77,11 +77,61 @@ const updateCommentStatusInactive = async (conn, commentIdx) => {
     return selectedCommentRow;
 }
 
+const checkCommentLike = async (connection, userIdx, commentIdx) => {
+    const checkCommentLikeQuery = `
+        SELECT status
+        FROM commentLike
+        WHERE commentIdx = ? and userIdx = ?
+    `;
+
+    const [commentLikeResult] = await connection.query(checkCommentLikeQuery, [commentIdx, userIdx]);
+
+    return commentLikeResult;
+}
+
+const updateCommentLike = async (connection, userIdx, commentIdx) => {
+    const checkCommentLikeQuery = `
+        UPDATE commentLike
+        SET status = 0
+        WHERE commentIdx = ? and userIdx = ?
+    `;
+
+    const [updatedCommentLikeResult] = await connection.query(checkCommentLikeQuery, [commentIdx, userIdx]);
+
+    return updatedCommentLikeResult;
+}
+
+const insertCommentLike = async (connection, userIdx, commentIdx) => {
+    const insertCommentLikeQuery = `
+        INSERT INTO commentLike(userIdx, commentIdx)
+        values(?,?)
+    `;
+    const [insertedCommentLikeResult] = await connection.query(insertCommentLikeQuery, [userIdx, commentIdx]);
+
+    return insertedCommentLikeResult;
+}
+
+const updateCommentDislike = async (connection, userIdx, commentIdx) => {
+    const checkCommentLikeQuery = `
+        UPDATE commentLike
+        SET status = 1
+        WHERE commentIdx = ? and userIdx = ?
+    `;
+
+    const [updatedPostLikeResult] = await connection.query(checkCommentLikeQuery, [commentIdx, userIdx]);
+
+    return updatedPostLikeResult;
+}
+
 module.exports = {
     insertComment,
     updateComment,
     selectUserIdxByCommentIdx,
     selectPostComments,
     selectCommentStatus,
-    updateCommentStatusInactive
+    updateCommentStatusInactive,
+    checkCommentLike,
+    updateCommentLike,
+    insertCommentLike,
+    updateCommentDislike
 }

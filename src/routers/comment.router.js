@@ -14,6 +14,12 @@ const commentRouter = (router) =>{
     
     // 댓글 삭제 API
     router.patch('/comment/:commentIdx/status', jwtMiddleware, commentController.patchCommentStatus);
+
+    // 댓글 좋아요 API
+    router.post('/comment/:commentIdx/like', jwtMiddleware, commentController.postCommentLike);
+
+    // 댓글 좋아요 취소 API
+    router.patch('/comment/:commentIdx/like', jwtMiddleware, commentController.postCommentDislike);
 }
 
 module.exports = commentRouter;

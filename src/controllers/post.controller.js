@@ -160,6 +160,7 @@ const postPostLike = async (req, res) => {
 
 // 게시글 좋아요 해제
 const postPostDislike = async (req, res) => {
+    
     const idx = req.verifiedToken.idx;
     const postIdx = req.params.postIdx;
 
