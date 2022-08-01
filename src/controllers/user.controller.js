@@ -10,6 +10,8 @@ const regexPassword = new RegExp(/^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$/); // 특�
 const regexPhone = new RegExp(/^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/); //전화번호 형식 확인 정규표현식
 const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/); // 날짜 정규표현식
 const regexNum = new RegExp(/^[0-9]+$/);  // 숫자만 입력가능한 정규표현식
+
+
 // 로그인
 const logIn = async (req, res) => {
 
@@ -401,9 +403,9 @@ const patchPrivate = async (req, res) => {
 
     // validation
     if (!privateCode) {
-        return res.send(errResponse(baseResponse.PRIVATE_CODE_EMPTY))
+        return res.send(errResponse(baseResponse.REQUEST_CODE_EMPTY));
     } else if ( privateCode > 1 || privateCode < 0) {
-        return res.send(errResponse(baseResponse.PRIVATE_CODE_ERROR))
+        return res.send(errResponse(baseResponse.REQUEST_CODE_ERROR));
     }
     
     const checkPrivate = await userService.changePrivate(userIdx, privateCode);
@@ -509,11 +511,16 @@ const patchFollowRequests = async (req, res) => {
     }
 
     if (!responseCode) {
-        return res.send(errResponse(baseResponse.PRIVATE_CODE_EMPTY))
+        return res.send(errResponse(baseResponse.REQUEST_CODE_EMPTY));
     } else if (!regexNum.test(responseCode)) {
-        return res.send(errResponse(baseResponse.PRIVATE_CODE_ERROR))
+        return res.send(errResponse(baseResponse.REQUEST_CODE_ERROR));
     } else if (responseCode > 1 || responseCode < 0) {
-        return res.send(errResponse(baseResponse.PRIVATE_CODE_ERROR))
+        return res.send(errResponse(baseResponse.REQUEST_CODE_ERROR));
+    }
+
+    const checkRequestExist = await userService.getFolowRequestExists(userIdx, followeeId);
+    if (!checkRequestExist) {
+        return res.send(errResponse(baseResponse.FOLLOW_REQUEST_EMPTY));
     }
 
     const responseResult = await userService.changeFollowStatus(userIdx, followeeId, responseCode);

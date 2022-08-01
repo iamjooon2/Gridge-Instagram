@@ -47,6 +47,9 @@ const userRouter = (router) =>{
 
     // 팔로우 요청 수락/거절
     router.patch('/user/follow/request', jwtMiddleware, userController.patchFollowRequests);
+
+    // 회원 탈퇴
+    // router.patch('/user', jwtMiddleware, userController);
 }
 
 module.exports = userRouter;

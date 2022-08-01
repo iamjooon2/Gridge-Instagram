@@ -205,7 +205,7 @@ const insertFollow = async (conn, userIdx, followUserId, status) => {
     return checkedRow;
 }
 
-const checkFollow = async (conn, userIdx, followUserId, status) => {
+const checkFollowByTargetId = async (conn, userIdx, followUserId, status) => {
     const checkFollowQuery = `
         SELECT EXISTS (
             SELECT followingIdx
@@ -219,6 +219,24 @@ const checkFollow = async (conn, userIdx, followUserId, status) => {
         ) as success
     `;
     const [checkedRow] = await conn.query(checkFollowQuery, [userIdx, followUserId, status]);
+    
+    return checkedRow;
+}
+
+const checkFollowByRequesterId = async (conn, userIdx, followeeId, status) => {
+    const checkFollowQuery = `
+        SELECT EXISTS (
+            SELECT followingIdx
+            FROM following
+            WHERE following.targetUserIdx = ? and following.userIdx = 
+            (
+                SELECT user.userIdx
+                FROM user
+                WHERE user.ID = ?
+            ) and status = ?
+        ) as success
+    `;
+    const [checkedRow] = await conn.query(checkFollowQuery, [userIdx, followeeId, status]);
     
     return checkedRow;
 }
@@ -288,7 +306,8 @@ module.exports = {
     checkUserPrivateById,
     checkUserPrivateByUserIdx,
     insertFollow,
-    checkFollow,
+    checkFollowByTargetId,
+    checkFollowByRequesterId,
     updateFollowStatusByTargetId,
     updateFollowStatusByRequesterId,
     checkUserFollowRequests

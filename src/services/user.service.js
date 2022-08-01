@@ -223,7 +223,28 @@ const changePrivate = async (userIdx, privateCode) => {
 const checkfollowStatus = async (userIdx, followUserId, status) =>{
     try {
         const connection = await pool.getConnection(async(connection) => connection);
-        const checkFollowingResult = await userModel.checkFollow(connection, userIdx, followUserId, status);
+        const checkFollowingResult = await userModel.checkFollowByTargetId(connection, userIdx, followUserId, status);
+
+        connection.release();
+
+        // 해당 정보 없을시 false 반환
+        if (checkFollowingResult[0].success == 0) {
+            return false;
+        }
+
+        return true;
+    } catch (e){
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 팔로우 요청 정보 확인
+const getFolowRequestExists = async (userIdx, followeeId) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const checkFollowingResult = await userModel.checkFollowByRequesterId(connection, userIdx, followeeId, 2);
 
         connection.release();
 
@@ -367,6 +388,7 @@ module.exports = {
     changeNameAndId,
     changePrivate,
     checkfollowStatus,
+    getFolowRequestExists,
     followUser,
     unfollowUser,
     isUserPrivateTrue,

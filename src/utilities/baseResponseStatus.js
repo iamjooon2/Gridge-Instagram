@@ -49,8 +49,8 @@ module.exports = {
     USER_USERIDX_EMPTY : { "isSuccess": false, "code": 2020, "message": "userIdx를 입력해주세요." },
     USER_USERIDX_LENGTH : { "isSuccess": false, "code": 2021, "message": "userIdx는 0보다 큰 값으로 입력해주세요." },
 
-    PRIVATE_CODE_EMPTY : { "isSuccess": false, "code": 2021, "message": "계정 비공개/공개 여부를 입력해주세요." },
-    PRIVATE_CODE_ERROR: { "isSuccess": false, "code": 2021, "message": "계정 비공개/공개 코드를 정확히 입력해주세요." },
+    REQUEST_CODE_EMPTY : { "isSuccess": false, "code": 2021, "message": "요청코드를 입력해주세요." },
+    REQUEST_CODE_ERROR: { "isSuccess": false, "code": 2021, "message": "요청코드를 정확히 입력해주세요." },
 
     POST_POSTIMGURLS_EMPTY : { "isSuccess": false, "code": 2022, "message": "postImgUrls를 입력해주세요." },
     POST_CONTENT_LENGTH : { "isSuccess": false, "code": 2023, "message": "content의 길이는 450 이하로 입력해주세요." },
@@ -91,7 +91,9 @@ module.exports = {
 
     FOLLOW_SUCCESS : { "isSuccess": false, "code": 3007, "message": "팔로우 성공하였습니다" },
     FOLLOW_REQUEST_SUCCESS : { "isSuccess": false, "code": 3008, "message": "팔로우 요청이 완료되었습니다" },
+    FOLLOW_REQUEST_EMPTY : { "isSuccess": false, "code": 3008, "message": "사라진 팔로우 요청입니다" },
     FOLLOW_EXISTS: { "isSuccess": false, "code": 3008, "message": "이미 팔로우중인 사용자입니다." },
+    
     UNFOLLOW_SUCCESS : { "isSuccess": false, "code": 3008, "message": "팔로우 취소 성공하였습니다" },
     POST_STATUS_INACTIVE : { "isSuccess": false, "code": 3007, "message": "이미 삭제된 게시물입니다." },
     USER_PRIVATE_ERROR: { "isSuccess": false, "code": 2019, "message": "비공개 설정 사용자가 아닙니다" },
