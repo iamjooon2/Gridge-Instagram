@@ -210,7 +210,7 @@ const checkFollow = async (conn, userIdx, followUserId, status) => {
     return checkedRow;
 }
 
-const updateFollow = async (conn, userIdx, followUserId, status) => {
+const updateFollowStatus = async (conn, userIdx, followUserId, status) => {
     const updateFollowQuery = `
         UPDATE following
         SET status = ?
@@ -224,6 +224,7 @@ const updateFollow = async (conn, userIdx, followUserId, status) => {
 
     return updatedRow;
 }
+
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -241,5 +242,5 @@ module.exports = {
     checkUserPrivate,
     insertFollow,
     checkFollow,
-    updateFollow
+    updateFollowStatus
 }

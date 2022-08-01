@@ -418,12 +418,16 @@ const followUser = async (req, res) => {
     const userIdx = userIdxInfoFromToken[0].userIdx;
     const followUserId = req.body.id;
 
+    // id validation
+    if (!followUserId){
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    } 
+
     // 팔로우 대상 식별자
     const checkUserIdResult = await userService.retrieveUserIdxById(followUserId);
     if (!checkUserIdResult){
         return res.send(errResponse(baseResponse.USER_USERID_NOT_EXIST));
-    } // 본인의 ID를 입력했는지 확인
-    else if (userIdx === checkUserIdResult) {
+    } else if (userIdx === checkUserIdResult) {
         return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     }
 
@@ -451,9 +455,26 @@ const unfollowUser = async (req, res) => {
     const userIdx = userIdxInfoFromToken[0].userIdx;
     const unfollowUserId = req.body.id;
 
-    const unfollowUserResult = await userService.unfollowUser(userIdx, unfollowUserId);
+    if (!unfollowUserId) {
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    }
+    // 팔로우 대상 식별자
+    const checkUserIdResult = await userService.retrieveUserIdxById(unfollowUserId);
+    if (!checkUserIdResult){
+        return res.send(errResponse(baseResponse.USER_USERID_NOT_EXIST));
+    } else if (userIdx === checkUserIdResult) {
+        return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    }
 
-    return res.send(unfollowUserResult);
+    // 이미 팔로우하고있지 않은 사용자인 경우 팔로우 취소 성공했다고리턴(UX 고려?)
+    const checkUnfollowing = await userService.checkfollowStatus(userIdx, unfollowUserId, 1);
+    if (checkUnfollowing) {
+        return res.send(errResponse(baseResponse.UNFOLLOW_SUCCESS));
+    } 
+
+    const followUserResult = await userService.unfollowUser(userIdx, unfollowUserId);
+
+    return res.send(followUserResult);
 }
 
 module.exports = {
