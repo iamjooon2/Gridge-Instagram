@@ -100,7 +100,7 @@ const kakaoLogin = async (req, res) => {
     }
     
     // 유저 식별자 가져오기
-    const userIdx = await userService.retrieveUserIdxByKakaoId(kakaoId)[0].userIdx;
+    const userIdx = await userService.retrieveUserIdxByKakaoId(kakaoId);
 
     // jwt 토큰 생성
     let token = await jwt.sign(
@@ -418,15 +418,24 @@ const followUser = async (req, res) => {
     const userIdx = userIdxInfoFromToken[0].userIdx;
     const followUserId = req.body.id;
 
-    // 이미 팔로우중인 사용자인지 검사
-    const checkNowFollowing = await userService.checkollowStatus(userIdx, followUserId, 0);
-    if (checkNowFollowing[0].success == 1) {
-        return res.send(errResponse(baseResponse.FOLLOW_EXISTS));
+    // 팔로우 대상 식별자
+    const checkUserIdResult = await userService.retrieveUserIdxById(followUserId);
+    if (!checkUserIdResult){
+        return res.send(errResponse(baseResponse.USER_USERID_NOT_EXIST));
+    } // 본인의 ID를 입력했는지 확인
+    else if (userIdx === checkUserIdResult) {
+        return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    }
+
+    // 이미 팔로우중인 사용자인 경우 팔로우 성공했다고 리턴(UX 고려?)
+    const checkNowFollowing = await userService.checkfollowStatus(userIdx, followUserId, 0);
+    if (checkNowFollowing) {
+        return res.send(errResponse(baseResponse.FOLLOW_SUCCESS));
     } 
 
     // 팔로우 요청이 이미 있는 상황에는 그냥 요청에 성공했다고 알려줌(UX 고려?)
-    const checkFollowWaiting = await userService.checkollowStatus(userIdx, followUserId, 2);
-    if (checkFollowWaiting[0].success == 1) {
+    const checkFollowWaiting = await userService.checkfollowStatus(userIdx, followUserId, 2);
+    if (checkFollowWaiting) {
         return res.send(errResponse(baseResponse.FOLLOW_REQUEST_SUCCESS));
     }
 

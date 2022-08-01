@@ -93,7 +93,7 @@ const retrieveUserIdxByKakaoId = async (socialId) => {
 
         connection.release();
 
-        return userIdxResult;
+        return userIdxResult[0].userIdx;
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -104,11 +104,17 @@ const retrieveUserIdxByKakaoId = async (socialId) => {
 const retrieveUserIdxById = async (userId) =>{
     try {
         const connection = await pool.getConnection(async (connection) => connection);
-        const userIdx = await userModel.getUserIdxByUserId(connection, userId);
-
+        const userIdxResult = await userModel.getUserIdxByUserId(connection, userId);
+        
         connection.release();
 
-        return userIdx;
+        // 없는 경우 false 반환
+        if (userIdxResult[0] == null){
+            return false;
+        }
+
+        // userIdx 뽑아서 리턴
+        return userIdxResult[0].userIdx;
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -214,14 +220,20 @@ const changePrivate = async (userIdx, privateCode) => {
     }
 }
 
-// 현 팔로우 정보 확인
-const checkollowStatus = async (userIdx, followUserId, followCode) =>{
+// 팔로우 정보 확인(boolean return)
+const checkfollowStatus = async (userIdx, followUserId, status) =>{
     try {
         const connection = await pool.getConnection(async(connection) => connection);
-        const checkFollowingResult = await userModel.checkFollow(connection, userIdx, followUserId, followCode);
+        const checkFollowingResult = await userModel.checkFollow(connection, userIdx, followUserId, status);
 
         connection.release();
-        return checkFollowingResult;
+
+        // 해당 정보 없을시 false 반환
+        if (checkFollowingResult[0].success == 0) {
+            return false;
+        }
+
+        return true;
     } catch (e){
         console.log(e);
 
@@ -238,8 +250,8 @@ const followUser = async (userIdx, followUserId) => {
         const userPrivateInfo = await userModel.checkUserPrivate(connection, followUserId);
         const followHistoryInfo = await userModel.checkFollow(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
 
-        // 상대방이 비공개 계정일 때
-        if (userPrivateInfo[0].private == 1){
+        // 상대방이 비공개 계정인 경우
+        if (userPrivateInfo[0].success == 1){
 
 
             // 이전에 팔로우 했다가 지운 상태인지 확인
@@ -254,7 +266,7 @@ const followUser = async (userIdx, followUserId) => {
             return response(baseResponse.FOLLOW_REQUEST_SUCCESS);
         }
         
-        // 상대방이 공개 계정일 때
+        // 상대방이 공개 계정인 경우
         // 이전에 팔로우 했다가 지운 상태인지 확인
         followHistoryInfo[0].success == 1 ?
             // 있다면 기존 칼럼 status를 업데이트
@@ -302,7 +314,7 @@ module.exports = {
     changeUserProfile,
     changeNameAndId,
     changePrivate,
-    checkollowStatus,
+    checkfollowStatus,
     followUser,
     unfollowUser
 };

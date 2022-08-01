@@ -165,12 +165,12 @@ const updatePrivate = async (conn, userIdx, privateCode) => {
 const checkUserPrivate = async (conn, userId) => {
     const checkUserPrivateQuery = `
         SELECT EXISTS (
-            SELECT private
+            SELECT userIdx
             FROM user
-            where id = ? and private = 1
+            where ID = ? and private = 1
         ) as success
     `;
-    const [checkedRow] = await conn.query(checkUserPrivateQuery, [userId]);
+    const [checkedRow] = await conn.query(checkUserPrivateQuery, userId);
     
     return checkedRow;
 }
