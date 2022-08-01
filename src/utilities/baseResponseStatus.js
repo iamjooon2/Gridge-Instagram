@@ -74,6 +74,8 @@ module.exports = {
 
     REPORT_CODE_EMPTY : { "isSuccess": false, "code": 2027, "message": "신고 구분이 입력되지 않았습니다" },
     REPORT_ENTERED: { "isSuccess": false, "code": 2027, "message": "이미 신고되었습니다" },
+    REPORT_POST_MYSELF : { "isSuccess": false, "code": 2027, "message": "본인이 작성한 게시글입니다" },
+    REPORT_COMMENT_MYSELF : { "isSuccess": false, "code": 2027, "message": "본인이 작성한 댓글입니다" },
 
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"중복된 이메일입니다." },

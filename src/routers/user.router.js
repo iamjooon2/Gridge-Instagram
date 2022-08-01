@@ -30,6 +30,9 @@ const userRouter = (router) =>{
     // 프로필 변경 API
     router.patch('/profile', jwtMiddleware, userController.patchProfile);
 
+    // 이름, 아이디 변경 API
+    router.patch('/nameAndId', jwtMiddleware, userController.patchNameAndId);
+
 }
 
 module.exports = userRouter;

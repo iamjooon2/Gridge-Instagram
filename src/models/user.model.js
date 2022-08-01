@@ -140,6 +140,17 @@ const updateUserProfile = async (conn, profileImgUrl, name, id, website, introdu
     return updateUserRow;
 }
 
+const updateNameAndId = async (conn, name, id, userIdx) => {
+    const updateNameAndIdQuery = `
+        UPDATE user
+        SET name = ? and id = ?
+        where userIdx = ?
+    `;
+    const [updatedUserRow] = await conn.query(updateNameAndIdQuery, [name, id, userIdx]);
+
+    return updatedUserRow;
+}
+
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -151,5 +162,6 @@ module.exports = {
     getUserProfile,
     getUserIdxByPhone,
     updatePassword,
-    updateUserProfile
+    updateUserProfile,
+    updateNameAndId
 }

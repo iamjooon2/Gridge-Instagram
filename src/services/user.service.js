@@ -184,6 +184,21 @@ const changeUserProfile = async (profileImgUrl, name, id, website, introduce, us
     }
 }
 
+// 이름, 아이디 변경하기
+const changeNameAndId = async (name, id, userIdx) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const updatedProfileResult = await userModel.updateNameAndId(connection, name, id, userIdx);
+        
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (e){
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 module.exports = {
     checkUserIdExists,
     checkUserPassword,
@@ -193,5 +208,6 @@ module.exports = {
     retrieveUserIdxById,
     getUserInfo,
     patchPassword,
-    changeUserProfile
+    changeUserProfile,
+    changeNameAndId
 };

@@ -199,6 +199,12 @@ const postPostReport = async (req, res) => {
         return res.send(errResponse(baseResponse.REPORT_CODE_EMPTY));
     }
 
+    //자신의 게시글을 신고하려는지 확인
+    const checkMyPostResult = await postService.retrieveUserIdx(postIdx);
+    if (userIdx==checkMyPostResult) {
+        return res.send(errResponse(baseResponse.REPORT_MYPOST));
+    }
+
     const postReportResponse = await postService.createPostReport(userIdx, postIdx, reportCode);
 
     return res.send(postReportResponse);

@@ -177,10 +177,17 @@ const postCommentReport = async (req, res) => {
         return res.send(errResponse(baseResponse.REPORT_CODE_EMPTY));
     }
 
+    // 본인이 작성한 댓글일 시 신고 불가
+    const checkMyCommentResult = await commentService.retrieveUserIdx(commentIdx);
+    if (userIdx == checkMyCommentResult) {
+        return res.send(errResponse(baseResponse.REPORT_COMMENT_MYSELF));
+    }
+
     const commentReportResponse = await commentService.createCommentReport(userIdx, commentIdx, reportCode);
 
     return res.send(commentReportResponse);
 }
+
 module.exports = {
     postComment,
     patchComment,

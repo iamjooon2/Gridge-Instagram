@@ -327,18 +327,17 @@ const patchProfile = async (req, res) => {
 
     const userIdxInfoFromToken = req.verifiedToken.idx;
     const userIdx = userIdxInfoFromToken[0].userIdx;
-    // 웹사이트나 소개를 지우는 경우, 프론트단에서 ""로 받는다
     const { profileImgUrl, name, id, website, introduce } = req.body;
 
-    console.log(userIdx);
-    // validation
+    // website, introduce는 nullable하기때문에 validation 하지 않음
+    // 사용자 이름 validation
     if (!name){
         return res.send(errResponse(baseResponse.USER_NAME_EMPTY));
     } else if (name.length > 20) {
         return res.send(errResponse(baseResponse.USER_NAME_LENGTH));
     }
 
-    // validation
+    // id validation
     if (!id){
         return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
     } else if (id.length > 20) {
@@ -359,6 +358,40 @@ const patchProfile = async (req, res) => {
     return res.send(changeProfileResult);
 }
 
+// 이름, 아이디만 변경
+const patchNameAndId = async (req, res) => {
+
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const { name, id } = req.body;
+
+    // name validation
+    if (!name){
+        return res.send(errResponse(baseResponse.USER_NAME_EMPTY));
+    } else if (name.length > 20) {
+        return res.send(errResponse(baseResponse.USER_NAME_LENGTH));
+    }
+
+    // id validation
+    if (!id){
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    } else if (id.length > 20) {
+        return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
+    } else if (id.length < 3) {
+        return res.send(errResponse(baseResponse.USER_USERID_SHORT));
+    }
+
+    // 아이디 중복 확인
+    const userIdExistsResult = await userService.checkUserIdExists(id);
+    if (userIdExistsResult){
+        return res.send(errResponse(baseResponse.USER_USERID_EXIST));
+    }
+
+    const nameAndIdChangeResult = await userService.changeNameAndId(name, id, userIdx);
+
+    return res.send(nameAndIdChangeResult);
+}
+
 module.exports = {
     logIn,
     kakaoLogin,
@@ -368,5 +401,6 @@ module.exports = {
     checkIdAvailable,
     getUserInfo,
     patchPassword,
-    patchProfile
+    patchProfile,
+    patchNameAndId
 };
