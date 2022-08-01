@@ -214,6 +214,82 @@ const changePrivate = async (userIdx, privateCode) => {
     }
 }
 
+// 현 팔로우 정보 확인
+const checkollowStatus = async (userIdx, followUserId, followCode) =>{
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const checkFollowingResult = await userModel.checkFollow(connection, userIdx, followUserId, followCode);
+
+        connection.release();
+        return checkFollowingResult;
+    } catch (e){
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 팔로우하기
+const followUser = async (userIdx, followUserId) => {
+    const connection = await pool.getConnection(async(connection) => connection);
+    try {
+        await connection.beginTransaction();
+        
+        const userPrivateInfo = await userModel.checkUserPrivate(connection, followUserId);
+        const followHistoryInfo = await userModel.checkFollow(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
+
+        // 상대방이 비공개 계정일 때
+        if (userPrivateInfo[0].private == 1){
+
+
+            // 이전에 팔로우 했다가 지운 상태인지 확인
+            followHistoryInfo[0].success == 1 ?
+                //  있다면 status를 요청 대기중으로 업데이트
+                ( await userModel.updateFollow(connection, userIdx, followUserId, 2)) :
+                 // 없다면 새로운 칼럼으로 요청 대기중을 집어넣는다
+                ( await userModel.insertFollow(connection, userIdx, followUserId, 2));
+
+            await connection.commit();
+
+            return response(baseResponse.FOLLOW_REQUEST_SUCCESS);
+        }
+        
+        // 상대방이 공개 계정일 때
+        // 이전에 팔로우 했다가 지운 상태인지 확인
+        followHistoryInfo[0].success == 1 ?
+            // 있다면 기존 칼럼 status를 업데이트
+            ( await userModel.updateFollow(connection, userIdx, followUserId, 0)) :
+            // 없다면 새로운 칼럼을 삽입
+            ( await userModel.insertFollow(connection, userIdx, followUserId, 0));
+
+        await connection.commit();
+        
+        return response(baseResponse.FOLLOW_SUCCESS);
+    } catch (e) {
+        console.log(e);
+        await connection.rollback();
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
+
+// 팔로우 취소하기
+const unfollowUser = async (userIdx, unfollowUserId) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const unfollowUserResult = await userModel.updateUnfollow(connection, userIdx, unfollowUserId);
+
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 module.exports = {
     checkUserIdExists,
     checkUserPassword,
@@ -225,5 +301,8 @@ module.exports = {
     patchPassword,
     changeUserProfile,
     changeNameAndId,
-    changePrivate
+    changePrivate,
+    checkollowStatus,
+    followUser,
+    unfollowUser
 };

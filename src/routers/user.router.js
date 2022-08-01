@@ -35,6 +35,13 @@ const userRouter = (router) =>{
 
     // 계정 공개 여부 설정 API
     router.patch('/profile/private', jwtMiddleware, userController.patchPrivate);
+
+    // 사용자 팔로우
+    router.post('/user/follow', jwtMiddleware, userController.followUser);
+
+    // 사용자 팔로우 취소
+    router.patch('/user/follow', jwtMiddleware, userController.unfollowUser);
+
 }
 
 module.exports = userRouter;

@@ -411,6 +411,41 @@ const patchPrivate = async (req, res) => {
     return res.send(checkPrivate);
 }
 
+// 사용자 팔로우
+const followUser = async (req, res) => {
+    
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const followUserId = req.body.id;
+
+    // 이미 팔로우중인 사용자인지 검사
+    const checkNowFollowing = await userService.checkollowStatus(userIdx, followUserId, 0);
+    if (checkNowFollowing[0].success == 1) {
+        return res.send(errResponse(baseResponse.FOLLOW_EXISTS));
+    } 
+
+    // 팔로우 요청이 이미 있는 상황에는 그냥 요청에 성공했다고 알려줌(UX 고려?)
+    const checkFollowWaiting = await userService.checkollowStatus(userIdx, followUserId, 2);
+    if (checkFollowWaiting[0].success == 1) {
+        return res.send(errResponse(baseResponse.FOLLOW_REQUEST_SUCCESS));
+    }
+
+    const followUserResult = await userService.followUser(userIdx, followUserId);
+
+    return res.send(followUserResult);
+}
+
+// 사용자 언팔로우
+const unfollowUser = async (req, res) => {
+    
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const unfollowUserId = req.body.id;
+
+    const unfollowUserResult = await userService.unfollowUser(userIdx, unfollowUserId);
+
+    return res.send(unfollowUserResult);
+}
 
 module.exports = {
     logIn,
@@ -423,5 +458,7 @@ module.exports = {
     patchPassword,
     patchProfile,
     patchNameAndId,
-    patchPrivate
+    patchPrivate,
+    followUser,
+    unfollowUser
 };

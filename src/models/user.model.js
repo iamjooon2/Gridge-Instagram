@@ -162,6 +162,68 @@ const updatePrivate = async (conn, userIdx, privateCode) => {
     return updatedUserRow;
 }
 
+const checkUserPrivate = async (conn, userId) => {
+    const checkUserPrivateQuery = `
+        SELECT EXISTS (
+            SELECT private
+            FROM user
+            where id = ? and private = 1
+        ) as success
+    `;
+    const [checkedRow] = await conn.query(checkUserPrivateQuery, [userId]);
+    
+    return checkedRow;
+}
+
+const insertFollow = async (conn, userIdx, followUserId, status) => {
+    const checkUserPrivateQuery = `
+        INSERT INTO following(userIdx, targetUserIdx, status)
+        VALUES(?,
+                (
+                    SELECT userIdx
+                    FROM user
+                    WHERE ID = ?
+                )
+                , ?)
+    `;
+
+    const [checkedRow] = await conn.query(checkUserPrivateQuery, [userIdx, followUserId, status]);
+    
+    return checkedRow;
+}
+
+const checkFollow = async (conn, userIdx, followUserId, status) => {
+    const checkFollowQuery = `
+        SELECT EXISTS (
+            SELECT followingIdx
+            FROM following
+            WHERE following.userIdx = ? and following.targetUserIdx = 
+            (
+                SELECT user.userIdx
+                FROM user
+                WHERE user.ID = ?
+            ) and status = ?
+        ) as success
+    `;
+    const [checkedRow] = await conn.query(checkFollowQuery, [userIdx, followUserId, status]);
+    
+    return checkedRow;
+}
+
+const updateFollow = async (conn, userIdx, followUserId, status) => {
+    const updateFollowQuery = `
+        UPDATE following
+        SET status = ?
+        WHERE following.userIdx = ? and (
+                SELECT user.userIdx
+                FROM user
+                WHERE user.id = ?
+            )
+    `;
+    const [updatedRow] = await conn.query(updateFollowQuery, [status, userIdx, followUserId]);
+
+    return updatedRow;
+}
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -175,5 +237,9 @@ module.exports = {
     updatePassword,
     updateUserProfile,
     updateNameAndId,
-    updatePrivate
+    updatePrivate,
+    checkUserPrivate,
+    insertFollow,
+    checkFollow,
+    updateFollow
 }

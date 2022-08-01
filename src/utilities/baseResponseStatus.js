@@ -89,6 +89,10 @@ module.exports = {
     SIGNIN_INACTIVE_ACCOUNT : { "isSuccess": false, "code": 3005, "message": "비활성화 된 계정입니다. 고객센터에 문의해주세요." },
     SIGNIN_WITHDRAWAL_ACCOUNT : { "isSuccess": false, "code": 3006, "message": "탈퇴 된 계정입니다. 고객센터에 문의해주세요." },
 
+    FOLLOW_SUCCESS : { "isSuccess": false, "code": 3007, "message": "팔로우 성공하였습니다" },
+    FOLLOW_REQUEST_SUCCESS : { "isSuccess": false, "code": 3008, "message": "팔로우 요청되었습니다." },
+    FOLLOW_EXISTS: { "isSuccess": false, "code": 3008, "message": "이미 팔로우중인 사용자입니다." },
+
     POST_STATUS_INACTIVE : { "isSuccess": false, "code": 3007, "message": "이미 삭제된 게시물입니다." },
     AUTH_NUMBER_WRONG : { "isSuccess": false, "code": 3008, "message": "인증번호가 잘못되었습니다" },
 
