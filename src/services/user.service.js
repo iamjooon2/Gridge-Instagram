@@ -199,6 +199,21 @@ const changeNameAndId = async (name, id, userIdx) => {
     }
 }
 
+// 계정 공개여부 변경하기
+const changePrivate = async (userIdx, privateCode) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const updatedPrivateResult = await userModel.updatePrivate(connection, userIdx, privateCode);
+        
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (e){
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 module.exports = {
     checkUserIdExists,
     checkUserPassword,
@@ -209,5 +224,6 @@ module.exports = {
     getUserInfo,
     patchPassword,
     changeUserProfile,
-    changeNameAndId
+    changeNameAndId,
+    changePrivate
 };

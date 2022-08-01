@@ -180,7 +180,6 @@ const signUp = async (req, res) => {
 
     // 사용자 아이디 존재 여부 확인
     const userIdExistsResult = await userService.checkUserIdExists(id);
-
     if (userIdExistsResult){
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
@@ -392,6 +391,27 @@ const patchNameAndId = async (req, res) => {
     return res.send(nameAndIdChangeResult);
 }
 
+// 계정 공개여부 설정
+const patchPrivate = async (req, res) => {
+    
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    // 비공개/공개 여부를 설정한 코드 1-비공개 / 0-공개
+    const privateCode = req.query.privateCode;
+
+    // validation
+    if (!privateCode) {
+        return res.send(errResponse(baseResponse.PRIVATE_CODE_EMPTY))
+    } else if ( privateCode > 1 || privateCode < 0) {
+        return res.send(errResponse(baseResponse.PRIVATE_CODE_ERROR))
+    }
+    
+    const checkPrivate = await userService.changePrivate(userIdx, privateCode);
+
+    return res.send(checkPrivate);
+}
+
+
 module.exports = {
     logIn,
     kakaoLogin,
@@ -402,5 +422,6 @@ module.exports = {
     getUserInfo,
     patchPassword,
     patchProfile,
-    patchNameAndId
+    patchNameAndId,
+    patchPrivate
 };

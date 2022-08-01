@@ -49,6 +49,9 @@ module.exports = {
     USER_USERIDX_EMPTY : { "isSuccess": false, "code": 2020, "message": "userIdx를 입력해주세요." },
     USER_USERIDX_LENGTH : { "isSuccess": false, "code": 2021, "message": "userIdx는 0보다 큰 값으로 입력해주세요." },
 
+    PRIVATE_CODE_EMPTY : { "isSuccess": false, "code": 2021, "message": "계정 비공개/공개 여부를 입력해주세요." },
+    PRIVATE_CODE_ERROR: { "isSuccess": false, "code": 2021, "message": "계정 비공개/공개 코드를 정확히 입력해주세요." },
+
     POST_POSTIMGURLS_EMPTY : { "isSuccess": false, "code": 2022, "message": "postImgUrls를 입력해주세요." },
     POST_CONTENT_LENGTH : { "isSuccess": false, "code": 2023, "message": "content의 길이는 450 이하로 입력해주세요." },
 

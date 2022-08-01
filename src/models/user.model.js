@@ -151,6 +151,17 @@ const updateNameAndId = async (conn, name, id, userIdx) => {
     return updatedUserRow;
 }
 
+const updatePrivate = async (conn, userIdx, privateCode) => {
+    const updatePrivateQuery = `
+        UPDATE user
+        SET private = ?
+        where userIdx = ?
+    `;
+    const [updatedUserRow] = await conn.query(updatePrivateQuery, [privateCode, userIdx]);
+
+    return updatedUserRow;
+}
+
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -163,5 +174,6 @@ module.exports = {
     getUserIdxByPhone,
     updatePassword,
     updateUserProfile,
-    updateNameAndId
+    updateNameAndId,
+    updatePrivate
 }

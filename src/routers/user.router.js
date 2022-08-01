@@ -33,6 +33,8 @@ const userRouter = (router) =>{
     // 이름, 아이디 변경 API
     router.patch('/nameAndId', jwtMiddleware, userController.patchNameAndId);
 
+    // 계정 공개 여부 설정 API
+    router.patch('/profile/private', jwtMiddleware, userController.patchPrivate);
 }
 
 module.exports = userRouter;

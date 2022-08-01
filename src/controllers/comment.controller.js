@@ -101,19 +101,18 @@ const patchCommentStatus = async (req ,res) => {
 
     const token = req.verifiedToken.idx;
     const commentIdx = req.params.commentIdx;
-
-    const writerOfComment = await commentService.retrieveUserIdx(commentIdx);
-
-    // Authentication
-    if (writerOfComment[0].userIdx !== token[0].userIdx) {
-        return res.send(errResponse(baseResponse.WRITER_NOT_MATCH));
-    }
     
     // validation
     if (!commentIdx) {
         return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
     } else if (commentIdx <= 0) {
         return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+
+    // 본인의 댓글인지 확인
+    const writerOfComment = await commentService.retrieveUserIdx(commentIdx);
+    if (writerOfComment[0].userIdx !== token[0].userIdx) {
+        return res.send(errResponse(baseResponse.WRITER_NOT_MATCH));
     }
 
     const editCommentStatusResponse = await commentService.updateCommentStatus(commentIdx);
@@ -177,7 +176,7 @@ const postCommentReport = async (req, res) => {
         return res.send(errResponse(baseResponse.REPORT_CODE_EMPTY));
     }
 
-    // 본인이 작성한 댓글일 시 신고 불가
+    // 본인이 작성한 댓글은 신고 불가
     const checkMyCommentResult = await commentService.retrieveUserIdx(commentIdx);
     if (userIdx == checkMyCommentResult) {
         return res.send(errResponse(baseResponse.REPORT_COMMENT_MYSELF));
