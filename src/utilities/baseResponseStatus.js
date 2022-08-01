@@ -94,6 +94,7 @@ module.exports = {
     FOLLOW_EXISTS: { "isSuccess": false, "code": 3008, "message": "이미 팔로우중인 사용자입니다." },
     UNFOLLOW_SUCCESS : { "isSuccess": false, "code": 3008, "message": "팔로우 취소 성공하였습니다" },
     POST_STATUS_INACTIVE : { "isSuccess": false, "code": 3007, "message": "이미 삭제된 게시물입니다." },
+    USER_PRIVATE_ERROR: { "isSuccess": false, "code": 2019, "message": "비공개 설정 사용자가 아닙니다" },
     AUTH_NUMBER_WRONG : { "isSuccess": false, "code": 3008, "message": "인증번호가 잘못되었습니다" },
 
     //Connection, Transaction 등의 서버 오류

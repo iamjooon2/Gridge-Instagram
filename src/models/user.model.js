@@ -87,17 +87,17 @@ const getUserProfile = async (conn, userIdx) => {
                 GROUP BY userIdx
                 ) post ON user.userIdx = post.userIdx
             INNER JOIN (
-                SELECT userIdx, COUNT(followerIdx) as followerCount
-                FROM follower
-                WHERE status = 0
-                GROUP BY userIdx
-                ) follower on follower.userIdx = user.userIdx
-            INNER JOIN (
-                SELECT userIdx, COUNT(followingIdx) as followingCount
+                SELECT userIdx, COUNT(followingIdx) as followerCount
                 FROM following
                 WHERE status = 0
                 GROUP BY userIdx
                 ) following on following.userIdx = user.userIdx
+            INNER JOIN (
+                SELECT targetUserIdx, COUNT(followingIdx) as followingCount
+                FROM following
+                WHERE status = 0
+                GROUP BY userIdx
+                ) following on following.targetUserIdx = user.userIdx
         WHERE user.userIdx = ?
     `;
     const [userProfileRow] = await conn.query(selectUserProfileQuery, userIdx);
@@ -162,7 +162,7 @@ const updatePrivate = async (conn, userIdx, privateCode) => {
     return updatedUserRow;
 }
 
-const checkUserPrivate = async (conn, userId) => {
+const checkUserPrivateById = async (conn, userId) => {
     const checkUserPrivateQuery = `
         SELECT EXISTS (
             SELECT userIdx
@@ -171,6 +171,19 @@ const checkUserPrivate = async (conn, userId) => {
         ) as success
     `;
     const [checkedRow] = await conn.query(checkUserPrivateQuery, userId);
+    
+    return checkedRow;
+}
+
+const checkUserPrivateByUserIdx = async (conn, userIdx) => {
+    const checkUserPrivateQuery = `
+        SELECT EXISTS (
+            SELECT ID
+            FROM user
+            where userIdx = ? and private = 1
+        ) as success
+    `;
+    const [checkedRow] = await conn.query(checkUserPrivateQuery, userIdx);
     
     return checkedRow;
 }
@@ -210,20 +223,53 @@ const checkFollow = async (conn, userIdx, followUserId, status) => {
     return checkedRow;
 }
 
-const updateFollowStatus = async (conn, userIdx, followUserId, status) => {
+const updateFollowStatusByTargetId = async (conn, userIdx, followerId, status) => {
     const updateFollowQuery = `
         UPDATE following
         SET status = ?
-        WHERE following.userIdx = ? and (
-                SELECT user.userIdx
+        WHERE userIdx = ? and targetUserIdx = (
+                SELECT userIdx
                 FROM user
-                WHERE user.id = ?
+                WHERE ID = ?
             )
     `;
-    const [updatedRow] = await conn.query(updateFollowQuery, [status, userIdx, followUserId]);
+    const [updatedRow] = await conn.query(updateFollowQuery, [status, userIdx, followerId]);
 
     return updatedRow;
 }
+
+const updateFollowStatusByRequesterId = async (conn, userIdx, followeeId, status) => {
+    const updateFollowQuery = `
+        UPDATE following
+        SET status = ?
+        WHERE targetUserIdx = ? and userIdx = (
+                SELECT userIdx
+                FROM user
+                WHERE ID = ?
+            )
+   `;
+const [updatedRow] = await conn.query(updateFollowQuery, [status, userIdx, followeeId]);
+
+return updatedRow;
+}
+
+const checkUserFollowRequests = async (conn , userIdx) => {
+    const checkFollowRequestQuery = `
+        SELECT user.id, user.name, user.profileImgUrl
+        FROM user
+            INNER JOIN following ON user.userIdx = following.userIdx
+        WHERE following.userIdx IN (
+                SELECT following.userIdx
+                FROM following
+                WHERE following.targetUserIdx = ? and following.status = 2
+                )
+        ORDER BY following.updatedAt ASC;
+    `;
+    const [RequestRow] = await conn.query(checkFollowRequestQuery, userIdx);
+
+    return RequestRow;
+}
+
 
 module.exports = {
     checkUserExistsByUserId,
@@ -239,8 +285,11 @@ module.exports = {
     updateUserProfile,
     updateNameAndId,
     updatePrivate,
-    checkUserPrivate,
+    checkUserPrivateById,
+    checkUserPrivateByUserIdx,
     insertFollow,
     checkFollow,
-    updateFollowStatus
+    updateFollowStatusByTargetId,
+    updateFollowStatusByRequesterId,
+    checkUserFollowRequests
 }

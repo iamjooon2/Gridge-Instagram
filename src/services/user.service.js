@@ -100,7 +100,7 @@ const retrieveUserIdxByKakaoId = async (socialId) => {
 }
 
 // ID로 유저 식별자 가지고 오기
-const retrieveUserIdxById = async (userId) =>{
+const retrieveUserIdxById  = async (userId) =>{
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const userIdxResult = await userModel.getUserIdxByUserId(connection, userId);
@@ -246,7 +246,7 @@ const followUser = async (userIdx, followUserId) => {
     try {
         await connection.beginTransaction();
         
-        const userPrivateInfo = await userModel.checkUserPrivate(connection, followUserId);
+        const userPrivateInfo = await userModel.checkUserPrivateById(connection, followUserId);
         const followHistoryInfo = await userModel.checkFollow(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
 
         // 상대방이 비공개 계정인 경우
@@ -256,7 +256,7 @@ const followUser = async (userIdx, followUserId) => {
             // 이전에 팔로우 했다가 지운 상태인지 확인
             followHistoryInfo[0].success == 1 ?
                 //  있다면 status를 요청 대기중으로 업데이트
-                ( await userModel.updateFollowStatus(connection, userIdx, followUserId, 2)) :
+                ( await userModel.updateFollowStatusByTargetId(connection, userIdx, followUserId, 2)) :
                  // 없다면 새로운 칼럼으로 요청 대기중을 집어넣는다
                 ( await userModel.insertFollow(connection, userIdx, followUserId, 2));
 
@@ -269,7 +269,7 @@ const followUser = async (userIdx, followUserId) => {
         // 이전에 팔로우 했다가 지운 상태인지 확인
         followHistoryInfo[0].success == 1 ?
             // 있다면 기존 칼럼 status를 업데이트
-            ( await userModel.updateFollowStatus(connection, userIdx, followUserId, 0)) :
+            ( await userModel.updateFollowStatusByTargetId(connection, userIdx, followUserId, 0)) :
             // 없다면 새로운 칼럼을 삽입
             ( await userModel.insertFollow(connection, userIdx, followUserId, 0));
 
@@ -290,7 +290,7 @@ const followUser = async (userIdx, followUserId) => {
 const unfollowUser = async (userIdx, unfollowUserId) => {
     try {
         const connection = await pool.getConnection(async(connection) => connection);
-        const unfollowResult = await userModel.updateFollowStatus(connection, userIdx, unfollowUserId, 1);
+        const unfollowResult = await userModel.updateFollowStatusByTargetId(connection, userIdx, unfollowUserId, 1);
 
         connection.release();
         return response(baseResponse.UNFOLLOW_SUCCESS);
@@ -300,6 +300,59 @@ const unfollowUser = async (userIdx, unfollowUserId) => {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+// 비공개 계정 여부 확인
+const isUserPrivateTrue = async (userIdx) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const userPrivateInfo = await userModel.checkUserPrivateByUserIdx(connection, userIdx);
+        
+        connection.release();
+
+        if (userPrivateInfo[0].success == 0) {
+            return false;
+        }
+
+        return true;
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 내 팔로우 요청 확인
+const checkMyFollowRequest = async (userIdx) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const userFollowRequestList = await userModel.checkUserFollowRequests(connection, userIdx);
+        
+        connection.release();
+
+        return response(baseResponse.SUCCESS, userFollowRequestList);
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 사용자 팔로우 요청 상태 업데이트
+const changeFollowStatus = async (userIdx, followeeId, responseCode) => {
+    try {
+        const connection = await pool.getConnection(async(connection) => connection);
+        const updateFollowStatusResult = await userModel.updateFollowStatusByRequesterId(connection, userIdx, followeeId, responseCode);
+
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 
 module.exports = {
     checkUserIdExists,
@@ -315,5 +368,8 @@ module.exports = {
     changePrivate,
     checkfollowStatus,
     followUser,
-    unfollowUser
+    unfollowUser,
+    isUserPrivateTrue,
+    checkMyFollowRequest,
+    changeFollowStatus
 };

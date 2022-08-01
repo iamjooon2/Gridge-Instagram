@@ -9,7 +9,7 @@ const baseResponse = require("../utilities/baseResponseStatus");
 const regexPassword = new RegExp(/^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$/); // 특수문자 포함한 6~20자 허용하는 정규표현식
 const regexPhone = new RegExp(/^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/); //전화번호 형식 확인 정규표현식
 const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/); // 날짜 정규표현식
-
+const regexNum = new RegExp(/^[0-9]+$/);  // 숫자만 입력가능한 정규표현식
 // 로그인
 const logIn = async (req, res) => {
 
@@ -477,6 +477,51 @@ const unfollowUser = async (req, res) => {
     return res.send(followUserResult);
 }
 
+// 내게 들어온 팔로우 요청 가져오기
+const getFolowRequests = async (req, res) => {
+
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+
+    // 사용자 계정이 비공개 계정인지 확인
+    const checkPrivateResult = await userService.isUserPrivateTrue(userIdx);
+    if (!checkPrivateResult){
+        return res.send(errResponse(baseResponse.USER_PRIVATE_ERROR));
+    }
+
+    const userFollowRequestResult = await userService.checkMyFollowRequest(userIdx);
+
+    return res.send(userFollowRequestResult);
+}
+
+// 내게 들어온 팔로우 요청 수락/거절
+const patchFollowRequests = async (req, res) => {
+
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+    // 요청 수락/거절 정보를 코드로 넘겨받는다 0-수락/1-거절
+    const responseCode = req.query.responseCode;
+    const followeeId = req.body.id;
+
+    // vallidation
+    if (!followeeId) {
+        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    }
+
+    if (!responseCode) {
+        return res.send(errResponse(baseResponse.PRIVATE_CODE_EMPTY))
+    } else if (!regexNum.test(responseCode)) {
+        return res.send(errResponse(baseResponse.PRIVATE_CODE_ERROR))
+    } else if (responseCode > 1 || responseCode < 0) {
+        return res.send(errResponse(baseResponse.PRIVATE_CODE_ERROR))
+    }
+
+    const responseResult = await userService.changeFollowStatus(userIdx, followeeId, responseCode);
+
+    return res.send(responseResult);
+}
+
+
 module.exports = {
     logIn,
     kakaoLogin,
@@ -490,5 +535,7 @@ module.exports = {
     patchNameAndId,
     patchPrivate,
     followUser,
-    unfollowUser
+    unfollowUser,
+    getFolowRequests,
+    patchFollowRequests
 };
