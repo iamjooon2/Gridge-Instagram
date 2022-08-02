@@ -30,6 +30,16 @@ const insertUser = async (conn, phone, name, hashedPassword, birth, id, userType
     return insertedRow;
 }
 
+const getUserType = async (conn, userIdx) => {
+    const selectUserTokenQuery = `
+        SELECT userType
+        FROM user
+        WHERE userIdx = ?
+    `;
+    const [selectTokenResult] = await conn.query(selectUserTokenQuery, userIdx);
+
+    return selectTokenResult[0].userType;
+}
 
 const getSocialId = async (conn, socialId) => {
     const getSocialIdQuery = `
@@ -469,6 +479,7 @@ module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
     insertUser,
+    getUserType,
     getSocialId,
     getUserIdxBySocialId,
     getUserIdxByUserId,

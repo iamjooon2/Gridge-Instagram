@@ -445,6 +445,21 @@ const checkValidAccess = async (userIdx) => {
     }
 }
 
+// 사용자 타입 확인 - 자체로그인, 소셜로그인
+const checkUserType = async (userIdx) => {
+    try {
+        const connection = await pool.getConnection(async(conn)=> conn);
+        const userTypeResult = await userModel.getUserType(connection, userIdx);
+
+        connection.release();
+
+        return userTypeResult;
+    } catch (e) {
+        console.log(e);
+
+        return response(baseResponse.DB_ERROR);
+    }
+}
 
 module.exports = {
     checkUserIdExists,
@@ -467,5 +482,6 @@ module.exports = {
     changeFollowStatus,
     changeUserStatus,
     checkValidAccess,
-    postUserToken
+    postUserToken,
+    checkUserType
 };

@@ -42,11 +42,11 @@ const jwtMiddleware = (req, res, next) => {
 
         // 로그아웃/회원탈퇴한 유저에 대해 접근하려는 경우
         if(loginCheckbyToken == null){
-            return res.send(errResponse(baseResponse.WRONG_ACCESS));
+            return res.send(errResponse(baseResponse.TOKEN_WRONG_ACCESS));
         }
         //현재 로그인되어있는 유저의 이전 로그인 jwt로 접근하려는 경우
         else if(loginCheckbyToken != token) {
-            return res.send(errResponse(baseResponse.INVALID_TOKEN));
+            return res.send(errResponse(baseResponse.TOKEN_VERIFICATION_FAILURE));
         }
         else
             req.verifiedToken = verifiedToken;

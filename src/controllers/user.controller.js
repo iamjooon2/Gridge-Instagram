@@ -324,6 +324,12 @@ const patchPassword = async (req, res) => {
         return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_REGEX));
     }
 
+    // 소셜회원 여부 확인 - 가입시 비밀번호 입력 안하기 때문에 변경 불가
+    const checkSocialUserResult = await userService.checkUserType(userIdx);
+    if (checkSocialUserResult== 0) {
+        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_TYPE));
+    }
+
     const changedPasswordResult = await userService.patchPassword(phone, password);
 
     return res.send(changedPasswordResult)

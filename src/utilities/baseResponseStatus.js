@@ -21,10 +21,10 @@ module.exports = {
     SIGNUP_NICKNAME_LENGTH : { "isSuccess": false,"code": 2007,"message":"닉네임은 최대 20자리를 입력해주세요." },
     SIGNUP_BIRTH_EMPTY : { "isSuccess": false, "code": 2006, "message":"생일을 입력 해주세요." },
     SIGNUP_BIRTH_REGEX : { "isSuccess": false,"code": 2007,"message":"생일을 날짜 형식에 맞게 입력해주세요." },
+    TOKEN_WRONG_ACCESS : { "isSuccess": false,"code": 2007,"message": "잘못된 접근입니다." }, // jwt미들웨어 임시
 
     SIGNIN_USERNAME_EMPTY : { "isSuccess": false, "code": 2008, "message":"이메일을 입력해주세요" },
-    SIGNIN_EMAIL_LENGTH : { "isSuccess": false, "code": 2009, "message":"이메일은 30자리 미만으로 입력해주세요." },
-    SIGNIN_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2010, "message":"이메일을 형식을 정확하게 입력해주세요." },
+    SIGNIN_PASSWORD_TYPE : { "isSuccess": false, "code": 2010, "message":"이메일을 형식을 정확하게 입력해주세요." },
     SIGNIN_PASSWORD_EMPTY : { "isSuccess": false, "code": 2011, "message": "비밀번호를 입력 해주세요." },
     SIGNIN_PASSWORD_LENGTH : { "isSuccess": false, "code": 2005, "message":"비밀번호는 6~20자리를 입력해주세요." },
     SIGNIN_PASSWORD_REGEX : { "isSuccess": false, "code": 2030, "message":"비밀번호는 특수문자를 포함해야 합니다." },
