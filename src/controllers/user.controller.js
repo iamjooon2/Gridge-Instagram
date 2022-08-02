@@ -192,7 +192,7 @@ const signUp = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
     
-    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id);
+    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id, 0);
 
     return res.send(response(baseResponse.SUCCESS));
 }
@@ -245,7 +245,7 @@ const socialSignUp = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
     
-    await userService.postSignUp(phone, name, 'socailUser', birth, id);
+    await userService.postSignUp(phone, name, 'socailUser', birth, id, 1);
 
     return res.send(response(baseResponse.SUCCESS));
 }

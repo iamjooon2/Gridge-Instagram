@@ -48,13 +48,13 @@ const checkUserPassword = async (userId, userPassword) => {
 }
 
 // 회원정보 데이터베이스에 넣기
-const postSignUp = async (phone, name, password, birth, id) => {
+const postSignUp = async (phone, name, password, birth, id, userType) => {
     try {
         // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
         const connection = await pool.getConnection(async (connection) => connection);
         
-        const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id);
+        const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType);
 
         connection.release();
 

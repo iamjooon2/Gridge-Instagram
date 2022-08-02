@@ -20,25 +20,16 @@ const checkUserPassword = async (conn, userId) => {
     return checkRow;
 }
 
-const insertUser = async (conn, phone, name, hashedPassword, birth, id) => {
+const insertUser = async (conn, phone, name, hashedPassword, birth, id, userType) => {
     const insertUserQuery = `
-        INSERT INTO user(phone, name, password, birth, ID)
+        INSERT INTO user(phone, name, password, birth, ID, userType)
         VALUES(?,?,?,?,?)
     ;`;
-    const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id]);
+    const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id, userType]);
 
     return insertedRow;
 }
 
-const insertSocialUser = async (conn, phone, name, hashedPassword, birth, id, socialId) => {
-    const insertUserQuery = `
-        INSERT INTO user(phone, name, password, birth, ID, socialId, userType)
-        VALUES(?,?,?,?,?,?,?)
-    ;`;
-    const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id, socialId, 1]);
-
-    return insertedRow;
-}
 
 const getSocialId = async (conn, socialId) => {
     const getSocialIdQuery = `
@@ -478,7 +469,6 @@ module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
     insertUser,
-    insertSocialUser,
     getSocialId,
     getUserIdxBySocialId,
     getUserIdxByUserId,
