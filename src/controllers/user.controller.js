@@ -63,6 +63,9 @@ const logIn = async (req, res) => {
         subject: "userInfo",
     });
 
+    // 데이터베이스 토큰 저장
+    const userToken = await userService.postUserToken(userIdx, token);
+
     // header에는 token, body에는 json을 담아 response
     return res.header({'Authorization' : `Bearer ${token}`})
                 .send(response(baseResponse.SUCCESS));
@@ -114,6 +117,9 @@ const kakaoLogin = async (req, res) => {
         expiresIn: "30d",
         subject: "userInfo",
     });
+
+    // 데이터베이스 토큰 저장
+    const userToken = await userService.postUserToken(userIdx, token);
 
     // 토큰을 보내며 로그인처리 완료
     return res.header({'Authorization' : `Bearer ${token}`})

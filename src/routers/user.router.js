@@ -4,37 +4,37 @@ const jwtMiddleware = require('../middlewares/jwt.middleware');
 const userRouter = (router) =>{
 
     // 로그인 API
-    router.post('/login', userController.logIn);
+    router.post('/user/login', userController.logIn);
 
     // 자동 로그인 API
-    router.get('/auto-login', jwtMiddleware, userController.autoLogin);
+    router.get('/user/auto-login', jwtMiddleware, userController.autoLogin);
 
     // 카카오 로그인 API
-    router.get('/kakao-login', userController.kakaoLogin);
+    router.get('/user/kakao-login', userController.kakaoLogin);
 
     // 회원가입 API
-    router.post('/signUp', userController.signUp);
+    router.post('/user/signup', userController.signUp);
 
     // 소셜 회원가입 API
-    router.post('/social-signUp', userController.socialSignUp);
+    router.post('/user/social-signup', userController.socialSignUp);
 
     // 사용자 아이디 사용 확인 API
-    router.get('/checkId', userController.checkIdAvailable);
+    router.get('/user/check', userController.checkIdAvailable);
 
     // 내 정보 불러오는 API
-    router.get('/profile', jwtMiddleware, userController.getUserInfo);
+    router.get('/user/profile', jwtMiddleware, userController.getUserInfo);
 
     // 비밀번호 변경 API
-    router.patch('/password', userController.patchPassword);
+    router.patch('/user/password', userController.patchPassword);
 
     // 프로필 변경 API
-    router.patch('/profile', jwtMiddleware, userController.patchProfile);
+    router.patch('/user/profile', jwtMiddleware, userController.patchProfile);
 
     // 이름, 아이디 변경 API
-    router.patch('/nameAndId', jwtMiddleware, userController.patchNameAndId);
+    router.patch('/user/name-id', jwtMiddleware, userController.patchNameAndId);
 
     // 계정 공개 여부 설정 API
-    router.patch('/profile/private', jwtMiddleware, userController.patchPrivate);
+    router.patch('/user/profile/private', jwtMiddleware, userController.patchPrivate);
 
     // 사용자 팔로우 or 팔로우 요청 
     router.post('/user/follow', jwtMiddleware, userController.followUser);

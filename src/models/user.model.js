@@ -452,6 +452,27 @@ const updateFollowStatusInactive = async (conn, userIdx) => {
     return updateRow;
 }
 
+const selectUserTokenByIdx = async (conn, userIdx) => {
+    const selectUserTokenQuery = `
+        SELECT token
+        FROM user
+        WHERE userIdx = ?
+    `;
+    const [selectTokenResult] = await conn.query(selectUserTokenQuery, userIdx);
+
+    return selectTokenResult[0].token;
+}
+
+const updateUserToken = async (conn, userIdx) => {
+    const updateTokenQuery = `
+        UPDATE user
+        SET token = ?
+        WHERE userIdx = ?
+    `;
+    const [updatedUserRow] = await conn.query(updateTokenQuery, userIdx);
+
+    return updatedUserRow;
+}
 
 module.exports = {
     checkUserExistsByUserId,
@@ -484,5 +505,7 @@ module.exports = {
     updateCommentStatusInactive,
     updatePostLikeStatusInactive,
     updateCommentLikeStatusInactive,
-    updateFollowStatusInactive
+    updateFollowStatusInactive,
+    selectUserTokenByIdx,
+    updateUserToken
 }

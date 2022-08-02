@@ -413,6 +413,39 @@ const changeUserStatus = async (userIdx) => {
     }
 }
 
+// 토큰 넣기 - 로그인때 사용
+const postUserToken = async (userIdx, token) => {
+    try {
+        const connection = await pool.getConnection(async(conn)=> conn);
+        const checkValidAccessResult = await userModel.updateUserToken(connection, userIdx, token);
+
+        connection.release();
+
+        return checkValidAccessResult;
+    } catch (e) {
+        console.log(e);
+
+        return response(baseResponse.DB_ERROR);
+    } 
+}
+
+// 유효된 토큰인지 확인
+const checkValidAccess = async (userIdx) => {
+    try {
+        const connection = await pool.getConnection(async(conn)=> conn);
+        const checkValidAccessResult = await userModel.selectUserTokenByIdx(connection, userIdx);
+
+        connection.release();
+
+        return checkValidAccessResult;
+    } catch (e) {
+        console.log(e);
+
+        return response(baseResponse.DB_ERROR);
+    }
+}
+
+
 module.exports = {
     checkUserIdExists,
     checkUserPassword,
@@ -432,5 +465,7 @@ module.exports = {
     isUserPrivateTrue,
     checkMyFollowRequest,
     changeFollowStatus,
-    changeUserStatus
+    changeUserStatus,
+    checkValidAccess,
+    postUserToken
 };
