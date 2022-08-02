@@ -21,6 +21,7 @@ const jwtMiddleware = (req, res, next) => {
         (resolve, reject) => {
             jwt.verify(token, process.env.JWT_SECRET , (error, verifiedToken) => {
                 if (error) {
+                    console.log('jwtMiddlwareError')
                     reject(error);
                 }
                 //검증 성공하면 verifiedToken으로 넘기기
@@ -39,8 +40,8 @@ const jwtMiddleware = (req, res, next) => {
         //req에 verifiedToken으로 담겠다
         req.verifiedToken = verifiedToken;
 
+
         next();
-        
     }).catch(onError);
 };
 

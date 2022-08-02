@@ -288,6 +288,170 @@ const checkUserFollowRequests = async (conn , userIdx) => {
     return RequestRow;
 }
 
+const updateUserStatus = async (conn , userIdx) => {
+    const updateUserStatusQuery = `
+        UPDATE user
+        SET status = 1
+        WHERE userIdx = ?
+    `;
+    const [RequestRow] = await conn.query(updateUserStatusQuery, userIdx);
+
+    return RequestRow;
+}
+
+const updateUserTokenNull = async (conn , userIdx) => {
+    const updateUserTokenQuery = `
+        UPDATE user
+        SET token = NULL
+        WHERE userIdx = ?
+    `;
+    const [updateRow] = await conn.query(updateUserTokenQuery, userIdx);
+
+    return updateRow;
+}
+
+const updateUserIdNull = async (conn , userIdx) => {
+    const updateUserIdNullQuery = `
+        UPDATE user
+        SET ID = NULL
+        WHERE userIdx = ?
+    `;
+    const [updateRow] = await conn.query(updateUserIdNullQuery, userIdx);
+
+    return updateRow;
+}
+
+const updateUserProfileImgUrlStatus = async (conn, userIdx) => {
+    const updateUserProfileImgUrlStatusQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM userProfileImg
+            WHERE userIdx = ?
+            )
+        BEGIN 
+            UPDATE userProfileImg
+            SET status = 1
+            WHERE userIdx = ?
+        ELSE
+        END
+    `;
+    const [updateRow] = await conn.query(updateUserProfileImgUrlStatusQuery, [userIdx, userIdx]);
+
+    return updateRow;
+}
+
+const updatePostStatusInactive = async (conn, userIdx) => {
+    const updatePostStatusQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM post
+            WHERE userIdx = ?
+            )
+        BEGIN 
+            UPDATE post
+            SET status = 1
+            where userIdx = ?
+        END
+    `;
+    const [updateRow] = await conn.query(updatePostStatusQuery, [userIdx, userIdx]);
+
+    return updateRow;
+}
+
+const updatePostImgStatusInactive = async (conn, userIdx) => {
+    const updateUserIdNullQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM postImg
+            WHERE postImg.postIdx = ( SELECT postIdx FROM post WHERE userIdx = ? )
+            )
+        BEGIN
+            UPDATE postImg
+            SET status = 1
+            WHERE postImg.postIdx = ( SELECT postIdx FROM post WHERE userIdx = ? )
+        END
+    `;
+    const [updateRow] = await conn.query(updateUserIdNullQuery, [userIdx, userIdx]);
+
+    return updateRow;
+}
+
+const updateCommentStatusInactive = async (conn, userIdx) => {
+    const updatCommentStatusQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM comment
+            WHERE userIdx = ?
+            )
+        BEGIN 
+            UPDATE comment
+            set status = 1
+            WHERE userIdx = ?
+        END
+    `;
+
+    const [updateRow] = await conn.query(updatCommentStatusQuery, [userIdx, userIdx]);
+
+    return updateRow;
+}
+
+const updatePostLikeStatusInactive = async (conn, userIdx) => {
+    const updatPostLikeStatusQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM postLike
+            WHERE userIdx = ?
+            )
+        BEGIN 
+            UPDATE postLike
+            set status = 1
+            WHERE userIdx = ?
+        END
+    `;
+
+    const [updateRow] = await conn.query(updatPostLikeStatusQuery, [userIdx, userIdx]);
+
+    return updateRow;
+}
+
+const updateCommentLikeStatusInactive = async (conn, userIdx) => {
+    const updatCommentLikeStatusQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM commentLike
+            WHERE userIdx = ?
+            )
+        BEGIN 
+            UPDATE commentLike
+            set status = 1
+            WHERE userIdx = ?
+        END
+    `;
+
+    const [updateRow] = await conn.query(updatCommentLikeStatusQuery, [userIdx, userIdx]);
+
+    return updateRow;
+}
+
+const updateFollowStatusInactive = async (conn, userIdx) => {
+    const updatFollowtatusQuery = `
+        IF EXISTS (
+            SELECT *
+            FROM follow
+            WHERE userIdx = ? or targetUserIdx = ?
+            )
+        BEGIN 
+            UPDATE follow
+            SET status = 1
+            WHERE userIdx = ? or targetUserIdx = ?
+        END
+    `;
+
+    const [updateRow] = await conn.query(updatFollowtatusQuery, [userIdx, userIdx, userIdx, userIdx]);
+
+    return updateRow;
+}
+
 
 module.exports = {
     checkUserExistsByUserId,
@@ -310,5 +474,15 @@ module.exports = {
     checkFollowByRequesterId,
     updateFollowStatusByTargetId,
     updateFollowStatusByRequesterId,
-    checkUserFollowRequests
+    checkUserFollowRequests,
+    updateUserStatus,
+    updateUserTokenNull,
+    updateUserIdNull,
+    updateUserProfileImgUrlStatus,
+    updatePostStatusInactive,
+    updatePostImgStatusInactive,
+    updateCommentStatusInactive,
+    updatePostLikeStatusInactive,
+    updateCommentLikeStatusInactive,
+    updateFollowStatusInactive
 }

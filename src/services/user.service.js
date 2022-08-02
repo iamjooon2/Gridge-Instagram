@@ -374,6 +374,44 @@ const changeFollowStatus = async (userIdx, followeeId, responseCode) => {
     }
 }
 
+// 사용자 탈퇴
+const changeUserStatus = async (userIdx) => {
+    const connection = await pool.getConnection(async(connection) => connection);
+    try {
+        await connection.beginTransaction();
+
+        // 사용자 삭제상태로 바꾸고 id, token, 프로필 사진 없애기
+        await userModel.updateUserStatus(connection, userIdx);
+        await userModel.updateUserIdNull(connection, userIdx);
+        await userModel.updateUserTokenNull(connection, userIdx);
+        await userModel.updateUserProfileImgUrlStatus(connection, userIdx);
+
+        // 게시물 없애기
+        await userModel.updatePostStatusInactive(connection, userIdx);
+        await userModel.updatePostImgStatusInactive(connection, userIdx);
+
+        // 댓글 없애기
+        await userModel.updateCommentStatusInactive(connection, userIdx);
+
+        // 좋아요 없애기
+        await userModel.updateCommentLikeStatusInactive(connection, userIdx);
+        await userModel.updatePostLikeStatusInactive(connection, userIdx);
+
+        // 팔로우 없애기
+        await userModel.updateFollowStatusInactive(connection, userIdx);
+
+        await connection.commit(); 
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        await connection.rollback();
+
+        return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+}
 
 module.exports = {
     checkUserIdExists,
@@ -393,5 +431,6 @@ module.exports = {
     unfollowUser,
     isUserPrivateTrue,
     checkMyFollowRequest,
-    changeFollowStatus
+    changeFollowStatus,
+    changeUserStatus
 };

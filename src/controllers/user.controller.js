@@ -239,7 +239,7 @@ const socialSignUp = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
     
-    const userSignUpResult = await userService.postSignUp(phone, name, 'socailUser', birth, id);
+    await userService.postSignUp(phone, name, 'socailUser', birth, id);
 
     return res.send(response(baseResponse.SUCCESS));
 }
@@ -528,6 +528,15 @@ const patchFollowRequests = async (req, res) => {
     return res.send(responseResult);
 }
 
+// 회원 탈퇴
+const patchUserStatus = async (req, res) => {
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+
+    const deleteUserResult = await userService.changeUserStatus(userIdx);
+
+    return res.send(deleteUserResult);
+}
 
 module.exports = {
     logIn,
@@ -544,5 +553,6 @@ module.exports = {
     followUser,
     unfollowUser,
     getFolowRequests,
-    patchFollowRequests
+    patchFollowRequests,
+    patchUserStatus
 };

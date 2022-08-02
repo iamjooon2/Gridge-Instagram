@@ -1,22 +1,20 @@
 CREATE TABLE `Gridge-ERD`.`user`(
     `userIdx`        BIGINT          NOT NULL    AUTO_INCREMENT, 
-    `ID`             VARCHAR(45)     NOT NULL UNIQUE, 
+    `ID`             VARCHAR(45)     NULL UNIQUE, 
     `password`       VARCHAR(300)    NULL, 
     `name`           VARCHAR(45)     NULL, 
     `introduce`      VARCHAR(300)    NULL, 
-    `email`          VARCHAR(45)     NULL, 
+    `token`          VARCHAR(300)    NULL, 
     `phone`          VARCHAR(45)     NULL, 
     `profileImgUrl`  TEXT            NULL, 
     `website`        TEXT            NULL, 
     `private`        TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-공개 / 1-비공개', 
     `birth`          DATE            NOT NULL, 
-    `userType`       TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-자체로그인/1-카카오로그인/2-네이버 등등...', 
+    `userType`       TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-자체로그인/1-카카오로그인/2-네이버 등등... 추가가능', 
     `socialId`       VARCHAR(45)     NULL,
     `createdAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp,
-    `status`         TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제/2-관리자 비활성화', 
-    `IDhistory`      TIMESTAMP       NULL, 
-    `nameHistory`    TIMESTAMP       NULL, 
+    `status`         TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-탈퇴/2-관리자 비활성화', 
     PRIMARY KEY (userIdx)
 );
 
@@ -189,28 +187,6 @@ ALTER TABLE `Gridge-ERD`.`following`
 ALTER TABLE `Gridge-ERD`.`following`
     ADD CONSTRAINT FK_following_targetUserIdx_user_userIdx FOREIGN KEY (targetUserIdx)
         REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-
--- follower Table Create SQL
-CREATE TABLE `Gridge-ERD`.`follower`
-(
-    `followerIdx`    BIGINT       NOT NULL    AUTO_INCREMENT, 
-    `userIdx`        BIGINT       NOT NULL, 
-    `targetUserIdx`  BIGINT       NOT NULL, 
-    `createdAt`      TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
-    `updatedAt`      TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
-    `status`         TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제/2-승인대기중', 
-     PRIMARY KEY (followerIdx)
-);
-
-ALTER TABLE `Gridge-ERD`.`follower`
-    ADD CONSTRAINT FK_follower_userIdx_user_userIdx FOREIGN KEY (userIdx)
-        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
-ALTER TABLE `Gridge-ERD`.`follower`
-    ADD CONSTRAINT FK_follower_targetUserIdx_user_userIdx FOREIGN KEY (targetUserIdx)
-        REFERENCES `Gridge-ERD`.`user` (userIdx) ON DELETE RESTRICT ON UPDATE RESTRICT;
-
 
 -- commentLike Table Create SQL
 CREATE TABLE `Gridge-ERD`.`commentLike`
