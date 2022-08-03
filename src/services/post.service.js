@@ -86,11 +86,12 @@ const retrievePostLists = async (userIdx, page) => {
 }
 
 // 사용자 피드용 게시글 리스트 가지고오기
-const retrieveUserFeed = async (userIdx) => {
+const retrieveUserFeed = async (userIdx, page) => {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const postListResult = await postModel.selectFollowingUserPosts(connection, userIdx);
-        
+        const offsets = (page-1)*10;
+        const postListResult = await postModel.selectFollowingUserPosts(connection, userIdx, offsets);
+
         connection.release()
 
         return response(baseResponse.SUCCESS, postListResult);
@@ -217,6 +218,7 @@ const createPostReport = async (userIdx, postIdx, reportCode) => {
         connection.release();
     }
 }
+
 
 module.exports ={
     createPost,

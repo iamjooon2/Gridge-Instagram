@@ -304,8 +304,9 @@ const getUserInfo = async (req, res) => {
 const getUserFeed = async (req, res) => {
     const userIdxInfoFromToken = req.verifiedToken.idx;
     const userIdx = userIdxInfoFromToken[0].userIdx;
+    const page = req.query.page;
 
-    const userFeedResult = await postService.retrieveUserFeed(userIdx);
+    const userFeedResult = await postService.retrieveUserFeed(userIdx, page);
 
     return res.send(userFeedResult);
 }

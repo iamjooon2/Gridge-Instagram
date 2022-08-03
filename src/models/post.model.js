@@ -204,7 +204,7 @@ const insertPostReport = async (connection, userIdx, postIdx, reportCode) => {
     return postReportResult;
 }
 
-const selectFollowingUserPosts = async (connection, userIdx, cursor) => {
+const selectFollowingUserPosts = async (connection, userIdx, page) => {
     const selectFollowingUserPostsQuery = `
         SELECT u.userIdx, f.targetUserIdx, followingName, postIdx, content, postImgUrl, likeCount, 
             case
@@ -228,15 +228,15 @@ const selectFollowingUserPosts = async (connection, userIdx, cursor) => {
                             FROM postLike
                             WHERE status = 0
                             group by postIdx) pl on pl.postIdx = p.postIdx
-                WHERE p.status = 0 and p.postIdx < ?
+                WHERE p.status = 0
                 ORDER BY p.createdAt DESC) p on p.userIdx = f.targetUserIdx
             WHERE f.status = 0) f on f.userIdx = u.userIdx
         WHERE u.userIdx = ? and f.userIdx = ?
         ORDER BY p.postIdx DESC
-        LIMIT 10
+        LIMIT 10 offset ?
     `;
 
-    const [postResult] = await connection.query(selectFollowingUserPostsQuery, [cursor, userIdx, userIdx]);
+    const [postResult] = await connection.query(selectFollowingUserPostsQuery, [userIdx, userIdx, page]);
 
     return postResult;
 }
