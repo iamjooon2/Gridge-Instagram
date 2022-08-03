@@ -46,11 +46,11 @@ const selectPostComments = async (conn, postIdx, cursorTime) => {
         FROM comment
             join user 
                 on comment.userIdx = user.userIdx
-        WHERE comment.postIdx = ${postIdx} and comment.status = 0 and comment.createdAt <= ${cursorTime} 
+        WHERE comment.postIdx = ? and comment.status = 0 and comment.createdAt <= ? 
         ORDER BY comment.commentIdx ASC
         limit 10
     `;
-    const [selectedCommentsRow] = await conn.query(selectPostCommentsQuery);
+    const [selectedCommentsRow] = await conn.query(selectPostCommentsQuery, [postIdx, cursorTime]);
 
     return selectedCommentsRow;
 }

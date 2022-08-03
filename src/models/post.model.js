@@ -59,11 +59,11 @@ const selectUserPosts = async (connection, userIdx, page) => {
                 on pi.postIdx = p.postIdx and pi.status = 0
             join user as u 
                 on u.userIdx = p.userIdx
-        WHERE p.status = 0 and u.userIdx = ${userIdx}
+        WHERE p.status = 0 and u.userIdx = ?
         ORDER BY p.postIdx
-        LIMIT 9 OFFSET ${page}
+        LIMIT 9 OFFSET ?
     `;
-    const [postRows] = await connection.query(selectUserPostsQuery);
+    const [postRows] = await connection.query(selectUserPostsQuery, [userIdx, page]);
 
     return postRows;
 
