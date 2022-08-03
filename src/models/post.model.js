@@ -204,9 +204,9 @@ const insertPostReport = async (connection, userIdx, postIdx, reportCode) => {
     return postReportResult;
 }
 
-const selectFollowingUserPosts = async (connection, userIdx) => {
+const selectFollowingUserPosts = async (connection, userIdx, cursor) => {
     const selectFollowingUserPostsQuery = `
-        SELECT u.userIdx, f.targetUserIdx, followingName, content, postImgUrl, likeCount, 
+        SELECT u.userIdx, f.targetUserIdx, followingName, postIdx, content, postImgUrl, likeCount, 
             case
                 when timestampdiff(minute, postTime, current_timestamp) < 60
                     then CONCAT(TIMESTAMPDIFF(minute, postTime , NOW()), '분')
@@ -218,24 +218,25 @@ const selectFollowingUserPosts = async (connection, userIdx) => {
                     timestampdiff(year , postTime, current_timestamp)
             end as postTime
         FROM user as u
-                 join ( SELECT f.userIdx, f.targetUserIdx, u1.ID as followingName , p.content, p.updatedAt as postTime, postImgUrl, likeCount
-                    FROM following as f
-                        join user as u1 on u1.userIdx = f.targetUserIdx
-                         join(SELECT p.userIdx, p.content, p.updatedAt, pi.imgUrl as postImgUrl, likeCount
-                                FROM post as p
-                                     left join postImg as pi on pi.postIdx = p.postIdx and pi.status = 0
-                                     left join (SELECT COUNT(postLikeIdx) as likeCount, postIdx
-                                            FROM postLike
-                                            WHERE status = 0
-                                            group by postIdx) pl on pl.postIdx = p.postIdx
-                                WHERE p.status = 0
-                                order by p.createdAt desc) p on p.userIdx = f.targetUserIdx
-                    WHERE f.status = 0) f on f.userIdx = u.userIdx
+            join ( SELECT f.userIdx, f.targetUserIdx, u1.ID as followingName , p.postIdx, p.content, p.createdAt as postTime, postImgUrl, likeCount
+            FROM following as f
+                join user as u1 on u1.userIdx = f.targetUserIdx
+                    join(SELECT p.userIdx, p.postIdx, p.content, p.createdAt, pi.imgUrl as postImgUrl, likeCount
+                    FROM post as p
+                        left join postImg as pi on pi.postIdx = p.postIdx and pi.status = 0
+                        left join (SELECT COUNT(postLikeIdx) as likeCount, postIdx
+                            FROM postLike
+                            WHERE status = 0
+                            group by postIdx) pl on pl.postIdx = p.postIdx
+                WHERE p.status = 0 and p.postIdx < ?
+                ORDER BY p.createdAt DESC) p on p.userIdx = f.targetUserIdx
+            WHERE f.status = 0) f on f.userIdx = u.userIdx
         WHERE u.userIdx = ? and f.userIdx = ?
-        LIMIT 10 offset 10;
+        ORDER BY p.postIdx DESC
+        LIMIT 10
     `;
 
-    const [postResult] = await connection.query(selectFollowingUserPostsQuery, [userIdx, userIdx]);
+    const [postResult] = await connection.query(selectFollowingUserPostsQuery, [cursor, userIdx, userIdx]);
 
     return postResult;
 }
