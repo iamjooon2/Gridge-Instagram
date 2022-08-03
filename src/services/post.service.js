@@ -67,18 +67,33 @@ const retrieveUserIdx = async (postIdx) => {
     }
 }
 
-// 게시글 목록 조회
+// 게시글 사진 목록 조회
 const retrievePostLists = async (userIdx, page) => {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
         const offset = (page-1)*9;
-        const postListResult = await postModel.selectUserPosts(connection, userIdx, offset);
+        const postListResult = await postModel.selectUserPhotos(connection, userIdx, offset);
         
         
         connection.release()
 
         return postListResult;
 
+    } catch (e){
+        console.log(e);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 사용자 피드용 게시글 리스트 가지고오기
+const retrieveUserFeed = async (userIdx) => {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const postListResult = await postModel.selectFollowingUserPosts(connection, userIdx);
+        
+        connection.release()
+
+        return response(baseResponse.SUCCESS, postListResult);
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -207,7 +222,8 @@ module.exports ={
     createPost,
     updatePost,
     retrieveUserIdx,
-    retrievePostLists,  
+    retrievePostLists,
+    retrieveUserFeed,
     updatePostStatus,
     retrievePostContent,
     createPostLike,

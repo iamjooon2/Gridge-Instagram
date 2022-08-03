@@ -128,7 +128,7 @@ const getUserInfo = async (userIdx, page) => {
 
         const offset = (page-1)*9;
         
-        const userPostResult = await postModel.selectUserPosts(connection, userIdx, offset);
+        const userPostResult = await postModel.selectUserPhotos(connection, userIdx, offset);
 
         connection.release();
 

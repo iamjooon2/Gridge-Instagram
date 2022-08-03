@@ -51,7 +51,7 @@ const selectUserIdxByPostIdx = async (connection, postIdx) => {
     return selectedUserRow;
 }
 
-const selectUserPosts = async (connection, userIdx, page) => {
+const selectUserPhotos = async (connection, userIdx, page) => {
     const selectUserPostsQuery = `
         SELECT p.postIdx as postIdx, pi.imgUrl as postImgUrl
         FROM post as p
@@ -204,13 +204,51 @@ const insertPostReport = async (connection, userIdx, postIdx, reportCode) => {
     return postReportResult;
 }
 
+const selectFollowingUserPosts = async (connection, userIdx) => {
+    const selectFollowingUserPostsQuery = `
+        SELECT u.userIdx, f.targetUserIdx, followingName, content, postImgUrl, likeCount, 
+            case
+                when timestampdiff(minute, postTime, current_timestamp) < 60
+                    then CONCAT(TIMESTAMPDIFF(minute, postTime , NOW()), '분')
+                when timestampdiff(hour , postTime, current_timestamp) < 24
+                    then CONCAT(TIMESTAMPDIFF(hour, postTime , NOW()), '시간')
+                when timestampdiff(day, postTime, current_timestamp) < 30 
+                    then CONCAT(TIMESTAMPDIFF(day, postTime, NOW()), '일')
+                else 
+                    timestampdiff(year , postTime, current_timestamp)
+            end as postTime
+        FROM user as u
+                 join ( SELECT f.userIdx, f.targetUserIdx, u1.ID as followingName , p.content, p.updatedAt as postTime, postImgUrl, likeCount
+                    FROM following as f
+                        join user as u1 on u1.userIdx = f.targetUserIdx
+                         join(SELECT p.userIdx, p.content, p.updatedAt, pi.imgUrl as postImgUrl, likeCount
+                                FROM post as p
+                                     left join postImg as pi on pi.postIdx = p.postIdx and pi.status = 0
+                                     left join (SELECT COUNT(postLikeIdx) as likeCount, postIdx
+                                            FROM postLike
+                                            WHERE status = 0
+                                            group by postIdx) pl on pl.postIdx = p.postIdx
+                                WHERE p.status = 0
+                                order by p.createdAt desc) p on p.userIdx = f.targetUserIdx
+                    WHERE f.status = 0) f on f.userIdx = u.userIdx
+        WHERE u.userIdx = ? and f.userIdx = ?
+        LIMIT 10 offset 10;
+    `;
+
+    const [postResult] = await connection.query(selectFollowingUserPostsQuery, [userIdx, userIdx]);
+
+    return postResult;
+}
+
+
+
 module.exports = {
     insertPost,
     insertPostImg,
     updatePost,
     selectPostByPostIdx,
     selectUserIdxByPostIdx,
-    selectUserPosts,
+    selectUserPhotos,
     selectPostImgs,
     selectPostStatus,
     updatePostStatusInactive,
@@ -220,6 +258,7 @@ module.exports = {
     insertPostLike,
     updatePostDislike,
     checkPostReport,
-    insertPostReport
+    insertPostReport,
+    selectFollowingUserPosts
 }
     

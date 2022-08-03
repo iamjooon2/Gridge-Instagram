@@ -24,6 +24,9 @@ const userRouter = (router) =>{
     // 내 정보 불러오는 API
     router.get('/user/profile', jwtMiddleware, userController.getUserInfo);
 
+    // 사용자 피드 조회 
+    router.get('/user/feed', jwtMiddleware, userController.getUserFeed);
+
     // 비밀번호 변경 API
     router.patch('/user/password', userController.patchPassword);
 
@@ -50,6 +53,7 @@ const userRouter = (router) =>{
 
     // 회원 탈퇴
     router.patch('/user/withdraw', jwtMiddleware, userController.patchUserStatus);
+
 }
 
 module.exports = userRouter;

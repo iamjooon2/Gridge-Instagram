@@ -3,6 +3,7 @@ const axios = require("axios");
 const dotenv = require('dotenv');
 dotenv.config();
 const userService = require('../services/user.service');
+const postService = require('../services/post.service');
 const { response, errResponse }= require("../utilities/response");
 const baseResponse = require("../utilities/baseResponseStatus");
 
@@ -299,6 +300,16 @@ const getUserInfo = async (req, res) => {
     return res.send(response(baseResponse.SUCCESS, userInfoResult));
 }
 
+// 사용자 피드 조회
+const getUserFeed = async (req, res) => {
+    const userIdxInfoFromToken = req.verifiedToken.idx;
+    const userIdx = userIdxInfoFromToken[0].userIdx;
+
+    const userFeedResult = await postService.retrieveUserFeed(userIdx);
+
+    return res.send(userFeedResult);
+}
+
 // 전화번호로 비밀번호 변경하기
 const patchPassword = async (req, res) => {
     
@@ -371,7 +382,7 @@ const patchProfile = async (req, res) => {
     return res.send(changeProfileResult);
 }
 
-// 이름, 아이디만 변경
+// 이름, 아이디만 변경 - 두 개 한번에...? 보류
 const patchNameAndId = async (req, res) => {
 
     const userIdxInfoFromToken = req.verifiedToken.idx;
@@ -558,6 +569,7 @@ module.exports = {
     socialSignUp,
     checkIdAvailable,
     getUserInfo,
+    getUserFeed,
     patchPassword,
     patchProfile,
     patchNameAndId,
