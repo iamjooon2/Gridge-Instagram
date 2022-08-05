@@ -2,12 +2,11 @@ const selectUserList = async (conn, id, name, signUpDate, status, offset) => {
     const adminSelectUserQuery = `
         SELECT *
         FROM user
-        WHERE (ID = ? OR ID is not null) AND (name = ? OR name is not null) AND (createdAt = ? or createdAt is not null) AND (status = ? or status is not null)
-        ORDER BY createdAt ASC
-        LIMIT 10 OFFSET ?
+        WHERE ID = ${id} and name = ${name} and DATE(createdAt) = DATE(${signUpDate}) and status = ${status}
+        LIMIT 10 offset ${offset}
     `;
 
-    const [userRow] = await conn.query(adminSelectUserQuery, [id, name, signUpDate, status, offset]);
+    const [userRow] = await conn.query(adminSelectUserQuery);
 
     return userRow;
 }
@@ -146,6 +145,20 @@ const updateUserStatus = async (conn, userIdx) => {
     return userRow;
 }
 
+const selectPostList = async (conn, id, date, status, offset) => {
+    const adminSelectListQuery = `
+        SELECT *
+        FROM post
+        WHERE (name = ? OR name is not null) AND (DATE(createdAt) = ? or createdAt is not null) AND (status = ? or status is not null)
+        ORDER BY createdAt ASC
+        LIMIT 10 OFFSET ?
+    `;
+
+    const [userRow] = await conn.query(adminSelectListQuery, [id, date, status, offset]);
+
+    return userRow;
+}
+
 module.exports = {
     selectUserList,
     selectUserLastLoginTime,
@@ -159,5 +172,6 @@ module.exports = {
     selectUserFollowingByUserIdx,
     selectUserFollowerByUserIdx,
     selectUserMessageByUserIdx,
-    updateUserStatus
+    updateUserStatus,
+    selectPostList
 }

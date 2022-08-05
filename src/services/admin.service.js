@@ -9,7 +9,18 @@ exports.retrieveUserList = async (id, name, signUpDate, status, page) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const offset = (page-1)*10;
-        const adminSelectResult = await adminModel.selectUserList(connection, id, name, signUpDate, status, offset);
+        
+        if (name === undefined) name = 'name';
+        else name = `'${name}'`
+        if (id === undefined) id = 'ID';
+        else id = `'${id}'`;
+        if (status === undefined) status = 'status';
+        else status = `'${status}'`;
+        let date;
+        if (signUpDate !== undefined) date = signUpDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`);
+        else date = "'createdAt'";
+
+        const adminSelectResult = await adminModel.selectUserList(connection, id, name, date, status, offset);
 
         connection.release();
         
@@ -74,4 +85,23 @@ exports.banUser = async (userIdx) => {
         return errResponse(baseResponse.DB_ERROR);
     }
 
+}
+
+exports.retrievePostList = async (id, postDate, status, page) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const offset = (page-1)*10;
+        if (postDate !== null){
+            let postDate  = postDate.replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3');
+        }
+        const adminSelectResult = await adminModel.selectPostList(connection, id, postDate, status, offset);
+
+        connection.release();
+        
+        return response(baseResponse.SUCCESS, adminSelectResult);
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
 }

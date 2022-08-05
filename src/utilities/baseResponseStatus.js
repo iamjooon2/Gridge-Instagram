@@ -54,6 +54,7 @@ module.exports = {
 
     POST_POSTIMGURLS_EMPTY : { "isSuccess": false, "code": 2022, "message": "postImgUrls를 입력해주세요." },
     POST_CONTENT_LENGTH : { "isSuccess": false, "code": 2023, "message": "content의 길이는 450 이하로 입력해주세요." },
+    ADMIN_DATE_REGEX : { "isSuccess": false, "code": 2002, "message": " 날짜 형식이 옳지 않습니다." },
 
     POST_POSTIDX_EMPTY: { "isSuccess": false, "code": 2024, "message": "postIdx를 입력해주세요." },
     POST_POSTIDX_LENGTH: { "isSuccess": false, "code": 2025, "message": "postIdx는 0보다 큰 값으로 입력해주세요." },
