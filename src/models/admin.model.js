@@ -135,6 +135,17 @@ const selectUserMessageByUserIdx = async (conn, userIdx) => {
 }
 
 
+const updateUserStatus = async (conn, userIdx) => {
+    const updateUserStatusQuery = `
+        UPDATE user
+        SET status = 3
+        WHERE userIdx = ?
+    `;
+    const [userRow] = await conn.query(updateUserStatusQuery, userIdx);
+    
+    return userRow;
+}
+
 module.exports = {
     selectUserList,
     selectUserLastLoginTime,
@@ -147,5 +158,6 @@ module.exports = {
     selectUserCommentReportByUserIdx,
     selectUserFollowingByUserIdx,
     selectUserFollowerByUserIdx,
-    selectUserMessageByUserIdx
+    selectUserMessageByUserIdx,
+    updateUserStatus
 }

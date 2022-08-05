@@ -9,7 +9,6 @@ exports.retrieveUserList = async (id, name, signUpDate, status, page) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const offset = (page-1)*10;
-        
         const adminSelectResult = await adminModel.selectUserList(connection, id, name, signUpDate, status, offset);
 
         connection.release();
@@ -59,4 +58,20 @@ exports.retrieveUserDetailList = async (userIdx) => {
 
         return errResponse(baseResponse.DB_ERROR);
     }
+}
+
+exports.banUser = async (userIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const adminSelectResult = await adminModel.updateUserStatus(connection, userIdx);
+
+        connection.release();
+        
+        return response(baseResponse.SUCCESS, adminSelectResult);
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+
 }

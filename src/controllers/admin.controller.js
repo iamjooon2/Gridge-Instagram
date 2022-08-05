@@ -26,15 +26,22 @@ exports.getUserList = async (req, res) => {
 // 회원 상세 정보 보기
 exports.getUserDetailList = async (req, res) => {
     const userIdx = req.params.userIdx;
-
+    if (!userIdx){
+        return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
+    } 
     const retrieveUserDetailResult = await adminService.retrieveUserDetailList(userIdx);
 
     return res.send(retrieveUserDetailResult);
 }
 
+// 회원 정지
 exports.postUserBan = async (req, res) => {
 
     const userIdx = req.params.userIdx;
+
+    if (!userIdx){
+        return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));
+    } 
 
     const userBanResult = await adminService.banUser(userIdx);
 
