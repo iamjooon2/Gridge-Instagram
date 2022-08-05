@@ -12,13 +12,13 @@ const adminRouter = (router) =>{
     router.patch('/admin/user/:userIdx', adminController.patchUserStatus);
     
     // 포스트 전체 정보 보기
-    // router.get('/admin/post', adminController.getPostList);
+    router.get('/admin/post', adminController.getPostList);
     
-    // // 포스트 상세 정보 보기
-    // router.get('/admin/post/:postIdx', adminController.getPostDetailList);
+    // 포스트 상세 정보 보기
+    router.get('/admin/post/:postIdx', adminController.getPostDetailList);
 
-    // // 포스트 관리자 삭제
-    // router.patch('/admin/post/:postIdx', adminController.patchPostStatus);
+    // 포스트 관리자 삭제
+    router.patch('/admin/post/:postIdx', adminController.patchPostStatus);
 
 };
 

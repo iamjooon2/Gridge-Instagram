@@ -133,7 +133,6 @@ const selectUserMessageByUserIdx = async (conn, userIdx) => {
     return userRow;
 }
 
-
 const updateUserStatus = async (conn, userIdx) => {
     const updateUserStatusQuery = `
         UPDATE user
@@ -145,19 +144,102 @@ const updateUserStatus = async (conn, userIdx) => {
     return userRow;
 }
 
-const selectPostList = async (conn, id, date, status, offset) => {
+const selectPostList = async (conn, id, postDate, status, offset) => {
     const adminSelectListQuery = `
         SELECT *
         FROM post
-        WHERE (name = ? OR name is not null) AND (DATE(createdAt) = ? or createdAt is not null) AND (status = ? or status is not null)
+        WHERE userIdx = (
+                        SELECT user.userIdx
+                        FROM user
+                        WHERE ID = ${id}
+                        ) and DATE(createdAt) = DATE(${postDate}) 
+                        and status = ${status} 
         ORDER BY createdAt ASC
-        LIMIT 10 OFFSET ?
+        LIMIT 10 offset ${offset}
     `;
 
-    const [userRow] = await conn.query(adminSelectListQuery, [id, date, status, offset]);
+    const [userRow] = await conn.query(adminSelectListQuery);
 
     return userRow;
 }
+
+const selectPostByPostIdx = async (conn, postIdx) => {
+    const selectPostEverythingQuery = `
+        SELECT *
+        FROM post
+        WHERE postIdx = ?
+    `;
+    const [postRow] = await conn.query(selectPostEverythingQuery, postIdx);
+    
+    return postRow;
+}
+
+const selectPostImgByPostIdx = async (conn, postIdx) => {
+    const selectPostEverythingQuery = `
+        SELECT *
+        FROM postImg
+        WHERE postIdx = ?
+    `;
+    const [postRow] = await conn.query(selectPostEverythingQuery, postIdx);
+    
+    return postRow;
+}
+
+const selectPostLikeByPostIdx = async (conn, postIdx) => {
+    const selectPostEverythingQuery = `
+        SELECT COUNT(postIdx) as '좋아요 개수'
+        FROM postLike
+        WHERE postIdx = ?
+    `;
+    const [postRow] = await conn.query(selectPostEverythingQuery, postIdx);
+    
+    return postRow;
+}
+
+const selectPostReportByPostIdx = async (conn, postIdx) => {
+    const selectPostEverythingQuery = `
+        SELECT *
+        FROM postReport
+        WHERE postIdx = ?
+    `;
+    const [postRow] = await conn.query(selectPostEverythingQuery, postIdx);
+    
+    return postRow;
+}
+
+const selectPostCommentByPostIdx = async (conn, postIdx) => {
+    const selectPostEverythingQuery = `
+        SELECT *
+        FROM comment
+        WHERE postIdx = ?
+    `;
+    const [postRow] = await conn.query(selectPostEverythingQuery, postIdx);
+    
+    return postRow;
+}
+
+const updatePostStatus = async (conn, postIdx) => {
+    const updatePostStatusQuery = `
+        UPDATE post
+        set status = 3
+        WHERE postIdx = ?
+    `;
+    const [postResult] = await conn.query(updatePostStatusQuery, postIdx)
+
+    return postResult;
+}
+
+const updateCommentStatus = async (conn, postIdx) => {
+    const updateCommentStatusQuery = `
+        UPDATE comment
+        set status = 3
+        WHERE postIdx = ?
+    `;
+    const [postResult] = await conn.query(updateCommentStatusQuery, postIdx)
+
+    return postResult;
+}
+
 
 module.exports = {
     selectUserList,
@@ -173,5 +255,12 @@ module.exports = {
     selectUserFollowerByUserIdx,
     selectUserMessageByUserIdx,
     updateUserStatus,
-    selectPostList
+    selectPostList,
+    selectPostByPostIdx,
+    selectPostImgByPostIdx,
+    selectPostLikeByPostIdx,
+    selectPostReportByPostIdx,
+    selectPostCommentByPostIdx,
+    updatePostStatus,
+    updateCommentStatus
 }

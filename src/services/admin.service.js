@@ -71,7 +71,8 @@ exports.retrieveUserDetailList = async (userIdx) => {
     }
 }
 
-exports.banUser = async (userIdx) => {
+// 관리자 권한으로 사용자 정지
+exports.sudoBanUser = async (userIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const adminSelectResult = await adminModel.updateUserStatus(connection, userIdx);
@@ -87,14 +88,21 @@ exports.banUser = async (userIdx) => {
 
 }
 
+// 게시글 목록 조회
 exports.retrievePostList = async (id, postDate, status, page) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const offset = (page-1)*10;
-        if (postDate !== null){
-            let postDate  = postDate.replace(/(\d{4})(\d{2})(\d{2})/,'$1-$2-$3');
-        }
-        const adminSelectResult = await adminModel.selectPostList(connection, id, postDate, status, offset);
+        
+        if (id === undefined) id = 'ID';
+        else id = `'${id}'`;
+        if (status === undefined) status = 'status';
+        else status = `'${status}'`;
+        let date;
+        if (postDate !== undefined) date = postDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`);
+        else date = "'createdAt'";
+
+        const adminSelectResult = await adminModel.selectPostList(connection, id, date, status, offset);
 
         connection.release();
         
@@ -102,6 +110,48 @@ exports.retrievePostList = async (id, postDate, status, page) => {
     } catch (e) {
         console.log(e);
 
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 게시글 세부 내용 조회
+exports.retrievePostDetailList = async (postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        
+        const postResult = await adminModel.selectPostByPostIdx(connection, postIdx);
+        const postImgResult = await adminModel.selectPostImgByPostIdx(connection, postIdx);
+        const postLikeResult = await adminModel.selectPostLikeByPostIdx(connection, postIdx);
+        const postReportResult = await adminModel.selectPostReportByPostIdx(connection, postIdx);
+        const postCommentResult = await adminModel.selectPostCommentByPostIdx(connection, postIdx);
+
+        connection.release();
+        
+        return response(baseResponse.SUCCESS, 
+            [ {'게시글 정보': postResult } ,
+            { '게시글 사진': postImgResult },
+            { '게시글 좋아요 수': postLikeResult[0] },
+            { '게시글 신고 목록': postReportResult },
+            { '게시글 댓글 목록': postCommentResult }]);
+    } catch (e) {
+        console.log(e);
+
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 게시글, 댓글 강제 삭제
+exports.sudoUpdatePostStatus = async (postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+
+        await adminModel.updatePostStatus(connection, postIdx);
+        await adminModel.updateCommentStatus(connection, postIdx);
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        
         return errResponse(baseResponse.DB_ERROR);
     }
 }
