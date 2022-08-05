@@ -4,21 +4,19 @@ dotenv.config();
 const cors = require('cors');
 const compression = require('compression');
 
+const app = express();
+const Router = require('./routers/index.js');
+
 const { swaggerUi, specs } = require("../swagger/swagger")
-
-const { pool } = require('./assets/db');
-
 const {SERVER_HOST, SERVER_PORT} = process.env;
 
 const server = () => {
 
-    const app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(cors());
     app.use(compression());
 
-    const Router = require('./routers/index.js');
     app.use('/api', Router());
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
