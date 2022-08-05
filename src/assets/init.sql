@@ -12,6 +12,7 @@ CREATE TABLE `Gridge-ERD`.`user`(
     `birth`          DATE            NOT NULL, 
     `userType`       TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-자체로그인/1-카카오로그인/2-네이버 등등... 추가가능', 
     `socialId`       VARCHAR(45)     NULL,
+    `loginTime`      TIMESTAMP       NULL, 
     `createdAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`      TIMESTAMP       NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp,
     `status`         TINYINT         NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-탈퇴/2-관리자 비활성화', 

@@ -413,11 +413,12 @@ const changeUserStatus = async (userIdx) => {
     }
 }
 
-// 토큰 넣기 - 로그인때 사용
+// 토큰 넣기 + 로그인 시간 업데이트 - 로그인때 사용
 const postUserToken = async (userIdx, token) => {
     try {
         const connection = await pool.getConnection(async(conn)=> conn);
         const checkValidAccessResult = await userModel.updateUserToken(connection, userIdx, token);
+        await userModel.updateLoginTime(connection, userIdx);
 
         connection.release();
 

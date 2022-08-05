@@ -475,6 +475,17 @@ const updateUserToken = async (conn, userIdx) => {
     return updatedUserRow;
 }
 
+const updateLoginTime = async (conn, userIdx) => {
+    const updateLoginTimeQuery = `
+        UPDATE user
+        SET loginTime = CURRENT_TIMESTAMP
+        WHERE userIdx = ?
+    `;
+    
+    const [userRow] = await conn.query(updateLoginTimeQuery, userIdx);
+
+    return userRow;
+}
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -508,5 +519,6 @@ module.exports = {
     updateCommentLikeStatusInactive,
     updateFollowStatusInactive,
     selectUserTokenByIdx,
-    updateUserToken
+    updateUserToken,
+    updateLoginTime
 }
