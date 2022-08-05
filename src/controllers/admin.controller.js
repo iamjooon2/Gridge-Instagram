@@ -35,7 +35,7 @@ exports.getUserDetailList = async (req, res) => {
 }
 
 // 회원 정지
-exports.postUserBan = async (req, res) => {
+exports.patchUserBan = async (req, res) => {
 
     const userIdx = req.params.userIdx;
 
