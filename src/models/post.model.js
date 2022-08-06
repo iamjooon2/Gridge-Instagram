@@ -244,7 +244,7 @@ const selectFollowingUserPosts = async (connection, userIdx, page) => {
 const insertPostLog = async (conn, postIdx, logType) => {
     const insertLogQuery = `
         INSERT INTO postLog(postIdx, logType)
-        values( ?, ? )
+        values(?,?)
     `;
     
     const [LogRow] = await conn.query(insertLogQuery, [postIdx, logType]);

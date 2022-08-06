@@ -233,7 +233,8 @@ exports.patchCommentReportStatus = async (req, res) => {
 
 // 게시글 관련 로그 전체 조회
 exports.getPostLogs = async (req, res) => {
-    const page = req.params.page;
+    const page = req.query.page;
+    
     if (!page){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     } else if (page<1){
@@ -247,7 +248,8 @@ exports.getPostLogs = async (req, res) => {
 
 // 댓글 관련 로그 전체 조회
 exports.getCommentLogs = async (req, res) => {
-    const page = req.params.page;
+    const page = req.query.page;
+
     if (!page){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     } else if (page<1){
@@ -261,7 +263,8 @@ exports.getCommentLogs = async (req, res) => {
 
 // 사용자 관련 로그 전체 조회
 exports.getUserLogs = async (req, res) => {
-    const page = req.params.page;
+    const page = req.query.page;
+
     if (!page){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     } else if (page<1){
@@ -275,10 +278,11 @@ exports.getUserLogs = async (req, res) => {
 
 // 신고 관련 로그 전체 조회
 exports.getReportLogs = async (req, res) => {
-    const page = req.params.page;
+    const page = req.query.page;
+
     if (!page){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
-    } else if (page<1){
+    } else if (page<2){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     }
 

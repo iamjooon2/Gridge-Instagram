@@ -151,6 +151,7 @@ exports.retrievePostDetailList = async (postIdx) => {
         const postReportResult = await adminModel.selectPostReportByPostIdx(connection, postIdx);
         const postCommentResult = await adminModel.selectPostCommentByPostIdx(connection, postIdx);
 
+        console.log(postIdx);
         await postModel.insertPostLog(connection, postIdx, 5);
 
         connection.release();
