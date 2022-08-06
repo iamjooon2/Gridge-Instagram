@@ -46,7 +46,6 @@ DB설계 페이지 (비밀번호 : n4i5c2)
 
 # 해야할 것
 - 디비 트랜잭션 처리
-- 로그 CRUD 보기
 - 데이터베이스 ERD 확인 (빠진거 있나)
 - swagger 적용
 - baseResponseStatus 수정

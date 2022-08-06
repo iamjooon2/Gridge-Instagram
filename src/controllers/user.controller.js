@@ -13,7 +13,10 @@ const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/)
 const regexNum = new RegExp(/^[0-9]+$/);  // 숫자만 입력가능한 정규표현식
 
 
-// 로그인
+/**
+ * @path {POST} http://localhost:5000/api/user/login
+ * @description 일반 로그인
+ */
 const logIn = async (req, res) => {
 
     const {id, password} = req.body;
