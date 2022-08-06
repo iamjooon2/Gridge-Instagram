@@ -140,8 +140,8 @@ const updateUserStatus = async (conn, userIdx) => {
 }
 
 const selectPostList = async (conn, whereQuery, offset) => {
-    const adminSelectListQuery = `SELECT * FROM post`;
-    const offsetquery = `ORDER BY createdAt ASC LIMIT 10 offset ?`;
+    const adminSelectListQuery = `SELECT * FROM post WHERE 1=1 `;
+    const offsetquery = `LIMIT 10 offset ?`;
     
     const [userRow] = await conn.query(adminSelectListQuery+whereQuery+offsetquery, offset);
 
@@ -282,7 +282,7 @@ const selectReportCommentContent = async (conn, commentIdx) => {
 
 const selectReportPostReportCode = async (conn, postIdx) => {
     const selectPostReportContentQuery = `
-        SELECT postIdx, reportCode
+        SELECT postIdx, reportCode, postReportIdx, reporterIdx
         FROM postReport
         WHERE postIdx = ?
     `;
@@ -293,7 +293,7 @@ const selectReportPostReportCode = async (conn, postIdx) => {
 
 const selectReportCommentReportCode = async (conn, commentIdx) => {
     const selectCommentReportContentQuery = `
-        SELECT commentIdx, reportCode
+        SELECT commentIdx, reportCode, commentReportIdx, reporterIdx
         FROM commentReport
         WHERE commentIdx = ?
     `;

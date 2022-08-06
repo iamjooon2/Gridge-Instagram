@@ -152,6 +152,38 @@ const insertCommentReport = async (connection, userIdx, commentIdx, reportCode) 
     return postReportResult;
 }
 
+const insertCommetLog = async (conn, userIdx, logType) => {
+    const insertLogQuery = `
+        INSERT INTO commentLog(commentIdx, logType)
+        VALUES(?,?)
+    `;
+    
+    const [LogRow] = await conn.query(insertLogQuery, [userIdx, logType]);
+
+    return LogRow;
+}
+
+const insertReportLog = async (conn, commentReportIdx, reportType, logType) => {
+    const insertLogQuery = `
+        INSERT INTO reportLog(postReportIdx, reportType, logType)
+        VALUES(?,?,?)
+    `;
+    
+    const [LogRow] = await conn.query(insertLogQuery, [commentReportIdx, reportType, logType]);
+
+    return LogRow;
+}
+
+const selectCommentIdxByPostIdx = async (conn, postIdx) => {
+    const selectCommentIdxQuery = `
+        SELECT commentIdx
+        FROM comment
+        WHERE postIdx = ?
+    `;
+    const [commentResult] = await conn.query(selectCommentIdxQuery, postIdx);
+
+    return commentResult;
+}
 
 module.exports = {
     insertComment,
@@ -165,5 +197,8 @@ module.exports = {
     insertCommentLike,
     updateCommentDislike,
     checkCommentReport,
-    insertCommentReport
+    insertCommentReport,
+    insertCommetLog,
+    insertReportLog,
+    selectCommentIdxByPostIdx
 }

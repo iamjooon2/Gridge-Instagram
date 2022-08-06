@@ -241,7 +241,27 @@ const selectFollowingUserPosts = async (connection, userIdx, page) => {
     return postResult;
 }
 
+const insertPostLog = async (conn, postIdx, logType) => {
+    const insertLogQuery = `
+        INSERT INTO postLog(postIdx, logType)
+        values( ?, ? )
+    `;
+    
+    const [LogRow] = await conn.query(insertLogQuery, [postIdx, logType]);
 
+    return LogRow;
+}
+
+const insertReportLog = async (conn, postReportIdx, reportType, logType) => {
+    const insertLogQuery = `
+        INSERT INTO reportLog(postReportIdx, reportType, logType)
+        VALUES(?,?,?)
+    `;
+    
+    const [LogRow] = await conn.query(insertLogQuery, [postReportIdx, reportType, logType]);
+
+    return LogRow;
+}
 
 module.exports = {
     insertPost,
@@ -260,6 +280,8 @@ module.exports = {
     updatePostDislike,
     checkPostReport,
     insertPostReport,
-    selectFollowingUserPosts
+    selectFollowingUserPosts,
+    insertPostLog,
+    insertReportLog
 }
     

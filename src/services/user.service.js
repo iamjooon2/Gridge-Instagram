@@ -55,6 +55,9 @@ const postSignUp = async (phone, name, password, birth, id, userType) => {
         const connection = await pool.getConnection(async (connection) => connection);
         
         const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType);
+        const userIdx = signUpResult.userId;
+
+        const insertLogResult = await userModel.insertUserLog(connection, userIdx, 0);
 
         connection.release();
 
@@ -132,8 +135,8 @@ const getUserInfo = async (userIdx, page) => {
 
         connection.release();
 
+        const insertLogResult = await userModel.insertUserLog(connection, userIdx, 1);
         const userResult = { userProfileResult, userPostResult };
-
         return userResult;
     } catch (e){
         console.log(e);
@@ -180,6 +183,8 @@ const changeUserProfile = async (profileImgUrl, name, id, website, introduce, us
         const connection = await pool.getConnection(async(connection) => connection);
         const updatedProfileResult = await userModel.updateUserProfile(connection, profileImgUrl, name, id, website, introduce, userIdx);
         
+        const insertLogResult = await userModel.insertUserLog(connection, userIdx, 2);
+
         connection.release();
         return response(baseResponse.SUCCESS);
     } catch (e){
@@ -400,6 +405,7 @@ const changeUserStatus = async (userIdx) => {
         // 팔로우 없애기
         await userModel.updateFollowStatusInactive(connection, userIdx);
 
+        await userModel.insertUserLog(connection, userIdx, 3);
         await connection.commit(); 
 
         return response(baseResponse.SUCCESS);

@@ -486,6 +486,18 @@ const updateLoginTime = async (conn, userIdx) => {
 
     return userRow;
 }
+
+const insertUserLog = async (conn, userIdx, logType) => {
+    const insertLogQuery = `
+        INSERT INTO userLog(userIdx, logType)
+        VALUES(?,?)
+    `;
+    
+    const [LogRow] = await conn.query(insertLogQuery, [userIdx, logType]);
+
+    return LogRow;
+}
+
 module.exports = {
     checkUserExistsByUserId,
     checkUserPassword,
@@ -520,5 +532,6 @@ module.exports = {
     updateFollowStatusInactive,
     selectUserTokenByIdx,
     updateUserToken,
-    updateLoginTime
+    updateLoginTime,
+    insertUserLog
 }

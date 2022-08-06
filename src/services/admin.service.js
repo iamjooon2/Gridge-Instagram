@@ -1,6 +1,9 @@
 const { pool } = require('../assets/db');
 
 const adminModel = require('../models/admin.model');
+const postModel = require('../models/post.model');
+const userModel = require('../models/user.model');
+const commentModel = require('../models/comment.model');
 const baseResponse = require('../utilities/baseResponseStatus')
 const { errResponse, response } = require('../utilities/response');
 
@@ -26,6 +29,11 @@ exports.retrieveUserList = async (id, name, signUpDate, status, page) => {
         }
 
         const adminSelectResult = await adminModel.selectUserList(connection, whereQuery, offset);
+
+        // 로그 디비 넣기
+        for (i=0; i<adminSelectResult.length; i+=1){
+            await userModel.insertUserLog(connection, adminSelectResult[i].userIdx, 6);
+        }
 
         connection.release();
         
@@ -54,6 +62,8 @@ exports.retrieveUserDetailList = async (userIdx) => {
         const userFollowerMembers = await adminModel.selectUserFollowerByUserIdx(connection, userIdx);
         const userMessages = await adminModel.selectUserMessageByUserIdx(connection, userIdx);
 
+        await userModel.insertUserLog(connection, userIdx, 6);
+
         connection.release();
         
         return response(baseResponse.SUCCESS, 
@@ -69,6 +79,7 @@ exports.retrieveUserDetailList = async (userIdx) => {
             { '이 사용자를 팔로잉하는 사용자': userFollowerMembers },
             { '보낸 메시지': userMessages }]
         );
+
     } catch (e) {
         console.log(e);
 
@@ -82,6 +93,7 @@ exports.sudoBanUser = async (userIdx) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const adminSelectResult = await adminModel.updateUserStatus(connection, userIdx);
 
+        await userModel.insertUserLog(connection, userIdx, 5);
         connection.release();
         
         return response(baseResponse.SUCCESS, adminSelectResult);
@@ -113,6 +125,11 @@ exports.retrievePostList = async (id, postDate, status, page) => {
 
         const adminSelectResult = await adminModel.selectPostList(connection, whereQuery, offset);
 
+        // 로그 집어넣기
+        for (i =0; i<adminSelectResult.length; i+=1){
+            await postModel.insertPostLog(connection, adminSelectResult[i].postIdx, 5);
+        }
+
         connection.release();
         
         return response(baseResponse.SUCCESS, adminSelectResult);
@@ -134,6 +151,8 @@ exports.retrievePostDetailList = async (postIdx) => {
         const postReportResult = await adminModel.selectPostReportByPostIdx(connection, postIdx);
         const postCommentResult = await adminModel.selectPostCommentByPostIdx(connection, postIdx);
 
+        await postModel.insertPostLog(connection, postIdx, 5);
+
         connection.release();
         
         return response(baseResponse.SUCCESS, 
@@ -153,9 +172,14 @@ exports.retrievePostDetailList = async (postIdx) => {
 exports.sudoUpdatePostAndReleatedCommentStatus = async (postIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
+        const postStatusResult = await adminModel.updatePostStatus(connection, postIdx);
+        const commentsOfPostResult = await commentModel.selectCommentIdxByPostIdx(connection, postIdx);
+        const commentStatusResult = await adminModel.updateCommentStatusByPostIdx(connection, postIdx);
 
-        await adminModel.updatePostStatus(connection, postIdx);
-        await adminModel.updateCommentStatusByPostIdx(connection, postIdx);
+        await postModel.insertPostLog(connection, postIdx, 4);
+        for (i = 0; i<commentsOfPostResult.length; i+=1){
+            await commentModel.insertCommetLog(connection, commentsOfPostResult[i].commentIdx, 4);
+        }
 
         return response(baseResponse.SUCCESS);
     } catch (e) {
@@ -171,6 +195,8 @@ exports.sudoUpdateCommentStatus = async (postIdx) => {
         const connection = await pool.getConnection(async (connection) => connection);
         await adminModel.updatePostStatus(connection, postIdx);
 
+        await postModel.insertPostLog(connection, postIdx, 4);
+
         return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
@@ -184,6 +210,9 @@ exports.sudoUpdateCommentStatus = async (commentIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         await adminModel.updateCommentStatusByCommentIdx(connection, commentIdx);
+        await commentModel.insertCommetLog(connection, commentIdx, 4);
+
+        connection.release();
 
         return response(baseResponse.SUCCESS);
     } catch (e) {
@@ -199,6 +228,15 @@ exports.retrieveReportList = async () => {
         const connection = await pool.getConnection(async (connection) => connection);
         const postReportResult = await adminModel.selectPostReports(connection);
         const commentReportResult = await adminModel.selectCommentReports(connection);
+
+        console.log(postReportResult);
+        for (i = 0; i<postReportResult.length; i+=1){
+            await postModel.insertReportLog(connection, postReportResult[i].postReportIdx,1, 5);
+        }
+    
+        for (i = 0; i<commentReportResult.length; i+=1){
+            await commentModel.insertReportLog(connection, commentReportResult[i].connectionReportIdx, 0, 5);  
+        }
 
         return response(baseResponse.SUCCESS,
            {"댓글 신고 목록" : postReportResult, "게시글 신고 목록" : commentReportResult},
@@ -216,6 +254,8 @@ exports.retrieveReportPostContent = async (postIdx) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const postReportResult = await adminModel.selectReportPostContent(connection, postIdx);
 
+        await postModel.insertPostLog(connection, postIdx, 4);
+
         return response(baseResponse.SUCCESS, postReportResult);
     } catch (e) {
         console.log(e);
@@ -230,6 +270,8 @@ exports.retrieveReportCommentContent = async (commentIdx) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const commentReportResult = await adminModel.selectReportCommentContent(connection, commentIdx);
 
+        await commentModel.insertCommetLog(connection, commentIdx, 4);
+
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
         console.log(e);
@@ -242,9 +284,11 @@ exports.retrieveReportCommentContent = async (commentIdx) => {
 exports.retrieveReportPostReportCode = async (postIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
-        const commentReportResult = await adminModel.selectReportPostReportCode(connection, postIdx);
+        const postReportResult = await adminModel.selectReportPostReportCode(connection, postIdx);
 
-        return response(baseResponse.SUCCESS, commentReportResult);
+        await postModel.insertReportLog(connection, postReportResult[0].postReportResult, 1, 5);
+
+        return response(baseResponse.SUCCESS, postReportResult);
     } catch (e) {
         console.log(e);
         
@@ -257,6 +301,8 @@ exports.retrieveReportCommentReportCode = async (commentIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const commentReportResult = await adminModel.selectReportCommentReportCode(connection, commentIdx);
+
+        await commentModel.insertReportLog(connection, commentReportResult[0].commentReportIdx, 0, 5);
 
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
@@ -272,6 +318,7 @@ exports.sudoUpdatePostReportStatus = async (postReportIdx) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const postReportResult = await adminModel.updatePostReportStatus(connection, postReportIdx);
 
+        await postModel.insertReportLog(connection, postReportIdx, 0, 4);
         return response(baseResponse.SUCCESS, postReportResult);
     } catch (e) {
         console.log(e);
@@ -286,6 +333,7 @@ exports.sudoUpdateCommentReportStatus = async (commentReportIdx) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const commentReportResult = await adminModel.updateCommentReportStatus(connection, commentReportIdx);
 
+        await commentModel.insertReportLog(connection, commentReportIdx, 1, 4);
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
         console.log(e);

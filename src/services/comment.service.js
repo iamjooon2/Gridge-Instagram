@@ -11,8 +11,11 @@ const createComment = async ( userIdx, postIdx, content) => {
         const commentParmas = [userIdx, postIdx, content];
         const commentResult = await commentModel.insertComment(connection, commentParmas);
 
+        const commentIdx = commentResult.insertId;
+
+        await commentModel.insertCommetLog(connection, commentIdx, 0);
+
         connection.release();
-        
         return
     } catch (e) {
         console.log(e);
@@ -33,6 +36,8 @@ const updateComment = async (content, commentIdx) => {
         if (!editCommentResult) {
             return errResponse(baseResponse.DB_ERROR);
         }
+
+        await commentModel.insertCommetLog(connection, commentIdx, 2);
 
         connection.release();
         return response(baseResponse.SUCCESS);
@@ -63,6 +68,8 @@ const retrieveCommentLists = async (postIdx, cursorTime) => {
     const connection = await pool.getConnection(async (conn) => conn);
     const commentListResult = await commentModel.selectPostComments(connection, postIdx, cursorTime);
 
+    await commentModel.insertCommetLog(connection, commentIdx, 1);
+
     connection.release();
 
     return commentListResult;
@@ -79,6 +86,7 @@ const updateCommentStatus = async (commentIdx) => {
         }
 
         const editCommentStatusResult = await commentModel.updateCommentStatusInactive(connection, commentIdx);
+        await commentModel.insertCommetLog(connection, userIdx, 3);
 
         return response(baseResponse.SUCCESS)
     } catch(e) {
@@ -153,7 +161,9 @@ const createCommentReport = async (userIdx, commentIdx, reportCode) => {
             // 이미 신고된 댓글임을 사용자에게 알리기
             return errResponse(baseResponse.REPORT_ENTERED);
         }
-        await commentModel.insertCommentReport(connection, userIdx, commentIdx, reportCode);
+        const reportCommentResult = await commentModel.insertCommentReport(connection, userIdx, commentIdx, reportCode);
+        const reportCommentIdx = reportCommentResult.insertId;
+        await postModel.insertReportLog(connection, reportCommentIdx, 1, 0);
 
         await connection.commit();
         return response(baseResponse.SUCCESS);

@@ -19,6 +19,8 @@ const createPost = async ( userIdx, postImgUrls, content) => {
             postImgResult = await postModel.insertPostImg(connection, insertPostImgParams);
         }
 
+        await postModel.insertPostLog(connection, postIdx, 0);
+
         await connection.commit();
 
         return 
@@ -42,6 +44,8 @@ const updatePost = async (content, postIdx) => {
         if (!editPostResult) {
             return errResponse(baseResponse.DB_ERROR);
         }
+
+        await postModel.insertPostLog(connection, postIdx, 2);
 
         connection.release();
         return response(baseResponse.SUCCESS);
@@ -74,6 +78,7 @@ const retrievePostLists = async (userIdx, page) => {
         const offset = (page-1)*9;
         const postListResult = await postModel.selectUserPhotos(connection, userIdx, offset);
         
+        await postModel.insertPostLog(connection, postIdx, 1);
         
         connection.release()
 
@@ -112,6 +117,8 @@ const updatePostStatus = async (postIdx) => {
         }
 
         const editPostStatusResult = await postModel.updatePostStatusInactive(connection, postIdx);
+
+        await postModel.insertPostLog(connection, postIdx, 3);
 
         return response(baseResponse.SUCCESS);
     } catch(e) {
@@ -205,7 +212,9 @@ const createPostReport = async (userIdx, postIdx, reportCode) => {
             // 이미 신고된 게시물임을 사용자에게 알리기
             return errResponse(baseResponse.REPORT_ENTERED);
         }
-        await postModel.insertPostReport(connection, userIdx, postIdx, reportCode);
+        const reportedPostResult = await postModel.insertPostReport(connection, userIdx, postIdx, reportCode);
+        const reportPostIdx = reportedPostResult.insertId;
+        await postModel.insertReportLog(connection, reportPostIdx, 0, 0);
 
         await connection.commit();
         return response(baseResponse.SUCCESS);

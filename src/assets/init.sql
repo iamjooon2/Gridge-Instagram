@@ -264,7 +264,7 @@ CREATE TABLE `Gridge-ERD`.`userLog`
 (
     `userLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `userIdx`     BIGINT         NOT NULL, 
-    `content`     VARCHAR(45)    NOT NULL, 
+    `logType`     BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
@@ -283,7 +283,7 @@ CREATE TABLE `Gridge-ERD`.`postLog`
 (
     `postLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `postIdx`     BIGINT         NOT NULL, 
-    `content`     VARCHAR(45)    NOT NULL, 
+    `logType`     BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
@@ -302,7 +302,7 @@ CREATE TABLE `Gridge-ERD`.`commentLog`
 (
     `commentLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `commentIdx`     BIGINT         NOT NULL, 
-    `content`        VARCHAR(45)    NOT NULL, 
+    `logType`        BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`         TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
@@ -319,10 +319,11 @@ ALTER TABLE `Gridge-ERD`.`commentLog`
 -- reportLog Table Create SQL
 CREATE TABLE `Gridge-ERD`.`reportLog`
 (
-    `reportIdx`         BIGINT         NOT NULL    AUTO_INCREMENT, 
+    `reportLogIdx`      BIGINT         NOT NULL    AUTO_INCREMENT, 
     `postReportIdx`     BIGINT         NULL, 
     `commentReportIdx`  BIGINT         NULL, 
-    `reportCode`        TINYINT        NOT NULL, 
+    `reportCode`        TINYINT        NOT NULL,
+    `logType`           BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`            TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
