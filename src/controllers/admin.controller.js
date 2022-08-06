@@ -230,3 +230,59 @@ exports.patchCommentReportStatus = async (req, res) => {
 
     return res.send(postBanResult);
 }
+
+// 게시글 관련 로그 전체 조회
+exports.getPostLogs = async (req, res) => {
+    const page = req.params.page;
+    if (!page){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else if (page<1){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const postLogs = await adminService.retrievePostLogs(page);
+
+    return res.send(postLogs);
+}
+
+// 댓글 관련 로그 전체 조회
+exports.getCommentLogs = async (req, res) => {
+    const page = req.params.page;
+    if (!page){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else if (page<1){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const commentLogs = await adminService.retrieveCommentLogs(page);
+
+    return res.send(commentLogs);
+}
+
+// 사용자 관련 로그 전체 조회
+exports.getUserLogs = async (req, res) => {
+    const page = req.params.page;
+    if (!page){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else if (page<1){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const userLogs = await adminService.retrieveUserLogs(page);
+
+    return res.send(userLogs);
+}
+
+// 신고 관련 로그 전체 조회
+exports.getReportLogs = async (req, res) => {
+    const page = req.params.page;
+    if (!page){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    } else if (page<1){
+        return res.send(errResponse(baseResponse.PAGENATION_ERROR));
+    }
+
+    const reportLogs = await adminService.retrieveReportLogs(page);
+
+    return res.send(reportLogs);
+}

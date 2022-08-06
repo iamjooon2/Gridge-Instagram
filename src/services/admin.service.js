@@ -341,3 +341,71 @@ exports.sudoUpdateCommentReportStatus = async (commentReportIdx) => {
         return errResponse(baseResponse.DB_ERROR);
     }   
 }
+
+// 사용자 관련 로그 조회
+exports.retrieveUserLogs = async (page) => {
+    try {
+        const connection = await pool.getConnection(async(connection)=> connection);
+        const offset = (page-1)*10;
+        const LogResults = await adminModel.selectUserLogs(connection, offset);
+
+        connection.release();
+
+        return response(baseResponse.SUCCESS, [LogResults]);
+    } catch (e){
+        console.log(e)
+
+        return errResponse(baseResponse.DB_ERROR)
+    }
+}
+
+// 게시글 관련 로그 조회
+exports.retrievePostLogs = async (page) => {
+    try {
+        const connection = await pool.getConnection(async(connection)=> connection);
+        const offset = (page-1)*10;
+        const LogResults = await adminModel.selectPostLogs(connection, offset);
+
+        connection.release();
+
+        return response(baseResponse.SUCCESS, [LogResults]);
+    } catch (e){
+        console.log(e)
+
+        return errResponse(baseResponse.DB_ERROR)
+    }
+}
+
+// 댓글 관련 로그 조회
+exports.retrieveCommentLogs = async (page) => {
+    try {
+        const connection = await pool.getConnection(async(connection)=> connection);
+        const offset = (page-1)*10;
+        const LogResults = await adminModel.selectCommentLogs(connection, offset);
+
+        connection.release();
+
+        return response(baseResponse.SUCCESS, [LogResults]);
+    } catch (e){
+        console.log(e)
+
+        return errResponse(baseResponse.DB_ERROR)
+    }
+}
+
+// 신고 관련 로그 조회
+exports.retrieveReportLogs = async (page) => {
+    try {
+        const connection = await pool.getConnection(async(connection)=> connection);
+        const offset = (page-1)*10;
+        const LogResults = await adminModel.selectReportLogs(connection, offset);
+
+        connection.release();
+
+        return response(baseResponse.SUCCESS, [LogResults]);
+    } catch (e){
+        console.log(e)
+
+        return errResponse(baseResponse.DB_ERROR)
+    }
+}

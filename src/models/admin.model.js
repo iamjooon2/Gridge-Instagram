@@ -324,6 +324,46 @@ const updateCommentReportStatus = async (conn, commentReportIdx) => {
     return postResult;
 }
 
+const selectUserLogs = async (conn, offset) => {
+    const selectLogsQuery = `
+        SELECT *
+        FROM userLog
+        LIMIT 10 offset ?
+    `;
+    const [logRow] = await conn.query(selectLogsQuery, offset);
+    return logRow;
+}
+
+const selectPostLogs = async (conn, offset) => {
+    const selectLogsQuery = `
+        SELECT *
+        FROM postLog
+        LIMIT 10 offset ?
+    `;
+    const [logRow] = await conn.query(selectLogsQuery, offset);
+    return logRow;
+}
+
+const selectCommentLogs = async (conn, offset) => {
+    const selectLogsQuery = `
+        SELECT *
+        FROM commentLog
+        LIMIT 10 offset ?
+    `;
+    const [logRow] = await conn.query(selectLogsQuery, offset);
+    return logRow;
+}
+
+const selectReportLogs = async (conn, offset) => {
+    const selectLogsQuery = `
+        SELECT *
+        FROM reportLog
+        LIMIT 10 offset ?
+    `;
+    const [logRow] = await conn.query(selectLogsQuery, offset);
+    return logRow;
+}
+
 
 module.exports = {
     selectUserList,
@@ -355,5 +395,9 @@ module.exports = {
     selectReportPostReportCode,
     selectReportCommentReportCode,
     updatePostReportStatus,
-    updateCommentReportStatus
+    updateCommentReportStatus,
+    selectUserLogs,
+    selectPostLogs,
+    selectCommentLogs,
+    selectReportLogs
 }

@@ -16,7 +16,7 @@
     ┣📜 index.js 
   ┣📂 swagger
   ┣ .env.example 
-  ┣ docker-compose.yml
+  ┣ docker-compose.yml # AWS 프리티어 안되서.. 도커로 로컬에서 디비 띄우자~
   ┣ package.json
 
 해당 디렉토리 구조는 개발 가이드라인에 맞추어 설계하였습니다
@@ -43,14 +43,11 @@
 https://aquerytool.com/aquerymain/index/?rurl=18d4ee95-74d5-4465-8983-7df2e9b1799f
 DB설계 페이지 (비밀번호 : n4i5c2)
 
-## 특이사항
-```
-채팅도 디비로 구현하라는듯쓰... 웹소켓 써보나 했는데 까비깝숑
-```
 
-### 허접 이준희의 고민점
-- 어드민 페이지 구현은 어떻게 해야하는가?
-  회원 CRUD, 게시글 CRUD, 댓글 CRUD,신고 CRUD 각각의 로그를 볼수 있어야 한다는데..
-=> 각각 로그 테이블 따로 생성함
-- Swagger 적용하기
-  고민까지는 아니고... 처음 적용하는거라 애좀 먹을 것 같습니다
+# 해야할 것
+- 디비 트랜잭션 처리
+- 로그 CRUD 보기
+- 데이터베이스 ERD 확인 (빠진거 있나)
+- swagger 적용
+- baseResponseStatus 수정
+- ReADME 정리

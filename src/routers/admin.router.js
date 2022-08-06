@@ -46,6 +46,18 @@ const adminRouter = (router) =>{
 
     // 댓글 신고 삭제
     router.patch('/admin/report/comment/reportCode/:commentReportIdx', adminController.patchCommentReportStatus);
+
+    // 사용자 CRUD 로그 사유 보기 
+    router.get('/admin/user/log', adminController.getUserLogs);
+
+    // 게시글 CRUD 로그 사유 보기 
+    router.get('/admin/post/log', adminController.getPostLogs);
+
+    // 댓글 CRUD 로그 사유 보기 
+    router.get('/admin/comment/log', adminController.getCommentLogs);
+
+    // 신고 CRUD 로그 사유 보기 
+    router.get('/admin/report/log', adminController.getReportLogs);
 };
 
 module.exports = adminRouter;
