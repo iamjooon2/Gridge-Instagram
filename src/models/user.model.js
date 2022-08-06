@@ -20,12 +20,12 @@ const checkUserPassword = async (conn, userId) => {
     return checkRow;
 }
 
-const insertUser = async (conn, phone, name, hashedPassword, birth, id, userType) => {
+const insertUser = async (conn, phone, name, hashedPassword, birth, id, userType, socialId) => {
     const insertUserQuery = `
-        INSERT INTO user(phone, name, password, birth, ID, userType)
+        INSERT INTO user(phone, name, password, birth, ID, userType, socialId)
         VALUES(?,?,?,?,?)
     ;`;
-    const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id, userType]);
+    const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id, userType, socialId]);
 
     return insertedRow;
 }
@@ -139,17 +139,6 @@ const updateUserProfile = async (conn, profileImgUrl, name, id, website, introdu
     const [updateUserRow] = await conn.query(updateUserProfileQuery, [profileImgUrl, name, id, website, introduce, userIdx]);
 
     return updateUserRow;
-}
-
-const updateNameAndId = async (conn, name, id, userIdx) => {
-    const updateNameAndIdQuery = `
-        UPDATE user
-        SET name = ? and id = ?
-        where userIdx = ?
-    `;
-    const [updatedUserRow] = await conn.query(updateNameAndIdQuery, [name, id, userIdx]);
-
-    return updatedUserRow;
 }
 
 const updatePrivate = async (conn, userIdx, privateCode) => {
@@ -510,7 +499,6 @@ module.exports = {
     getUserIdxByPhone,
     updatePassword,
     updateUserProfile,
-    updateNameAndId,
     updatePrivate,
     checkUserPrivateById,
     checkUserPrivateByUserIdx,

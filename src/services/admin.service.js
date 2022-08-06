@@ -348,11 +348,11 @@ exports.retrieveUserLogs = async (page) => {
     try {
         const connection = await pool.getConnection(async(connection)=> connection);
         const offset = (page-1)*10;
-        const LogResults = await adminModel.selectUserLogs(connection, offset);
+        const logResults = await adminModel.selectUserLogs(connection, offset);
 
         connection.release();
 
-        return response(baseResponse.SUCCESS, [LogResults]);
+        return response(baseResponse.SUCCESS, logResults);
     } catch (e){
         console.log(e)
 
@@ -365,15 +365,15 @@ exports.retrievePostLogs = async (page) => {
     try {
         const connection = await pool.getConnection(async(connection)=> connection);
         const offset = (page-1)*10;
-        const LogResults = await adminModel.selectPostLogs(connection, offset);
+        const logResults = await adminModel.selectPostLogs(connection, offset);
 
         connection.release();
 
-        return response(baseResponse.SUCCESS, [LogResults]);
+        return response(baseResponse.SUCCESS, logResults);
     } catch (e){
         console.log(e)
 
-        return errResponse(baseResponse.DB_ERROR)
+        return errResponse(baseResponse.DB_ERROR);
     }
 }
 
@@ -382,15 +382,15 @@ exports.retrieveCommentLogs = async (page) => {
     try {
         const connection = await pool.getConnection(async(connection)=> connection);
         const offset = (page-1)*10;
-        const LogResults = await adminModel.selectCommentLogs(connection, offset);
+        const logResults = await adminModel.selectCommentLogs(connection, offset);
 
         connection.release();
 
-        return response(baseResponse.SUCCESS, [LogResults]);
+        return response(baseResponse.SUCCESS, logResults);
     } catch (e){
         console.log(e)
 
-        return errResponse(baseResponse.DB_ERROR)
+        return errResponse(baseResponse.DB_ERROR);
     }
 }
 
@@ -399,11 +399,11 @@ exports.retrieveReportLogs = async (page) => {
     try {
         const connection = await pool.getConnection(async(connection)=> connection);
         const offset = (page-1)*10;
-        const LogResults = await adminModel.selectReportLogs(connection, offset);
+        const logResults = await adminModel.selectReportLogs(connection, offset);
 
         connection.release();
 
-        return response(baseResponse.SUCCESS, [LogResults]);
+        return response(baseResponse.SUCCESS, logResults);
     } catch (e){
         console.log(e)
 

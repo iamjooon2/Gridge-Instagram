@@ -48,13 +48,13 @@ const checkUserPassword = async (userId, userPassword) => {
 }
 
 // 회원정보 데이터베이스에 넣기
-const postSignUp = async (phone, name, password, birth, id, userType) => {
+const postSignUp = async (phone, name, password, birth, id, userType, socialId) => {
     try {
         // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
         const connection = await pool.getConnection(async (connection) => connection);
         
-        const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType);
+        const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType, socialId);
         const userIdx = signUpResult.userId;
 
         const insertLogResult = await userModel.insertUserLog(connection, userIdx, 0);
@@ -185,21 +185,6 @@ const changeUserProfile = async (profileImgUrl, name, id, website, introduce, us
         
         const insertLogResult = await userModel.insertUserLog(connection, userIdx, 2);
 
-        connection.release();
-        return response(baseResponse.SUCCESS);
-    } catch (e){
-        console.log(e);
-
-        return errResponse(baseResponse.DB_ERROR);
-    }
-}
-
-// 이름, 아이디 변경하기
-const changeNameAndId = async (name, id, userIdx) => {
-    try {
-        const connection = await pool.getConnection(async(connection) => connection);
-        const updatedProfileResult = await userModel.updateNameAndId(connection, name, id, userIdx);
-        
         connection.release();
         return response(baseResponse.SUCCESS);
     } catch (e){
@@ -478,7 +463,6 @@ module.exports = {
     getUserInfo,
     patchPassword,
     changeUserProfile,
-    changeNameAndId,
     changePrivate,
     checkfollowStatus,
     getFolowRequestExists,

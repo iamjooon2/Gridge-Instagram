@@ -4,7 +4,6 @@ const baseResponse = require('../utilities/baseResponseStatus');
 const { errResponse, response } = require('../utilities/response');
 const regexDate = new RegExp(/(^(19|20)\d{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/); // YYYYMMDD 확인 정규표현식
 
-
 // 회원 전체 정보 검색
 exports.getUserList = async (req, res) => {
 
@@ -234,7 +233,7 @@ exports.patchCommentReportStatus = async (req, res) => {
 // 게시글 관련 로그 전체 조회
 exports.getPostLogs = async (req, res) => {
     const page = req.query.page;
-    
+
     if (!page){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     } else if (page<1){
@@ -278,11 +277,12 @@ exports.getUserLogs = async (req, res) => {
 
 // 신고 관련 로그 전체 조회
 exports.getReportLogs = async (req, res) => {
+
     const page = req.query.page;
 
     if (!page){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
-    } else if (page<2){
+    } else if (page<1){
         return res.send(errResponse(baseResponse.PAGENATION_ERROR));
     }
 

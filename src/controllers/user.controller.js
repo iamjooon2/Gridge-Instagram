@@ -107,7 +107,7 @@ const kakaoLogin = async (req, res) => {
     
     // 유저 식별자 가져오기
     const userIdx = await userService.retrieveUserIdxByKakaoId(kakaoId);
-
+    
     // jwt 토큰 생성
     let token = await jwt.sign(
     {  // 토큰의 내용 (payload)
@@ -193,7 +193,7 @@ const signUp = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
     
-    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id, 0);
+    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id, 0, null);
 
     return res.send(response(baseResponse.SUCCESS));
 }
@@ -201,7 +201,12 @@ const signUp = async (req, res) => {
 // 소셜 로그인 유저 회원가입
 const socialSignUp = async (req, res) => {
 
-    const { phone, authNumber, name, birth, id } = req.body;
+    const { kakaoId, phone, authNumber, name, birth, id } = req.body;
+
+
+    if (!kakaoId){
+        return res.send(errResponse(baseResponse.KAKAO_ID_EMPTY));
+    }
 
     // phone validation
     if (!phone){
@@ -246,7 +251,7 @@ const socialSignUp = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
     
-    await userService.postSignUp(phone, name, 'socailUser', birth, id, 1);
+    await userService.postSignUp(phone, name, 'socailUser', birth, id, 1, kakaoId);
 
     return res.send(response(baseResponse.SUCCESS));
 }
@@ -381,40 +386,6 @@ const patchProfile = async (req, res) => {
     const changeProfileResult = await userService.changeUserProfile(profileImgUrl, name, id, website, introduce, userIdx);
 
     return res.send(changeProfileResult);
-}
-
-// 이름, 아이디만 변경 - 두 개 한번에...? 보류
-const patchNameAndId = async (req, res) => {
-
-    const userIdxInfoFromToken = req.verifiedToken.idx;
-    const userIdx = userIdxInfoFromToken[0].userIdx;
-    const { name, id } = req.body;
-
-    // name validation
-    if (!name){
-        return res.send(errResponse(baseResponse.USER_NAME_EMPTY));
-    } else if (name.length > 20) {
-        return res.send(errResponse(baseResponse.USER_NAME_LENGTH));
-    }
-
-    // id validation
-    if (!id){
-        return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
-    } else if (id.length > 20) {
-        return res.send(errResponse(baseResponse.USER_USERID_LENGTH));
-    } else if (id.length < 3) {
-        return res.send(errResponse(baseResponse.USER_USERID_SHORT));
-    }
-
-    // 아이디 중복 확인
-    const userIdExistsResult = await userService.checkUserIdExists(id);
-    if (userIdExistsResult){
-        return res.send(errResponse(baseResponse.USER_USERID_EXIST));
-    }
-
-    const nameAndIdChangeResult = await userService.changeNameAndId(name, id, userIdx);
-
-    return res.send(nameAndIdChangeResult);
 }
 
 // 계정 공개여부 설정
@@ -573,7 +544,6 @@ module.exports = {
     getUserFeed,
     patchPassword,
     patchProfile,
-    patchNameAndId,
     patchPrivate,
     followUser,
     unfollowUser,

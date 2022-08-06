@@ -10,6 +10,9 @@ module.exports = {
     ACCESS_TOKEN_EMPTY : { "isSuccess" : false, "code": 3008, "message": "refresh token 만료, 새 AccessToken이 필요합니다."},
 
     //Request error
+
+    KAKAO_ID_EMPTY : {"isSuccess": false, "code": 1998, "message": "카카오 아이디를 입력해주세요"},
+
     SIGNIN_ERROR : {"isSuccess": false, "code": 1998, "message": "회원가입을 해주세요"},
     SIGNUP_EMAIL_EMPTY : { "isSuccess": false, "code": 2001, "message":"이메일을 입력해주세요" },
     SIGNUP_EMAIL_LENGTH : { "isSuccess": false, "code": 2002, "message":"이메일은 30자리 미만으로 입력해주세요." },

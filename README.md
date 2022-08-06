@@ -17,7 +17,7 @@
   ┣📂 swagger
   ┣ .env.example 
   ┣ docker-compose.yml # AWS 프리티어 안되서.. 도커로 로컬에서 디비 띄우자~
-  ┣ package.json
+  ┣ package.json 
 
 해당 디렉토리 구조는 개발 가이드라인에 맞추어 설계하였습니다
 ```
