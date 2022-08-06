@@ -82,8 +82,8 @@ exports.getPostDetailList = async (req,res) => {
     return res.send(retrievePostDetailResult);
 }
 
-// 게시글 삭제
-exports.patchPostStatus = async (req, res) => {
+// 게시글과 관련된 댓글들 삭제
+exports.patchPostAndCommentStatus = async (req, res) => {
     const postIdx = req.params.postIdx;
 
     if (!postIdx){
@@ -92,7 +92,7 @@ exports.patchPostStatus = async (req, res) => {
         return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
     }
 
-    const postBanResult = await adminService.sudoUpdatePostStatus(postIdx);
+    const postBanResult = await adminService.sudoUpdatePostAndReleatedCommentStatus(postIdx);
 
     return res.send(postBanResult);
 }
@@ -137,4 +137,96 @@ exports.getReportComment = async (req, res) => {
     const reportPostList = await adminService.retrieveReportCommentContent(commentIdx);
 
     return res.send(reportPostList);
+}
+
+// 신고 게시글 사유 조회
+exports.getReportPostContent = async (req, res) => {
+    const postIdx = req.params.postIdx;
+
+    // postIdx validation
+    if (!postIdx) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx < 1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const reportPostList = await adminService.retrieveReportPostReportCode(postIdx);
+
+    return res.send(reportPostList);
+}
+
+// 신고 댓글 사유 조회
+exports.getReportCommentContent = async (req, res) => {
+    const commentIdx = req.params.commentIdx;
+
+    // commentIdx validation
+    if (!commentIdx) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
+    } else if (commentIdx < 1) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+
+    const reportCommentList = await adminService.retrieveReportCommenReportCode(commentIdx);
+
+    return res.send(reportCommentList);
+}
+
+// 신고받은 게시글 삭제
+exports.patchPostStatus = async (req, res) => {
+    const postIdx = req.params.commentIdx;
+
+    if (!postIdx){
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx.length<1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const postBanResult = await adminService.sudoUpdatePostStatus(postIdx);
+
+    return res.send(postBanResult);
+}
+
+// 신고받은 댓글 삭제
+exports.patchCommentStatus = async (req, res) => {
+    const commentIdx = req.params.commentIdx;
+
+    if (!commentIdx){
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
+    } else if (commentIdx.length<1) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+
+    const postBanResult = await adminService.sudoUpdateCommentStatus(commentIdx);
+
+    return res.send(postBanResult);
+}
+
+// 게시글 신고 내역 삭제
+exports.patchPostReportStatus = async (req, res) => {
+    const postReportIdx = req.params.postReportIdx;
+
+    if (!postReportIdx){
+        return res.send(errResponse(baseResponse.REPORT_POSTREPORTIDX_EMPTY));
+    } else if (postReportIdx.length<1) {
+        return res.send(errResponse(baseResponse.REPORT_POSTREPORTIDX_LENGTH));
+    }
+
+    const postBanResult = await adminService.sudoUpdatePostReportStatus(postReportIdx);
+
+    return res.send(postBanResult);
+}
+
+// 댓글 신고 내역 삭제
+exports.patchCommentReportStatus = async (req, res) => {
+    const commentReportIdx = req.params.commentReportIdx;
+
+    if (!commentReportIdx){
+        return res.send(errResponse(baseResponse.REPORT_COMMENTREPORT_EMPTY));
+    } else if (commentReportIdx.length<1) {
+        return res.send(errResponse(baseResponse.REPORT_COMMENTREPORT_LENGTH));
+    }
+
+    const postBanResult = await adminService.sudoUpdateCommentReportStatus(commentReportIdx);
+
+    return res.send(postBanResult);
 }

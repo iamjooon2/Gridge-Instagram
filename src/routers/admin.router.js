@@ -18,25 +18,34 @@ const adminRouter = (router) =>{
     router.get('/admin/post/:postIdx', adminController.getPostDetailList);
 
     // 포스트 관리자 삭제
-    router.patch('/admin/post/:postIdx', adminController.patchPostStatus);
+    router.patch('/admin/post/:postIdx', adminController.patchPostAndCommentStatus);
 
     // 신고 목록 보기
     router.get('/admin/report', adminController.getReportList);
 
     // 신고한 게시글 내용 보기
-    router.get('/admin/report/post/:postIdx', adminController.getReportPost);
+    router.get('/admin/report/post/content/:postIdx', adminController.getReportPost);
 
     // 신고한 댓글 내용 보기
-    router.get('/admin/report/comment/:commentIdx', adminController.getReportComment);
+    router.get('/admin/report/comment/content/:commentIdx', adminController.getReportComment);
 
-    // 신고 사유 보기 
-    // router.get('/admin/report', adminController);
+    // 댓글 신고 사유 보기 
+    router.get('/admin/report/post/reportCode/:postIdx', adminController.getReportPostContent);
 
-    // 신고한 게시글 보기
-    // router.patch('/admin/report/post/:postIdx', adminController.getReportPost);
+    // 게시글 신고 사유 보기 
+    router.get('/admin/report/comment/reportCode/:commentIdx', adminController.getReportCommentContent);
 
-    // 신고한 댓글 보기
-    // router.patch('/admin/report/comment/:commentIdx', adminController.getReportComment);
+    // 신고당한 게시글 삭제
+    router.patch('/admin/report/post/:postIdx', adminController.patchPostStatus);
+
+    // 신고당한 댓글 삭제
+    router.patch('/admin/report/comment/:commentIdx', adminController.patchCommentStatus);
+
+    // 게시글 신고 삭제
+    router.patch('/admin/report/post/reportCode/:postReportIdx', adminController.patchPostReportStatus);
+
+    // 댓글 신고 삭제
+    router.patch('/admin/report/comment/reportCode/:commentReportIdx', adminController.patchCommentReportStatus);
 };
 
 module.exports = adminRouter;

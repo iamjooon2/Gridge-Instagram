@@ -214,13 +214,24 @@ const updatePostStatus = async (conn, postIdx) => {
     return postResult;
 }
 
-const updateCommentStatus = async (conn, postIdx) => {
+const updateCommentStatusByPostIdx = async (conn, postIdx) => {
     const updateCommentStatusQuery = `
         UPDATE comment
         set status = 3
         WHERE postIdx = ?
     `;
     const [postResult] = await conn.query(updateCommentStatusQuery, postIdx)
+
+    return postResult;
+}
+
+const updateCommentStatusByCommentIdx = async (conn, commentIdx) => {
+    const updateCommentStatusQuery = `
+        UPDATE comment
+        set status = 3
+        WHERE commentIdx = ?
+    `;
+    const [postResult] = await conn.query(updateCommentStatusQuery, commentIdx)
 
     return postResult;
 }
@@ -269,6 +280,51 @@ const selectReportCommentContent = async (conn, commentIdx) => {
     return reportResult;
 }
 
+const selectReportPostReportCode = async (conn, postIdx) => {
+    const selectPostReportContentQuery = `
+        SELECT postIdx, reportCode
+        FROM postReport
+        WHERE postIdx = ?
+    `;
+    const [reportResult] = await conn.query(selectPostReportContentQuery, postIdx);
+
+    return reportResult;
+}
+
+const selectReportCommentReportCode = async (conn, commentIdx) => {
+    const selectCommentReportContentQuery = `
+        SELECT commentIdx, reportCode
+        FROM commentReport
+        WHERE commentIdx = ?
+    `;
+    const [reportResult] = await conn.query(selectCommentReportContentQuery, commentIdx);
+
+    return reportResult;
+}
+
+const updatePostReportStatus = async (conn, postReportIdx) => {
+    const updatePostReportStatusQuery = `
+        UPDATE postReport
+        set status = 3
+        WHERE postReportIdx = ?
+    `;
+    const [postResult] = await conn.query(updatePostReportStatusQuery, postReportIdx);
+
+    return postResult;
+}
+
+const updateCommentReportStatus = async (conn, commentReportIdx) => {
+    const updateCommentReportStatusQuery = `
+        UPDATE commentReport
+        set status = 3
+        WHERE commentReportIdx = ?
+    `;
+    const [postResult] = await conn.query(updateCommentReportStatusQuery, commentReportIdx);
+
+    return postResult;
+}
+
+
 module.exports = {
     selectUserList,
     selectUserLastLoginTime,
@@ -290,9 +346,14 @@ module.exports = {
     selectPostReportByPostIdx,
     selectPostCommentByPostIdx,
     updatePostStatus,
-    updateCommentStatus,
+    updateCommentStatusByPostIdx,
+    updateCommentStatusByCommentIdx,
     selectPostReports,
     selectCommentReports,
     selectReportPostContent,
-    selectReportCommentContent
+    selectReportCommentContent,
+    selectReportPostReportCode,
+    selectReportCommentReportCode,
+    updatePostReportStatus,
+    updateCommentReportStatus
 }

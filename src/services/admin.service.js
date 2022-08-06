@@ -150,12 +150,40 @@ exports.retrievePostDetailList = async (postIdx) => {
 }
 
 // 게시글, 댓글 강제 삭제
-exports.sudoUpdatePostStatus = async (postIdx) => {
+exports.sudoUpdatePostAndReleatedCommentStatus = async (postIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
 
         await adminModel.updatePostStatus(connection, postIdx);
-        await adminModel.updateCommentStatus(connection, postIdx);
+        await adminModel.updateCommentStatusByPostIdx(connection, postIdx);
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 게시글 강제 삭제
+exports.sudoUpdateCommentStatus = async (postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        await adminModel.updatePostStatus(connection, postIdx);
+
+        return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 댓글 강제 삭제
+exports.sudoUpdateCommentStatus = async (commentIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        await adminModel.updateCommentStatusByCommentIdx(connection, commentIdx);
 
         return response(baseResponse.SUCCESS);
     } catch (e) {
@@ -197,10 +225,10 @@ exports.retrieveReportPostContent = async (postIdx) => {
 }
 
 // 신고 댓글 내용 조회
-exports.retrieveReportCommentContent = async (reportIdx) => {
+exports.retrieveReportCommentContent = async (commentIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
-        const commentReportResult = await adminModel.selectReportCommentContent(connection, reportIdx);
+        const commentReportResult = await adminModel.selectReportCommentContent(connection, commentIdx);
 
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
@@ -208,4 +236,60 @@ exports.retrieveReportCommentContent = async (reportIdx) => {
         
         return errResponse(baseResponse.DB_ERROR);
     }
+}
+
+// 게시글 신고 사유 조회
+exports.retrieveReportPostReportCode = async (postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const commentReportResult = await adminModel.selectReportPostReportCode(connection, postIdx);
+
+        return response(baseResponse.SUCCESS, commentReportResult);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 댓글 신고 사유 조회
+exports.retrieveReportCommentReportCode = async (commentIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const commentReportResult = await adminModel.selectReportCommentReportCode(connection, commentIdx);
+
+        return response(baseResponse.SUCCESS, commentReportResult);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }   
+}
+
+// 게시글 신고 강제 삭제
+exports.sudoUpdatePostReportStatus = async (postReportIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const postReportResult = await adminModel.updatePostReportStatus(connection, postReportIdx);
+
+        return response(baseResponse.SUCCESS, postReportResult);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }   
+}
+
+// 댓글 신고 강제 삭제
+exports.sudoUpdateCommentReportStatus = async (commentReportIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const commentReportResult = await adminModel.updateCommentReportStatus(connection, commentReportIdx);
+
+        return response(baseResponse.SUCCESS, commentReportResult);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }   
 }
