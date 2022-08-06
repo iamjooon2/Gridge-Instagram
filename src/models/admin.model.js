@@ -1,12 +1,7 @@
-const selectUserList = async (conn, id, name, signUpDate, status, offset) => {
-    const adminSelectUserQuery = `
-        SELECT *
-        FROM user
-        WHERE ID = ${id} and name = ${name} and DATE(createdAt) = DATE(${signUpDate}) and status = ${status}
-        LIMIT 10 offset ${offset}
-    `;
-
-    const [userRow] = await conn.query(adminSelectUserQuery);
+const selectUserList = async (conn, whereQuery, offset) => {
+    const adminSelectUserQuery = ` SELECT * FROM user WHERE 1 = 1`;
+    const offsetQuery = ` limit 10 offset ?`;
+    const [userRow] = await conn.query(adminSelectUserQuery+whereQuery+offsetQuery, offset);
 
     return userRow;
 }
@@ -144,21 +139,11 @@ const updateUserStatus = async (conn, userIdx) => {
     return userRow;
 }
 
-const selectPostList = async (conn, id, postDate, status, offset) => {
-    const adminSelectListQuery = `
-        SELECT *
-        FROM post
-        WHERE userIdx = (
-                        SELECT user.userIdx
-                        FROM user
-                        WHERE ID = ${id}
-                        ) and DATE(createdAt) = DATE(${postDate}) 
-                        and status = ${status} 
-        ORDER BY createdAt ASC
-        LIMIT 10 offset ${offset}
-    `;
-
-    const [userRow] = await conn.query(adminSelectListQuery);
+const selectPostList = async (conn, whereQuery, offset) => {
+    const adminSelectListQuery = `SELECT * FROM post`;
+    const offsetquery = `ORDER BY createdAt ASC LIMIT 10 offset ?`;
+    
+    const [userRow] = await conn.query(adminSelectListQuery+whereQuery+offsetquery, offset);
 
     return userRow;
 }
@@ -240,6 +225,49 @@ const updateCommentStatus = async (conn, postIdx) => {
     return postResult;
 }
 
+const selectPostReports = async (conn) => {
+    const selectReportsQuery = `
+        SELECT *
+        FROM postReport
+    `;
+    
+    const [reportResult] = await conn.query(selectReportsQuery);
+
+    return reportResult;
+}
+
+const selectCommentReports = async (conn) => {
+    const selectReportsQuery = `
+        SELECT *
+        FROM commentReport
+    `;
+    
+    const [reportResult] = await conn.query(selectReportsQuery);
+
+    return reportResult;
+}
+
+const selectReportPostContent = async (conn, postIdx) => {
+    const selectPostReportContentQuery = `
+        SELECT postIdx, content
+        FROM post
+        WHERE postIdx = ?
+    `;
+    const [reportResult] = await conn.query(selectPostReportContentQuery, postIdx);
+
+    return reportResult;
+}
+
+const selectReportCommentContent = async (conn, commentIdx) => {
+    const selectCommentReportContentQuery = `
+        SELECT commentIdx, content
+        FROM comment
+        WHERE commentIdx = ?
+    `;
+    const [reportResult] = await conn.query(selectCommentReportContentQuery, commentIdx);
+
+    return reportResult;
+}
 
 module.exports = {
     selectUserList,
@@ -262,5 +290,9 @@ module.exports = {
     selectPostReportByPostIdx,
     selectPostCommentByPostIdx,
     updatePostStatus,
-    updateCommentStatus
+    updateCommentStatus,
+    selectPostReports,
+    selectCommentReports,
+    selectReportPostContent,
+    selectReportCommentContent
 }

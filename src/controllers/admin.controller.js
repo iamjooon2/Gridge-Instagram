@@ -96,3 +96,45 @@ exports.patchPostStatus = async (req, res) => {
 
     return res.send(postBanResult);
 }
+
+// 신고 목록 조회
+exports.getReportList = async (req, res) => {
+
+    const reportList = await adminService.retrieveReportList();
+
+    return res.send(reportList);
+} 
+
+// 신고 게시글 내용 조회
+exports.getReportPost = async (req, res) => {
+
+    const postIdx = req.params.postIdx;
+
+    // postIdx validation
+    if (!postIdx) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_EMPTY));
+    } else if (postIdx < 1) {
+        return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
+    }
+
+    const reportPostList = await adminService.retrieveReportPostContent(postIdx);
+
+    return res.send(reportPostList);
+}
+
+// 신고 댓글 내용 조회
+exports.getReportComment = async (req, res) => {
+
+    const commentIdx = req.params.commentIdx;
+
+    // postIdx validation
+    if (!commentIdx) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
+    } else if (commentIdx < 1) {
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
+    }
+
+    const reportPostList = await adminService.retrieveReportCommentContent(commentIdx);
+
+    return res.send(reportPostList);
+}

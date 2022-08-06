@@ -10,17 +10,22 @@ exports.retrieveUserList = async (id, name, signUpDate, status, page) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const offset = (page-1)*10;
         
-        if (name === undefined) name = 'name';
-        else name = `'${name}'`
-        if (id === undefined) id = 'ID';
-        else id = `'${id}'`;
-        if (status === undefined) status = 'status';
-        else status = `'${status}'`;
-        let date;
-        if (signUpDate !== undefined) date = signUpDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`);
-        else date = "'createdAt'";
+        let whereQuery='';
+        if (name !== undefined) {
+            whereQuery += ` AND name = ${name}`
+        }
+        if (id !== undefined) {
+            whereQuery += ` AND ID = ${id}`;
+        }
+        if (status !== undefined) {
+            whereQuery = ` AND status = ${status}`
+        }
+        if (signUpDate !== undefined) {
+            let date = signUpDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`)
+            whereQuery += ` AND DATE(createdAt) = DATE(${date})`
+        }
 
-        const adminSelectResult = await adminModel.selectUserList(connection, id, name, date, status, offset);
+        const adminSelectResult = await adminModel.selectUserList(connection, whereQuery, offset);
 
         connection.release();
         
@@ -94,15 +99,19 @@ exports.retrievePostList = async (id, postDate, status, page) => {
         const connection = await pool.getConnection(async (connection) => connection);
         const offset = (page-1)*10;
         
-        if (id === undefined) id = 'ID';
-        else id = `'${id}'`;
-        if (status === undefined) status = 'status';
-        else status = `'${status}'`;
-        let date;
-        if (postDate !== undefined) date = postDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`);
-        else date = "'createdAt'";
+        let whereQuery='';
+        if (id !== undefined) {
+            whereQuery += ` AND ID = ${id}`;
+        }
+        if (status !== undefined) {
+            whereQuery = ` AND status = ${status}`
+        }
+        if (postDate !== undefined) {
+            let date = postDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`)
+            whereQuery += ` AND DATE(createdAt) = DATE(${date})`
+        }
 
-        const adminSelectResult = await adminModel.selectPostList(connection, id, date, status, offset);
+        const adminSelectResult = await adminModel.selectPostList(connection, whereQuery, offset);
 
         connection.release();
         
@@ -149,6 +158,51 @@ exports.sudoUpdatePostStatus = async (postIdx) => {
         await adminModel.updateCommentStatus(connection, postIdx);
 
         return response(baseResponse.SUCCESS);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 모든 신고 내역 조회
+exports.retrieveReportList = async () => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const postReportResult = await adminModel.selectPostReports(connection);
+        const commentReportResult = await adminModel.selectCommentReports(connection);
+
+        return response(baseResponse.SUCCESS,
+           {"댓글 신고 목록" : postReportResult, "게시글 신고 목록" : commentReportResult},
+        );
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 신고 게시글 내용 조회
+exports.retrieveReportPostContent = async (postIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const postReportResult = await adminModel.selectReportPostContent(connection, postIdx);
+
+        return response(baseResponse.SUCCESS, postReportResult);
+    } catch (e) {
+        console.log(e);
+        
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+// 신고 댓글 내용 조회
+exports.retrieveReportCommentContent = async (reportIdx) => {
+    try {
+        const connection = await pool.getConnection(async (connection) => connection);
+        const commentReportResult = await adminModel.selectReportCommentContent(connection, reportIdx);
+
+        return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
         console.log(e);
         
