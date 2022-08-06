@@ -30,14 +30,16 @@ const createPost = async ( userIdx, postImgUrls, content) => {
 
         return errResponse(baseResponse.DB_ERROR);
     } finally {
-        await connection.release();
+        connection.release();
     }
 }
 
 // 게시물 수정
 const updatePost = async (content, postIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+
         const editPostParams = [content, postIdx];
         const editPostResult = await postModel.updatePost(connection, editPostParams);
 
@@ -47,12 +49,16 @@ const updatePost = async (content, postIdx) => {
 
         await postModel.insertPostLog(connection, postIdx, 2);
 
-        connection.release();
+        await connection.commit();
+        
         return response(baseResponse.SUCCESS);
     } catch (e){
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -73,20 +79,24 @@ const retrieveUserIdx = async (postIdx) => {
 
 // 게시글 사진 목록 조회
 const retrievePostLists = async (userIdx, page) => {
+    const connection = await pool.getConnection(async (conn) => conn);
     try {
-        const connection = await pool.getConnection(async (conn) => conn);
+        await connection.beginTransaction();
         const offset = (page-1)*9;
         const postListResult = await postModel.selectUserPhotos(connection, userIdx, offset);
         
         await postModel.insertPostLog(connection, postIdx, 1);
-        
-        connection.release()
+
+        await connection.commit();
 
         return postListResult;
-
     } catch (e){
         console.log(e);
+        await connection.rollback();
+
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -110,6 +120,7 @@ const retrieveUserFeed = async (userIdx, page) => {
 const updatePostStatus = async (postIdx) => {
     const connection = await pool.getConnection(async (conn) => conn);
     try {
+        await connection.beginTransaction();
         const postStatusResult = await postModel.selectPostStatus(connection, postIdx);
 
         if (postStatusResult[0].status !== 0) {
@@ -120,9 +131,12 @@ const updatePostStatus = async (postIdx) => {
 
         await postModel.insertPostLog(connection, postIdx, 3);
 
+        await connection.commit();
+
         return response(baseResponse.SUCCESS);
     } catch(e) {
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
     } finally {
@@ -132,9 +146,9 @@ const updatePostStatus = async (postIdx) => {
 
 // 게시물 내용 조회
 const retrievePostContent = async (postIdx) => {
+    const connection = await pool.getConnection(async (conn) => conn);
     try {
-        const connection = await pool.getConnection(async (conn) => conn);
-
+        await connection.beginTransaction();
         const checkPostRealizeList = await postModel.selectPostByPostIdx(connection, postIdx);
         
         if (!checkPostRealizeList) {
@@ -143,12 +157,16 @@ const retrievePostContent = async (postIdx) => {
 
         const postContentResult = await postModel.selectPostContent(connection, postIdx);
         
-        connection.release()
+        await connection.commit();
 
         return response(baseResponse.SUCCESS, postContentResult);
     } catch (e){
         console.log(e);
+        await connection.rollback();
+
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -217,6 +235,7 @@ const createPostReport = async (userIdx, postIdx, reportCode) => {
         await postModel.insertReportLog(connection, reportPostIdx, 0, 0);
 
         await connection.commit();
+        
         return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);

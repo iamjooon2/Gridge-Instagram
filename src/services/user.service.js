@@ -17,6 +17,7 @@ const checkUserIdExists = async (userId) => {
         if (checkedUser == 0){
             return false;
         }
+
         return true;
     } catch (e) {
         console.log(e);
@@ -26,7 +27,6 @@ const checkUserIdExists = async (userId) => {
 
 // 사용자의 비밀번호가 일치하는지 확인
 const checkUserPassword = async (userId, userPassword) => {
-
     try {
         const connection = await pool.getConnection((connection) => connection);
         const checkedUserPassword = await userModel.checkUserPassword(connection, userId);
@@ -49,22 +49,27 @@ const checkUserPassword = async (userId, userPassword) => {
 
 // 회원정보 데이터베이스에 넣기
 const postSignUp = async (phone, name, password, birth, id, userType, socialId) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
+        await connection.beginTransaction();
         // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
-        const connection = await pool.getConnection(async (connection) => connection);
         
         const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType, socialId);
         const userIdx = signUpResult.userId;
 
-        const insertLogResult = await userModel.insertUserLog(connection, userIdx, 0);
+        await userModel.insertUserLog(connection, userIdx, 0);
 
-        connection.release();
+        await connection.commit();
 
         return response(signUpResult);
     } catch (e){
         console.log(e);
+        await connection.rollback();
+
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -84,7 +89,7 @@ const checkSocialId = async (socialId) => {
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
-    } 
+    }
 }
 
 // 카카오ID로 유저 식별자 가지고 오기
@@ -125,22 +130,27 @@ const retrieveUserIdxById  = async (userId) =>{
 
 // 사용자 본인 프로필 정보 가지고 오기
 const getUserInfo = async (userIdx, page) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
-        const userProfileResult = await userModel.getUserProfile(connection, userIdx);
+        await connection.beginTransaction();
 
+        const userProfileResult = await userModel.getUserProfile(connection, userIdx);
         const offset = (page-1)*9;
         
         const userPostResult = await postModel.selectUserPhotos(connection, userIdx, offset);
+        await userModel.insertUserLog(connection, userIdx, 1);
 
-        connection.release();
-
-        const insertLogResult = await userModel.insertUserLog(connection, userIdx, 1);
+        await connection.commit();
         const userResult = { userProfileResult, userPostResult };
+
         return userResult;
     } catch (e){
         console.log(e);
+        await connection.rollback();
+
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -179,18 +189,23 @@ const patchPassword = async (phone, password) => {
 
 // 사용자 프로필 업데이트하기
 const changeUserProfile = async (profileImgUrl, name, id, website, introduce, userIdx) => {
+    const connection = await pool.getConnection(async(connection) => connection);
     try {
-        const connection = await pool.getConnection(async(connection) => connection);
+        await connection.beginTransaction();
         const updatedProfileResult = await userModel.updateUserProfile(connection, profileImgUrl, name, id, website, introduce, userIdx);
         
-        const insertLogResult = await userModel.insertUserLog(connection, userIdx, 2);
+        await userModel.insertUserLog(connection, userIdx, 2);
 
-        connection.release();
+        await connection.commit();
+
         return response(baseResponse.SUCCESS);
     } catch (e){
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -390,7 +405,9 @@ const changeUserStatus = async (userIdx) => {
         // 팔로우 없애기
         await userModel.updateFollowStatusInactive(connection, userIdx);
 
+        // 로그 기록하기
         await userModel.insertUserLog(connection, userIdx, 3);
+
         await connection.commit(); 
 
         return response(baseResponse.SUCCESS);
@@ -406,19 +423,24 @@ const changeUserStatus = async (userIdx) => {
 
 // 토큰 넣기 + 로그인 시간 업데이트 - 로그인때 사용
 const postUserToken = async (userIdx, token) => {
+    const connection = await pool.getConnection(async(conn)=> conn);
     try {
-        const connection = await pool.getConnection(async(conn)=> conn);
+        await connection.beginTransaction();
+
         const checkValidAccessResult = await userModel.updateUserToken(connection, userIdx, token);
         await userModel.updateLoginTime(connection, userIdx);
 
-        connection.release();
+        await connection.commit();
 
         return checkValidAccessResult;
     } catch (e) {
         console.log(e);
+        await connection.rollback();
 
         return response(baseResponse.DB_ERROR);
-    } 
+    } finally {
+        connection.release();
+    }
 }
 
 // 유효된 토큰인지 확인

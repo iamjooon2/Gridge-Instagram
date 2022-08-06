@@ -9,8 +9,10 @@ const { errResponse, response } = require('../utilities/response');
 
 // 사용자 목록 전체 조회
 exports.retrieveUserList = async (id, name, signUpDate, status, page) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+
         const offset = (page-1)*10;
         
         let whereQuery='';
@@ -35,21 +37,25 @@ exports.retrieveUserList = async (id, name, signUpDate, status, page) => {
             await userModel.insertUserLog(connection, adminSelectResult[i].userIdx, 6);
         }
 
-        connection.release();
+        await connection.commit();
         
         return response(baseResponse.SUCCESS, adminSelectResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 사용자 세부 내역 조회
 exports.retrieveUserDetailList = async (userIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
-        
+        await connection.beginTransaction();
+
         const userLastLoginTime = await adminModel.selectUserLastLoginTime(connection, userIdx);
         const userPosts = await adminModel.selectUserPostByUserIdx(connection, userIdx);
         const userPostImg = await adminModel.selectUserProfileImgByUserIdx(connection, userIdx);
@@ -64,7 +70,7 @@ exports.retrieveUserDetailList = async (userIdx) => {
 
         await userModel.insertUserLog(connection, userIdx, 6);
 
-        connection.release();
+        await connection.commit();
         
         return response(baseResponse.SUCCESS, 
             [ {'마지막 로그인 시간': userLastLoginTime[0]} ,
@@ -82,33 +88,39 @@ exports.retrieveUserDetailList = async (userIdx) => {
 
     } catch (e) {
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 관리자 권한으로 사용자 정지
 exports.sudoBanUser = async (userIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
         const adminSelectResult = await adminModel.updateUserStatus(connection, userIdx);
-
         await userModel.insertUserLog(connection, userIdx, 5);
-        connection.release();
         
+        await connection.commit();
+
         return response(baseResponse.SUCCESS, adminSelectResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
-
 }
 
 // 게시글 목록 조회
 exports.retrievePostList = async (id, postDate, status, page) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const offset = (page-1)*10;
         
         let whereQuery='';
@@ -130,32 +142,34 @@ exports.retrievePostList = async (id, postDate, status, page) => {
             await postModel.insertPostLog(connection, adminSelectResult[i].postIdx, 5);
         }
 
-        connection.release();
+        await connection.commit();
         
         return response(baseResponse.SUCCESS, adminSelectResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 게시글 세부 내용 조회
 exports.retrievePostDetailList = async (postIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
-        
+        await connection.beginTransaction();
+
         const postResult = await adminModel.selectPostByPostIdx(connection, postIdx);
         const postImgResult = await adminModel.selectPostImgByPostIdx(connection, postIdx);
         const postLikeResult = await adminModel.selectPostLikeByPostIdx(connection, postIdx);
         const postReportResult = await adminModel.selectPostReportByPostIdx(connection, postIdx);
         const postCommentResult = await adminModel.selectPostCommentByPostIdx(connection, postIdx);
 
-        console.log(postIdx);
         await postModel.insertPostLog(connection, postIdx, 5);
 
-        connection.release();
-        
+        await connection.commit();
         return response(baseResponse.SUCCESS, 
             [ {'게시글 정보': postResult } ,
             { '게시글 사진': postImgResult },
@@ -164,15 +178,20 @@ exports.retrievePostDetailList = async (postIdx) => {
             { '게시글 댓글 목록': postCommentResult }]);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 게시글, 댓글 강제 삭제
 exports.sudoUpdatePostAndReleatedCommentStatus = async (postIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+
         const postStatusResult = await adminModel.updatePostStatus(connection, postIdx);
         const commentsOfPostResult = await commentModel.selectCommentIdxByPostIdx(connection, postIdx);
         const commentStatusResult = await adminModel.updateCommentStatusByPostIdx(connection, postIdx);
@@ -181,56 +200,72 @@ exports.sudoUpdatePostAndReleatedCommentStatus = async (postIdx) => {
         for (i = 0; i<commentsOfPostResult.length; i+=1){
             await commentModel.insertCommetLog(connection, commentsOfPostResult[i].commentIdx, 4);
         }
+        await connection.commit();
 
         return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 게시글 강제 삭제
 exports.sudoUpdateCommentStatus = async (postIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+        
         await adminModel.updatePostStatus(connection, postIdx);
 
         await postModel.insertPostLog(connection, postIdx, 4);
 
+        await connection.commit();
+
         return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 댓글 강제 삭제
 exports.sudoUpdateCommentStatus = async (commentIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+
         await adminModel.updateCommentStatusByCommentIdx(connection, commentIdx);
         await commentModel.insertCommetLog(connection, commentIdx, 4);
 
-        connection.release();
+        await connection.commit();
 
         return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 모든 신고 내역 조회
 exports.retrieveReportList = async () => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const postReportResult = await adminModel.selectPostReports(connection);
         const commentReportResult = await adminModel.selectCommentReports(connection);
 
-        console.log(postReportResult);
         for (i = 0; i<postReportResult.length; i+=1){
             await postModel.insertReportLog(connection, postReportResult[i].postReportIdx,1, 5);
         }
@@ -239,174 +274,237 @@ exports.retrieveReportList = async () => {
             await commentModel.insertReportLog(connection, commentReportResult[i].connectionReportIdx, 0, 5);  
         }
 
+        await conneciton.commit();
         return response(baseResponse.SUCCESS,
-           {"댓글 신고 목록" : postReportResult, "게시글 신고 목록" : commentReportResult},
+           {"댓글 신고 목록" : postReportResult, 
+           "게시글 신고 목록" : commentReportResult},
         );
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 신고 게시글 내용 조회
 exports.retrieveReportPostContent = async (postIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const postReportResult = await adminModel.selectReportPostContent(connection, postIdx);
 
         await postModel.insertPostLog(connection, postIdx, 4);
+        
+        await connection.commit();
 
         return response(baseResponse.SUCCESS, postReportResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 신고 댓글 내용 조회
 exports.retrieveReportCommentContent = async (commentIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
+
         const commentReportResult = await adminModel.selectReportCommentContent(connection, commentIdx);
 
         await commentModel.insertCommetLog(connection, commentIdx, 4);
 
+        await connection.commit();
+
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 게시글 신고 사유 조회
 exports.retrieveReportPostReportCode = async (postIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const postReportResult = await adminModel.selectReportPostReportCode(connection, postIdx);
 
         await postModel.insertReportLog(connection, postReportResult[0].postReportResult, 1, 5);
 
+        await connection.commit();
+
         return response(baseResponse.SUCCESS, postReportResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 댓글 신고 사유 조회
 exports.retrieveReportCommentReportCode = async (commentIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const commentReportResult = await adminModel.selectReportCommentReportCode(connection, commentIdx);
 
         await commentModel.insertReportLog(connection, commentReportResult[0].commentReportIdx, 0, 5);
 
+        await connection.commit();
+
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
         console.log(e);
-        
+        await connection.rollback();
+
         return errResponse(baseResponse.DB_ERROR);
-    }   
+    } finally {
+        connection.release();
+    }
 }
 
 // 게시글 신고 강제 삭제
 exports.sudoUpdatePostReportStatus = async (postReportIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const postReportResult = await adminModel.updatePostReportStatus(connection, postReportIdx);
 
         await postModel.insertReportLog(connection, postReportIdx, 0, 4);
+
+        await connection.commit();
         return response(baseResponse.SUCCESS, postReportResult);
     } catch (e) {
         console.log(e);
+        await connection.rollback();
         
         return errResponse(baseResponse.DB_ERROR);
-    }   
+    } finally {
+        connection.release();
+    }
 }
 
 // 댓글 신고 강제 삭제
 exports.sudoUpdateCommentReportStatus = async (commentReportIdx) => {
+    const connection = await pool.getConnection(async (connection) => connection);
     try {
-        const connection = await pool.getConnection(async (connection) => connection);
+        await connection.beginTransaction();
         const commentReportResult = await adminModel.updateCommentReportStatus(connection, commentReportIdx);
 
         await commentModel.insertReportLog(connection, commentReportIdx, 1, 4);
+
+        await connection.commit();
+
         return response(baseResponse.SUCCESS, commentReportResult);
     } catch (e) {
         console.log(e);
-        
+        await connection.rollback();
+
         return errResponse(baseResponse.DB_ERROR);
-    }   
+    } finally {
+        connection.release();
+    }
 }
 
 // 사용자 관련 로그 조회
 exports.retrieveUserLogs = async (page) => {
+    const connection = await pool.getConnection(async(connection)=> connection);
     try {
-        const connection = await pool.getConnection(async(connection)=> connection);
+        await connection.beginTransaction();
+
         const offset = (page-1)*10;
         const logResults = await adminModel.selectUserLogs(connection, offset);
 
-        connection.release();
-
+        await connection.commit();
+        
         return response(baseResponse.SUCCESS, logResults);
     } catch (e){
         console.log(e)
+        await conneciton.rollback();
 
         return errResponse(baseResponse.DB_ERROR)
+    } finally {
+        connection.release();
     }
 }
 
 // 게시글 관련 로그 조회
 exports.retrievePostLogs = async (page) => {
+    const connection = await pool.getConnection(async(connection)=> connection);
     try {
-        const connection = await pool.getConnection(async(connection)=> connection);
+        await connection.beginTransaction();
+
         const offset = (page-1)*10;
         const logResults = await adminModel.selectPostLogs(connection, offset);
 
-        connection.release();
+        await connection.commit();
 
         return response(baseResponse.SUCCESS, logResults);
     } catch (e){
-        console.log(e)
+        console.log(e);
+        await connection.rollback;
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 댓글 관련 로그 조회
 exports.retrieveCommentLogs = async (page) => {
+    const connection = await pool.getConnection(async(connection)=> connection);
     try {
-        const connection = await pool.getConnection(async(connection)=> connection);
+        await connection.beginTransaction();
+
         const offset = (page-1)*10;
         const logResults = await adminModel.selectCommentLogs(connection, offset);
 
-        connection.release();
+        await connection.commit();
 
         return response(baseResponse.SUCCESS, logResults);
     } catch (e){
-        console.log(e)
+        console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
 // 신고 관련 로그 조회
 exports.retrieveReportLogs = async (page) => {
+    const connection = await pool.getConnection(async(connection)=> connection);
     try {
-        const connection = await pool.getConnection(async(connection)=> connection);
+        await connection.beginTransaction();
+
         const offset = (page-1)*10;
         const logResults = await adminModel.selectReportLogs(connection, offset);
 
-        connection.release();
+        await connection.commit();
 
         return response(baseResponse.SUCCESS, logResults);
     } catch (e){
-        console.log(e)
+        console.log(e);
+        await connection.rollback();
 
         return errResponse(baseResponse.DB_ERROR)
+    } finally {
+        connection.release();
     }
 }

@@ -7,7 +7,6 @@ const { errResponse, response } = require('../utilities/response');
 
 const postMessage = async (userIdx, partnerIdx, content) => {
     const connection = await pool.getConnection(async (conn) => conn);
-
     try {
         await connection.beginTransaction();
 
