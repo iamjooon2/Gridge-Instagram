@@ -54,7 +54,7 @@ https://drive.google.com/file/d/12tflQMZaL7TZuIMznBwQQKGe7IpBJMDD/view?usp=shari
 https://app.swaggerhub.com/apis-docs/iamjooon2/GridgeTestChallenge/1.0.0#/
 
 ## Review
-앱런칭 동아리 프론트맨가 거의 참여를 안해서... 앱 플레이스토어에 올리는건 안될 것 같고.. 디자이너도 바쁘고....
+앱런칭 동아리 프론트맨이 거의 참여를 안해서... 앱 플레이스토어에 올리는건 안될 것 같고.. 디자이너도 바쁘고....
 방학동안 집중하며 성장할 게 필요했다
 2주 시간 주고 가이드라인대로 뽑아낼 수 있는지, 요구사항을 주고 제작해내라는 챌린지.. 다행히도 일단 돌아가게는 만들어냈다
 
