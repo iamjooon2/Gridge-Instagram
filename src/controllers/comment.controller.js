@@ -80,9 +80,9 @@ const patchComment = async (req, res) => {
 
     // Validation
     if(!commentIdx) {
-        return res.send(errResponse(baseResponse.COMMENT_CONTENT_EMPTY));
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_EMPTY));
     }else if (commentIdx < 1) {
-        return res.send(errResponse(baseResponse.COMMENT_CONTENT_LENGTH));
+        return res.send(errResponse(baseResponse.COMMENT_COMMENTIDX_LENGTH));
     }
 
     if (!content) {

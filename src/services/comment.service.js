@@ -81,9 +81,17 @@ const retrieveCommentLists = async (postIdx, cursorTime) => {
 
         const commentListResult = await commentModel.selectPostComments(connection, postIdx, cursorTime);
 
-        await commentModel.insertCommetLog(connection, commentIdx, 1);
+        if (commentListResult[0] == null) {
+            await connection.commit();
+            return 
+        }
+        console.log(commentListResult);
+
+        await commentModel.insertCommetLog(connection, commentListResult[0].commentIdx, 1);
 
         await connection.commit();
+
+        return commentListResult;
     } catch (e) {
         console.log(e);
         await connection.rollback();

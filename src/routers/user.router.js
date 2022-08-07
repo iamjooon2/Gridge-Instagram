@@ -3,29 +3,7 @@ const jwtMiddleware = require('../middlewares/jwt.middleware');
 
 const userRouter = (router) =>{
 
-/**
- * @swagger
- *  /product:
- *    get:
- *      tags:
- *      - product
- *      description: 모든 제품 조회
- *      produces:
- *      - application/json
- *      parameters:
- *        - in: query
- *          name: category
- *          required: false
- *          schema:
- *            type: integer
- *            description: 카테고리
- *      responses:
- *       200:
- *        description: 제품 조회 성공
- *        schema:
- *          $ref: '#/components/schemas/Product'
- * 
- */
+    // 일반 로그인 API
     router.post('/user/login', userController.logIn);
 
     // 자동 로그인 API

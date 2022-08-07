@@ -34,19 +34,19 @@ const selectPostComments = async (conn, postIdx, cursorTime) => {
     const selectPostCommentsQuery = `
         SELECT user.id, comment.commentIdx, comment.content, 
         case
-            when timestampdiff(minute, comment.createdAt, current_timestamp) < 60
-                then CONCAT(TIMESTAMPDIFF(minute, comment.createdAt , NOW()), '분')
-            when timestampdiff(hour , comment.createdAt, current_timestamp) < 24
-                then CONCAT(TIMESTAMPDIFF(hour, comment.createdAt , NOW()), '시간')
-            when timestampdiff(day, comment.createdAt, current_timestamp) < 30 
-                then CONCAT(TIMESTAMPDIFF(day, comment.createdAt, NOW()), '일')
+            when timestampdiff(minute, comment.updatedAt, current_timestamp) < 60
+                then CONCAT(TIMESTAMPDIFF(minute, comment.updatedAt , NOW()), '분')
+            when timestampdiff(hour , comment.updatedAt, current_timestamp) < 24
+                then CONCAT(TIMESTAMPDIFF(hour, comment.updatedAt , NOW()), '시간')
+            when timestampdiff(day, comment.updatedAt, current_timestamp) < 30 
+                then CONCAT(TIMESTAMPDIFF(day, comment.updatedAt, NOW()), '일')
             else 
-                timestampdiff(year , comment.createdAt, current_timestamp)
+                timestampdiff(year , comment.updatedAt, current_timestamp)
         end as uploadTime
         FROM comment
             join user 
                 on comment.userIdx = user.userIdx
-        WHERE comment.postIdx = ? and comment.status = 0 and comment.createdAt <= ? 
+        WHERE comment.postIdx = ? and comment.status = 0 and comment.updatedAt <= ? 
         ORDER BY comment.commentIdx ASC
         limit 10
     `;
