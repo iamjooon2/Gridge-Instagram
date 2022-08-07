@@ -26,7 +26,7 @@ ALTER TABLE `Gridge-ERD`.`user` COMMENT '사용자';
 CREATE TABLE `Gridge-ERD`.`comment`
 (
     `commentIdx`  BIGINT          NOT NULL    AUTO_INCREMENT, 
-    `postIdx`     BIGINT          NOT NULL
+    `postIdx`     BIGINT          NOT NULL,
     `useridx`     BIGINT          NOT NULL, 
     `content`     VARCHAR(300)    NULL, 
     `createdAt`   TIMESTAMP       NULL        DEFAULT current_timestamp, 
@@ -241,7 +241,7 @@ CREATE TABLE `Gridge-ERD`.`message`
     `messageIdx`  BIGINT       NOT NULL    AUTO_INCREMENT, 
     `roomIdx`     BIGINT       NOT NULL, 
     `senderIdx`   BIGINT       NOT NULL, 
-    `content`     VARCHAR(300) NOT NULL
+    `content`     VARCHAR(300) NOT NULL,
     `createdAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP    NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT      NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제', 
@@ -264,7 +264,7 @@ CREATE TABLE `Gridge-ERD`.`userLog`
 (
     `userLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `userIdx`     BIGINT         NOT NULL, 
-    `logType`     BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
+    `logType`     BIGINT         NOT NULL   COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
@@ -283,7 +283,7 @@ CREATE TABLE `Gridge-ERD`.`postLog`
 (
     `postLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `postIdx`     BIGINT         NOT NULL, 
-    `logType`     BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
+    `logType`     BIGINT         NOT NULL    COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`   TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`      TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
@@ -302,7 +302,7 @@ CREATE TABLE `Gridge-ERD`.`commentLog`
 (
     `commentLogIdx`  BIGINT         NOT NULL    AUTO_INCREMENT, 
     `commentIdx`     BIGINT         NOT NULL, 
-    `logType`        BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
+    `logType`        BIGINT         NOT NULL   COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`      TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`         TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
@@ -323,11 +323,11 @@ CREATE TABLE `Gridge-ERD`.`reportLog`
     `postReportIdx`     BIGINT         NULL, 
     `commentReportIdx`  BIGINT         NULL, 
     `reportCode`        TINYINT        NOT NULL,
-    `logType`           BIGINT         NOT NULL,   COMMENT '0-C/1-R/2-U/3-D',
+    `logType`           BIGINT         NOT NULL    COMMENT '0-C/1-R/2-U/3-D',
     `createdAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp, 
     `updatedAt`         TIMESTAMP      NOT NULL    DEFAULT current_timestamp ON UPDATE current_timestamp, 
     `status`            TINYINT        NOT NULL    DEFAULT 0 COMMENT '0-활성화/1-삭제됨', 
-     PRIMARY KEY (reportIdx)
+     PRIMARY KEY (reportLogIdx)
 );
 
 ALTER TABLE `Gridge-ERD`.`reportLog` COMMENT '신고 로그';

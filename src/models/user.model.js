@@ -22,8 +22,8 @@ const checkUserPassword = async (conn, userId) => {
 
 const insertUser = async (conn, phone, name, hashedPassword, birth, id, userType, socialId) => {
     const insertUserQuery = `
-        INSERT INTO user(phone, name, password, birth, ID, userType, socialId)
-        VALUES(?,?,?,?,?)
+        INSERT INTO user(userIdx, phone, name, password, birth, ID, userType, socialId)
+        VALUES(?,?,?,?,?,?,?)
     ;`;
     const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id, userType, socialId]);
 

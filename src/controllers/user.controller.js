@@ -193,7 +193,8 @@ const signUp = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_USERID_EXIST));
     }
     
-    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id, 0, null);
+    const userSignUpResult = await userService.postSignUp(phone, name, password, birth, id, '0', '0');
+
 
     return res.send(response(baseResponse.SUCCESS));
 }

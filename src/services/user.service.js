@@ -54,7 +54,7 @@ const postSignUp = async (phone, name, password, birth, id, userType, socialId) 
         await connection.beginTransaction();
         // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
-        
+        phone, name, hashedPassword, birth, id, userType, socialId
         const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType, socialId);
         const userIdx = signUpResult.userId;
 
