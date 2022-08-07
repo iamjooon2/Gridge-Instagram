@@ -8,8 +8,14 @@ const options = {
         },
         host: 'http://localhost:5050',
         basepath: '/',
+        servers: [
+            {
+              url: "http://localhost:5050/docs", // url
+              description: "Local server", // name
+            },
+        ]
     },
-    apis: ["./routers/*.js" ,"./controllers/*.js"],
+    apis: ["./routers/*.js" ,"./controllers/*.js", "./swagger/swaggerDoc.js"],
 };
 
 module.exports = options;

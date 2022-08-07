@@ -2,39 +2,29 @@ const userController = require('../controllers/user.controller');
 const jwtMiddleware = require('../middlewares/jwt.middleware');
 
 const userRouter = (router) =>{
+
 /**
  * @swagger
- * paths:
- *  /user/nickname:
- *   post:
- *    tags:
- *    - user
- *    description: 닉네임 조회
- *    parameters:
- *    - in: body
- *      name: body
- *      required: true
- *      schema:
- *       properties:
- *        id:
- *         type: string
- *        pw:
- *         type: string
- *
- *    responses:
- *     200:
- *      description: 닉네임 조회 성공
- *      schema:
- *       properties:
- *        message:
- *         type: string
- *     401:
- *      description: 닉네임 조회 실패
- *      schema:
- *       properties:
- *        message:
- *         type: string
- *
+ *  /product:
+ *    get:
+ *      tags:
+ *      - product
+ *      description: 모든 제품 조회
+ *      produces:
+ *      - application/json
+ *      parameters:
+ *        - in: query
+ *          name: category
+ *          required: false
+ *          schema:
+ *            type: integer
+ *            description: 카테고리
+ *      responses:
+ *       200:
+ *        description: 제품 조회 성공
+ *        schema:
+ *          $ref: '#/components/schemas/Product'
+ * 
  */
     router.post('/user/login', userController.logIn);
 

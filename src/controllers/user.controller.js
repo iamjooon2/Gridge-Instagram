@@ -13,10 +13,7 @@ const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/)
 const regexNum = new RegExp(/^[0-9]+$/);  // 숫자만 입력가능한 정규표현식
 
 
-/**
- * @path {POST} http://localhost:5000/api/user/login
- * @description 일반 로그인
- */
+// 일반 로그인
 const logIn = async (req, res) => {
 
     const {id, password} = req.body;
@@ -431,10 +428,10 @@ const followUser = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     }
 
-    // 이미 팔로우중인 사용자인 경우 팔로우 성공했다고 리턴(UX 고려?)
+    // 이미 팔로우중인 사용자인 경우 성공했다고 리턴(UX 고려?)
     const checkNowFollowing = await userService.checkfollowStatus(userIdx, followUserId, 0);
     if (checkNowFollowing) {
-        return res.send(errResponse(baseResponse.FOLLOW_SUCCESS));
+        return res.send(errResponse(baseResponse.SUCCESS));
     } 
 
     // 팔로우 요청이 이미 있는 상황에는 그냥 요청에 성공했다고 알려줌(UX 고려?)
@@ -466,10 +463,10 @@ const unfollowUser = async (req, res) => {
         return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     }
 
-    // 이미 팔로우하고있지 않은 사용자인 경우 팔로우 취소 성공했다고리턴(UX 고려?)
+    // 이미 팔로우하고있지 않은 사용자인 경우 성공했다고리턴(UX 고려?)
     const checkUnfollowing = await userService.checkfollowStatus(userIdx, unfollowUserId, 1);
     if (checkUnfollowing) {
-        return res.send(errResponse(baseResponse.UNFOLLOW_SUCCESS));
+        return res.send(errResponse(baseResponse.SUCCESS));
     } 
 
     const followUserResult = await userService.unfollowUser(userIdx, unfollowUserId);

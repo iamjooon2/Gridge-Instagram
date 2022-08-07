@@ -301,7 +301,7 @@ const followUser = async (userIdx, followUserId) => {
 
         await connection.commit();
         
-        return response(baseResponse.FOLLOW_SUCCESS);
+        return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
         await connection.rollback();
@@ -319,7 +319,7 @@ const unfollowUser = async (userIdx, unfollowUserId) => {
         const unfollowResult = await userModel.updateFollowStatusByTargetId(connection, userIdx, unfollowUserId, 1);
 
         connection.release();
-        return response(baseResponse.UNFOLLOW_SUCCESS);
+        return response(baseResponse.SUCCESS);
     } catch (e) {
         console.log(e);
 
