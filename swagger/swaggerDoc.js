@@ -6,8 +6,6 @@ const options = {
             version: "1.0.0",
             description: "그릿지테스트챌린지 Swagger API"
         },
-        host: 'http://localhost:5050',
-        basepath: '/',
         servers: [
             {
               url: "http://localhost:5050/docs", // url
