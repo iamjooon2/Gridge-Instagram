@@ -18,26 +18,33 @@
   ┣ docker-compose.yml # AWS 프리티어 안되서.. 도커로 로컬에서 디비 띄우자~
   ┣ package.json 
 
-해당 디렉토리 구조는 개발 가이드라인에 맞추어 설계하였습니다
+```
+## API 로직
+
+1. index.js(express) - 익스프레스가 띄운 서버로 접속
+2. routers/index.js - 도메인별 라우터로 분기
+3. routers/*.router.js - 해당하는 도메인로 requset, response 관리
+4. controllers/*.controller.js - 유효성 검사, 인증 등 Controller Layer
+5. services/*.service.js - 데이터 전달 혹은 데이터베이스에서 뽑아온 데이터 정제
+6. models/*.model.js - 데이터베이스 접근 쿼리들의 집합, DataManager Layer
+7. DataBase
+
+
+## How To Run
+```
+0. docker desktop 설치 후 실행
+1. GridgeTestChallenge 경로로 이동
+2. docker-compose up --build -d  // 도커 빌드
+3. npm run db:init // 도커 데이터베이스 생성
+4. npm run start // express 실행
+5. npm run db:drop // 도커 데이터베이스 날리기...
+
 ```
 
-## 개발 가이드라인
+## 엑셀 제출 폼
 
-<a href=https://docs.google.com/spreadsheets/d/1kT9L-gJ9OjGQW34qrG5pVGpXoVafVRx-hFxxDgwXydc/>스프레드시트</a>
-
-
-## 설계 요구사항 
-
-<a href=https://xd.adobe.com/view/5554835b-8966-41c8-888d-b648719e6485-0007/>사진 링크</a>
-
-
-## Swagger 최소 요구사항 
-
-<a href=https://drive.google.com/file/d/1C4FgBwsbpUhJ1RyDxxMfFKYLO6zeC6UN/view/>사진 링크</a>
-
+https://docs.google.com/spreadsheets/d/10zoaoUnO98aZFaBJowZmX0E4__m7tW4_iFoUhOs7Y0A/edit#gid=0/>
 
 ## DB Scheme
+https://drive.google.com/file/d/12tflQMZaL7TZuIMznBwQQKGe7IpBJMDD/view?usp=sharing
 
-<a href=https://drive.google.com/file/d/1m9-lQGWDdEt3wz-udrPF9fyOt-K1cMzb/>사진 링크 바로가기</a> <br>
-https://aquerytool.com/aquerymain/index/?rurl=18d4ee95-74d5-4465-8983-7df2e9b1799f
-DB설계 페이지 (비밀번호 : n4i5c2)
