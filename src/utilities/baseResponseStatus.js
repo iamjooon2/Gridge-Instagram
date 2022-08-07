@@ -96,6 +96,7 @@ module.exports = {
     DB_ERROR : { "isSuccess": false, "code": 400, "message": "데이터 베이스 에러"},
     SERVER_ERROR : { "isSuccess": false, "code": 401, "message": "서버 에러"},
  
+    // Admin Page Error
     REPORT_POSTREPORTIDX_EMPTY : { "isSuccess": false, "code": 500, "message": "postReportIdx를 입력해주세요"},
     REPORT_POSTREPORTIDX_LENGTH : { "isSuccess": false, "code": 501, "message": "postReportIdx는 0보다 큰 값으로 입력해주세요." },
 
