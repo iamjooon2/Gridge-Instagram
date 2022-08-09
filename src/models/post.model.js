@@ -254,8 +254,8 @@ const insertPostLog = async (conn, postIdx, logType) => {
 
 const insertReportLog = async (conn, postReportIdx, reportType, logType) => {
     const insertLogQuery = `
-        INSERT INTO reportLog(postReportIdx, reportType, logType)
-        VALUES(?,?,?)
+        INSERT INTO reportLog(commentReportIdx, postReportIdx, reportType, logType)
+        VALUES(?,?,?,?)
     `;
     
     const [LogRow] = await conn.query(insertLogQuery, [postReportIdx, reportType, logType]);

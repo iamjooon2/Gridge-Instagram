@@ -186,6 +186,7 @@ const postPostReport = async (req, res) => {
     const reportCode = req.query.reportCode;
 
     const userIdx = idx[0].userIdx;
+    console.log(userIdx);
 
     // postIdx validation
     if (!postIdx) {

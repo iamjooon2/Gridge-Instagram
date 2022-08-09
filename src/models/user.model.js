@@ -22,8 +22,8 @@ const checkUserPassword = async (conn, userId) => {
 
 const insertUser = async (conn, phone, name, hashedPassword, birth, id, userType, socialId) => {
     const insertUserQuery = `
-        INSERT INTO user(userIdx, phone, name, password, birth, ID, userType, socialId)
-        VALUES(?,?,?,?,?,?,?)
+        INSERT INTO user(phone, name, password, birth, ID, userType, socialId, introduce, profileImgUrl, website, token)
+        VALUES(?,?,?,?,?,?,?,null,null,null,null)
     ;`;
     const [insertedRow] = await conn.query(insertUserQuery, [phone, name, hashedPassword, birth, id, userType, socialId]);
 
@@ -81,24 +81,24 @@ const getUserProfile = async (conn, userIdx) => {
             if (followerCount is null, 0, followerCount) as followerCount,
             if (followingCount is null, 0, followingCount) as followingCount
         FROM user
-            INNER JOIN (
+            LEFT JOIN (
                 SELECT userIdx, COUNT(postIdx) as postCount
-                FROM post
+                FROM post 
                 WHERE status = 0
                 GROUP BY userIdx
-                ) post ON user.userIdx = post.userIdx
-            INNER JOIN (
-                SELECT userIdx, COUNT(followingIdx) as followerCount
+                ) p ON user.userIdx = p.userIdx
+            LEFT JOIN (
+                SELECT userIdx, COUNT(userIdx) as followerCount
                 FROM following
                 WHERE status = 0
-                GROUP BY userIdx
-                ) following on following.userIdx = user.userIdx
-            INNER JOIN (
-                SELECT targetUserIdx, COUNT(followingIdx) as followingCount
+                GROUP BY followingIdx
+                ) f1 ON f1.userIdx = user.userIdx
+            LEFT JOIN (
+                SELECT userIdx, targetUserIdx, COUNT(targetUserIdx) as followingCount
                 FROM following
                 WHERE status = 0
-                GROUP BY userIdx
-                ) following on following.targetUserIdx = user.userIdx
+                GROUP BY followingIdx
+                ) ff ON user.userIdx = ff.targetUserIdx
         WHERE user.userIdx = ?
     `;
     const [userProfileRow] = await conn.query(selectUserProfileQuery, userIdx);
@@ -453,13 +453,13 @@ const selectUserTokenByIdx = async (conn, userIdx) => {
     return selectTokenResult[0].token;
 }
 
-const updateUserToken = async (conn, userIdx) => {
+const updateUserToken = async (conn, token, userIdx) => {
     const updateTokenQuery = `
         UPDATE user
         SET token = ?
         WHERE userIdx = ?
     `;
-    const [updatedUserRow] = await conn.query(updateTokenQuery, userIdx);
+    const [updatedUserRow] = await conn.query(updateTokenQuery, [token, userIdx]);
 
     return updatedUserRow;
 }

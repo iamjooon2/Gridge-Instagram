@@ -129,8 +129,8 @@ const kakaoLogin = async (req, res) => {
 
 // 자동로그인
 const autoLogin = async (req, res) => {
-    const userIdFromJWT = req.verifiedToken.userIdx;
-    console.log(`[Auto-Login API] userIdx: ${userIdFromJWT}`);
+    const userIdxFromJWT = req.verifiedToken.idx;
+    console.log(`[Auto-Login API] userIdx: ${userIdxFromJWT}`);
     return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
 
@@ -284,7 +284,9 @@ const checkIdAvailable = async (req, res) => {
 const getUserInfo = async (req, res) => {
     
     const userIdxInfoFromToken = req.verifiedToken.idx;
-    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const userIdx = userIdxInfoFromToken;
+
+    console.log(userIdx);
     const page = req.query.page;
 
     // validation
@@ -309,8 +311,10 @@ const getUserInfo = async (req, res) => {
 // 사용자 피드 조회
 const getUserFeed = async (req, res) => {
     const userIdxInfoFromToken = req.verifiedToken.idx;
-    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const userIdx = userIdxInfoFromToken;
     const page = req.query.page;
+
+    console.log(userIdx);
 
     const userFeedResult = await postService.retrieveUserFeed(userIdx, page);
 
@@ -343,10 +347,10 @@ const patchPassword = async (req, res) => {
     }
 
     // 소셜회원 여부 확인 - 가입시 비밀번호 입력 안하기 때문에 변경 불가
-    const checkSocialUserResult = await userService.checkUserType(userIdx);
-    if (checkSocialUserResult== 0) {
-        return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_TYPE));
-    }
+    // const checkSocialUserResult = await userService.checkUserType(userIdx);
+    // if (checkSocialUserResult== 0) {
+    //     return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_TYPE));
+    // }
 
     const changedPasswordResult = await userService.patchPassword(phone, password);
 
@@ -357,7 +361,7 @@ const patchPassword = async (req, res) => {
 const patchProfile = async (req, res) => {
 
     const userIdxInfoFromToken = req.verifiedToken.idx;
-    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const userIdx = userIdxInfoFromToken;
     const { profileImgUrl, name, id, website, introduce } = req.body;
 
     // website, introduce는 nullable하기때문에 validation 하지 않음
@@ -393,7 +397,7 @@ const patchProfile = async (req, res) => {
 const patchPrivate = async (req, res) => {
     
     const userIdxInfoFromToken = req.verifiedToken.idx;
-    const userIdx = userIdxInfoFromToken[0].userIdx;
+    const userIdx = userIdxInfoFromToken;
     // 비공개/공개 여부를 설정한 코드 1-비공개 / 0-공개
     const privateCode = req.query.privateCode;
 
@@ -451,6 +455,7 @@ const unfollowUser = async (req, res) => {
     
     const userIdxInfoFromToken = req.verifiedToken.idx;
     const userIdx = userIdxInfoFromToken[0].userIdx;
+    console.log(userIdx);
     const unfollowUserId = req.body.id;
 
     if (!unfollowUserId) {

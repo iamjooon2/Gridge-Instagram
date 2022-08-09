@@ -14,7 +14,7 @@ const postMessage = async (userIdx, partnerIdx, content) => {
         const userDoubleParams = [userIdx, partnerIdx, partnerIdx, userIdx];
         let selectedRoomInfoResult = await roomModel.selectRoom(connection, userDoubleParams);
 
-        if (!selectedRoomInfoResult){
+        if (selectedRoomInfoResult[0] == null){
             await roomModel.startMessageRoom(connection, userParams);
 
             selectedRoomInfoResult = await roomModel.selectRoom(connection, userDoubleParams);

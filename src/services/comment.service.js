@@ -1,5 +1,6 @@
 const { pool } = require('../assets/db');
 
+const postModel = require('../models/post.model');
 const commentModel = require('../models/comment.model');
 const baseResponse = require('../utilities/baseResponseStatus')
 const { errResponse, response } = require('../utilities/response');
@@ -35,10 +36,11 @@ const updateComment = async (content, commentIdx) => {
     try {
         await connection.beginTransaction();
         const updateCommentParam = [content, commentIdx];
-
         const editCommentResult = await commentModel.updateComment(connection, updateCommentParam);
 
-        if (!editCommentResult) {
+        console.log(editCommentResult);
+    
+        if (editCommentResult[0]==null) {
             await connection.commit();
 
             return errResponse(baseResponse.DB_ERROR);
@@ -81,11 +83,12 @@ const retrieveCommentLists = async (postIdx, cursorTime) => {
 
         const commentListResult = await commentModel.selectPostComments(connection, postIdx, cursorTime);
 
+        console.log(commentListResult)
+
         if (commentListResult[0] == null) {
             await connection.commit();
             return 
         }
-        console.log(commentListResult);
 
         await commentModel.insertCommetLog(connection, commentListResult[0].commentIdx, 1);
 
@@ -117,7 +120,7 @@ const updateCommentStatus = async (commentIdx) => {
         }
         const editCommentStatusResult = await commentModel.updateCommentStatusInactive(connection, commentIdx);
         
-        await commentModel.insertCommetLog(connection, userIdx, 3);
+        await commentModel.insertCommetLog(connection, commentIdx, 3);
 
         await connection.commit();
         return response(baseResponse.SUCCESS)
@@ -138,6 +141,7 @@ const createCommentLike = async (userIdx, commentIdx) => {
         await connection.beginTransaction();
 
         const checkedCommentLikeResult = await commentModel.checkCommentLike(connection, userIdx, commentIdx);
+        console.log(checkedCommentLikeResult);
 
         // 처음 좋아요 누르는 것이라면
         if (checkedCommentLikeResult[0].success == 0){
@@ -196,7 +200,7 @@ const createCommentReport = async (userIdx, commentIdx, reportCode) => {
         }
         const reportCommentResult = await commentModel.insertCommentReport(connection, userIdx, commentIdx, reportCode);
         const reportCommentIdx = reportCommentResult.insertId;
-        await postModel.insertReportLog(connection, reportCommentIdx, 1, 0);
+        await commentModel.insertReportLog(connection, reportCommentIdx,1, 1, 0);
 
         await connection.commit();
         return response(baseResponse.SUCCESS);

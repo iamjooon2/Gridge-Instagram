@@ -71,6 +71,7 @@ const patchComment = async (req, res) => {
     const commentIdx = req.params.commentIdx;
     const content = req.body.content;
 
+
     const writerOfComment = await commentService.retrieveUserIdx(commentIdx);
 
     // Authentication

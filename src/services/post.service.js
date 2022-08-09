@@ -67,10 +67,9 @@ const retrieveUserIdx = async (postIdx) => {
     try {
         const connection = await pool.getConnection(async (connection) => connection);
         const userIdx = await postModel.selectUserIdxByPostIdx(connection, postIdx);
-        
         connection.release();
 
-        return userIdx;
+        return userIdx[0].userIdx;
     } catch (e){
         console.log(e);
         return errResponse(baseResponse.DB_ERROR);
@@ -84,8 +83,11 @@ const retrievePostLists = async (userIdx, page) => {
         await connection.beginTransaction();
         const offset = (page-1)*9;
         const postListResult = await postModel.selectUserPhotos(connection, userIdx, offset);
+
+        for (i = 0; i <postListResult.length; i+=1){
+            await postModel.insertPostLog(connection, postListResult[i].postIdx, 1);
+        }
         
-        await postModel.insertPostLog(connection, postIdx, 1);
 
         await connection.commit();
 
@@ -232,7 +234,7 @@ const createPostReport = async (userIdx, postIdx, reportCode) => {
         }
         const reportedPostResult = await postModel.insertPostReport(connection, userIdx, postIdx, reportCode);
         const reportPostIdx = reportedPostResult.insertId;
-        await postModel.insertReportLog(connection, reportPostIdx, 0, 0);
+        await postModel.insertReportLog(connection, 7, reportPostIdx, 0, 0);
 
         await connection.commit();
         

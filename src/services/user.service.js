@@ -54,11 +54,9 @@ const postSignUp = async (phone, name, password, birth, id, userType, socialId) 
         await connection.beginTransaction();
         // 비밀번호 암호화
         const hashedPassword = await bcrypt.hash(password, 10);
-        phone, name, hashedPassword, birth, id, userType, socialId
         const signUpResult = await userModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType, socialId);
-        const userIdx = signUpResult.userId;
 
-        await userModel.insertUserLog(connection, userIdx, 0);
+        await userModel.insertUserLog(connection, signUpResult.insertId, 0);
 
         await connection.commit();
 
@@ -136,6 +134,8 @@ const getUserInfo = async (userIdx, page) => {
 
         const userProfileResult = await userModel.getUserProfile(connection, userIdx);
         const offset = (page-1)*9;
+        
+        console.log(userIdx);
         
         const userPostResult = await postModel.selectUserPhotos(connection, userIdx, offset);
         await userModel.insertUserLog(connection, userIdx, 1);
@@ -273,7 +273,7 @@ const followUser = async (userIdx, followUserId) => {
         await connection.beginTransaction();
         
         const userPrivateInfo = await userModel.checkUserPrivateById(connection, followUserId);
-        const followHistoryInfo = await userModel.checkFollow(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
+        const followHistoryInfo = await userModel.checkFollowByTargetId(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
 
         // 상대방이 비공개 계정인 경우
         if (userPrivateInfo[0].success == 1){

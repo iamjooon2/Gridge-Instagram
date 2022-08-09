@@ -92,7 +92,7 @@ module.exports = {
     USER_PRIVATE_ERROR: { "isSuccess": false, "code": 331, "message": "비공개 설정 사용자가 아닙니다" },
     AUTH_NUMBER_WRONG : { "isSuccess": false, "code": 332, "message": "인증번호가 잘못되었습니다" },
 
-    //Connection, Transaction 등의 서버 오류
+    // Connection, Transaction 등의 서버 오류
     DB_ERROR : { "isSuccess": false, "code": 400, "message": "데이터 베이스 에러"},
     SERVER_ERROR : { "isSuccess": false, "code": 401, "message": "서버 에러"},
  

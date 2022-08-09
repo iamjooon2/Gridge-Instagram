@@ -46,7 +46,7 @@ const selectPostComments = async (conn, postIdx, cursorTime) => {
         FROM comment
             join user 
                 on comment.userIdx = user.userIdx
-        WHERE comment.postIdx = ? and comment.status = 0 and comment.updatedAt <= ? 
+        WHERE comment.postIdx = ? and comment.status = 0 and comment.updatedAt >= ? 
         ORDER BY comment.commentIdx ASC
         limit 10
     `;
@@ -82,7 +82,7 @@ const checkCommentLike = async (connection, userIdx, commentIdx) => {
         SELECT EXISTS (
             SELECT commentLikeIdx
             FROM commentLike
-            WHERE commentIdx = ? and userIdx = ? and status = 0
+            WHERE commentIdx = ? and userIdx = ?
             limit 1
         ) as success
     `;
@@ -163,13 +163,13 @@ const insertCommetLog = async (conn, userIdx, logType) => {
     return LogRow;
 }
 
-const insertReportLog = async (conn, commentReportIdx, reportType, logType) => {
+const insertReportLog = async (conn, postReportIdx, commentReportIdx, reportType, logType) => {
     const insertLogQuery = `
-        INSERT INTO reportLog(postReportIdx, reportType, logType)
-        VALUES(?,?,?)
+        INSERT INTO reportLog(postReportIdx, commentReportIdx, reportType, logType)
+        VALUES(?,?,?,?)
     `;
     
-    const [LogRow] = await conn.query(insertLogQuery, [commentReportIdx, reportType, logType]);
+    const [LogRow] = await conn.query(insertLogQuery, [postReportIdx, commentReportIdx, reportType, logType]);
 
     return LogRow;
 }

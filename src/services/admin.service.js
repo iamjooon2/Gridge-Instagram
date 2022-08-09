@@ -267,11 +267,11 @@ exports.retrieveReportList = async () => {
         const commentReportResult = await adminModel.selectCommentReports(connection);
 
         for (i = 0; i<postReportResult.length; i+=1){
-            await postModel.insertReportLog(connection, postReportResult[i].postReportIdx,1, 5);
+            await postModel.insertReportLog(connection, 7, postReportResult[i].postReportIdx,1, 5);
         }
     
         for (i = 0; i<commentReportResult.length; i+=1){
-            await commentModel.insertReportLog(connection, commentReportResult[i].connectionReportIdx, 0, 5);  
+            await commentModel.insertReportLog(connection, commentReportResult[i].connectionReportIdx, 1,  0, 5);  
         }
 
         await conneciton.commit();
@@ -341,7 +341,7 @@ exports.retrieveReportPostReportCode = async (postIdx) => {
         await connection.beginTransaction();
         const postReportResult = await adminModel.selectReportPostReportCode(connection, postIdx);
 
-        await postModel.insertReportLog(connection, postReportResult[0].postReportResult, 1, 5);
+        await postModel.insertReportLog(connection,7, postReportResult[0].postReportIdx, 1, 5);
 
         await connection.commit();
 
@@ -363,7 +363,7 @@ exports.retrieveReportCommentReportCode = async (commentIdx) => {
         await connection.beginTransaction();
         const commentReportResult = await adminModel.selectReportCommentReportCode(connection, commentIdx);
 
-        await commentModel.insertReportLog(connection, commentReportResult[0].commentReportIdx, 0, 5);
+        await commentModel.insertReportLog(connection, commentReportResult[0].commentReportIdx, 1, 0, 5);
 
         await connection.commit();
 
@@ -385,7 +385,7 @@ exports.sudoUpdatePostReportStatus = async (postReportIdx) => {
         await connection.beginTransaction();
         const postReportResult = await adminModel.updatePostReportStatus(connection, postReportIdx);
 
-        await postModel.insertReportLog(connection, postReportIdx, 0, 4);
+        await postModel.insertReportLog(connection, 7, postReportIdx, 0, 4);
 
         await connection.commit();
         return response(baseResponse.SUCCESS, postReportResult);
@@ -406,7 +406,7 @@ exports.sudoUpdateCommentReportStatus = async (commentReportIdx) => {
         await connection.beginTransaction();
         const commentReportResult = await adminModel.updateCommentReportStatus(connection, commentReportIdx);
 
-        await commentModel.insertReportLog(connection, commentReportIdx, 1, 4);
+        await commentModel.insertReportLog(connection, commentReportIdx, 1,  1, 4);
 
         await connection.commit();
 
