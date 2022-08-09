@@ -53,6 +53,10 @@ https://drive.google.com/file/d/12tflQMZaL7TZuIMznBwQQKGe7IpBJMDD/view?usp=shari
 ## Swagger
 https://app.swaggerhub.com/apis-docs/iamjooon2/GridgeTestChallenge/1.0.0#/
 
+
+## 화면설계서
+https://xd.adobe.com/view/5554835b-8966-41c8-888d-b648719e6485-0007/
+
 ## Review
 앱런칭 동아리 프론트맨이 거의 참여를 안해서... 앱 플레이스토어에 올리는건 안될 것 같고.. 디자이너도 바쁘고....
 방학동안 집중하며 성장할 게 필요했다
@@ -80,7 +84,7 @@ https://app.swaggerhub.com/apis-docs/iamjooon2/GridgeTestChallenge/1.0.0#/
 그리고 하나하나 이유를 적어보려 한다
 
 1. 어드민 페이지 사용자 조회
-SQL Injection 방어를 위해서 prepared statement 사용이 무.적.권인 것을 모르는 것은 아니다
+SQL Injection 방어를 위해서 prepared statement 써야하는 건 당연히 알고 있다.
 근데.. 저 방법밖에 모르겠다... (+구글링 스킬 부족)
 방법 찾아서 블로그에 써놔야지
 
@@ -92,7 +96,7 @@ AWS EC2 프리티어가 끝나서 도커로 MySQL 띄워서 썼다
 지금 하고있는 프로젝트에 선동해야겠음. Redis 쓰자고..
 결과적으로 이 프로젝트에서 세션 처리는
 유저 테이블에 토큰 필드를 추가, 로그인할 때마다 클라이언트에서 준 토큰과 디비의 토큰을 비교하는 방식으로 했당
-accessToken, refreshToken의 두 개의 토큰이 아닌 하나 들고, 만료기간 끝나면 재 로그인하라는 방식이다.
+하나의 토큰을 들고, 만료기간 끝나면 재 로그인하라는 방식이다.
 이번 프로젝트에서 로그인 맡았으니 남은 방학때 착실히 해봐야겠다
 
 3. 공개/비공개 계정에 따른 사용자 피드 조회 제한 고려
@@ -149,4 +153,4 @@ accessToken, refreshToken의 두 개의 토큰이 아닌 하나 들고, 만료�
 
 젊어서 고생은 사서 한다고 했다
 그리고 지금 내가 하는 공부는 나중에 나에게 다 돌아올 것이다.
-남은 방학 좀 더 알차게 보내보자. 이준희 화이팅
+남은 방학 계속 알차게 보내보자
