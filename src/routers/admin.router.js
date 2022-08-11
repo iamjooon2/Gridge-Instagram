@@ -2,6 +2,8 @@ const adminController = require('../controllers/admin.controller');
 
 const adminRouter = (router) =>{
 
+    router.get('/ping', function(req, res) { res.send('pong'); });
+
     // 회원 전체 정보 보기
     router.get('/admin/user', adminController.getUserList);
     

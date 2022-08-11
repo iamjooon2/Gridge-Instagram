@@ -274,7 +274,7 @@ const followUser = async (userIdx, followUserId) => {
         
         const userPrivateInfo = await userModel.checkUserPrivateById(connection, followUserId);
         const followHistoryInfo = await userModel.checkFollowByTargetId(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
-
+        
         // 상대방이 비공개 계정인 경우
         if (userPrivateInfo[0].success == 1){
 
