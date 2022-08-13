@@ -1,6 +1,5 @@
 class AdminModel {
-
-
+    
     selectUserList = async (conn, whereQuery, offset) => {
         const adminSelectUserQuery = ` SELECT * FROM user WHERE 1 = 1`;
         const offsetQuery = ` limit 10 offset ?`;

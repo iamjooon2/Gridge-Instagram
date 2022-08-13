@@ -1,10 +1,16 @@
-const adminService = require('../services/admin.service');
+
 
 const baseResponse = require('../utilities/baseResponseStatus');
 const { errResponse, response } = require('../utilities/response');
 const regexDate = new RegExp(/(^(19|20)\d{2})(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/); // YYYYMMDD 확인 정규표현식
 
 // 회원 전체 정보 검색
+class AdminController {
+    constructor (){
+        this.AdminController
+    }
+}
+
 exports.getUserList = async (req, res) => {
 
     let { id, name, signUpDate, status, page } = req.query;
@@ -16,7 +22,7 @@ exports.getUserList = async (req, res) => {
         return res.send(errResponse(baseResponse.ADMIN_DATE_REGEX));
     }
     
-    const retrieveUserResult = await adminService.retrieveUserList(id, name, signUpDate, status, page);
+    const retrieveUserResult = await AdminService.retrieveUserList(id, name, signUpDate, status, page);
 
     return res.send(retrieveUserResult);
 }
