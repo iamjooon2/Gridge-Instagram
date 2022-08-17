@@ -7,11 +7,6 @@ const postService = require('../services/post.service');
 const { response, errResponse }= require("../utilities/response");
 const baseResponse = require("../utilities/baseResponseStatus");
 
-const regexPassword = new RegExp(/^[a-zA-Z\\d`~!@#$%^&*()-_=+]{6,20}$/); // 특수문자 포함한 6~20자 허용하는 정규표현식
-const regexPhone = new RegExp(/^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/); //전화번호 형식 확인 정규표현식
-const regexDate = new RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/); // 날짜 정규표현식
-const regexNum = new RegExp(/^[0-9]+$/);  // 숫자만 입력가능한 정규표현식
-
 
 // 일반 로그인
 const logIn = async (req, res) => {

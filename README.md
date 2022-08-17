@@ -57,6 +57,10 @@ https://app.swaggerhub.com/apis-docs/iamjooon2/GridgeTestChallenge/1.0.0#/
 ## 화면설계서
 https://xd.adobe.com/view/5554835b-8966-41c8-888d-b648719e6485-0007/
 
+
+## 제출 Drive
+https://drive.google.com/drive/folders/16V-da5S1qVGT0AvE5KXNXYvIHL4cdL4H
+
 ## Review
 앱런칭 동아리 프론트맨이 거의 참여를 안해서... 앱 플레이스토어에 올리는건 안될 것 같고.. 디자이너도 바쁘고....
 방학동안 집중하며 성장할 게 필요했다
