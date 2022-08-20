@@ -1,15 +1,11 @@
 class MessageModel {
-
-    constructor (connection) {
-        this.connection = connection;
-    }
     
     insertMessage = async (connection, insertMessageParams) => {
         const insetMessageQuery = `
             INSERT INTO message(roomIdx, senderIdx, content)
             values(?,?,?)
         `;
-        const [messageRow] = await this.connection.query(insetMessageQuery, insertMessageParams);
+        const [messageRow] = await connection.query(insetMessageQuery, insertMessageParams);
     
         return messageRow;
     }
@@ -29,7 +25,7 @@ class MessageModel {
                     )
             ORDER BY message.createdAt ASC;
         `;
-        const [messageRow] = await this.connection.query(selectMessagesQuery, userParams);
+        const [messageRow] = await connection.query(selectMessagesQuery, userParams);
     
         return messageRow;
     }

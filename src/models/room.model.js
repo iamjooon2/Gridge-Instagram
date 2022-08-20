@@ -1,10 +1,5 @@
 
 class RoomModel {
-    connection
-
-    constructor(connection){
-        this.connection = connection;
-    }
 
     startMessageRoom = async (connection, userParmas) => {
         const insertRoomQuery = `
@@ -12,7 +7,7 @@ class RoomModel {
             values(?,?)
         `;
     
-        const [insertRoomResult] = await this.connection.query(insertRoomQuery, userParmas);
+        const [insertRoomResult] = await connection.query(insertRoomQuery, userParmas);
     
         return insertRoomResult;
     }
@@ -24,7 +19,7 @@ class RoomModel {
             WHERE (user_1 = ? and user_2 = ?) or (user_2 = ? and user_1 = ?) 
         `;
         
-        const [selectRoomResult] = await this.connection.query(selectRoomQuery, userParmas);
+        const [selectRoomResult] = await connection.query(selectRoomQuery, userParmas);
     
         return selectRoomResult;
     }
