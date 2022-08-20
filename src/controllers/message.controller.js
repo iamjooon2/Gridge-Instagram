@@ -1,5 +1,4 @@
-const messageService = require('../services/message.service');
-
+const MessageService = require('../services/message.service');
 const baseResponse = require('../utilities/baseResponseStatus');
 const {errResponse, response} = require('../utilities/response');
 
@@ -23,7 +22,7 @@ const postMessage = async (req, res) => {
         return res.send(errResponse(baseResponse.MESSAGE_CONTENT_LENGTH));
     }
 
-    const postMessageResult = await messageService.postMessage(userIdx, partnerIdx, content);
+    const postMessageResult = await MessageService.postMessage(userIdx, partnerIdx, content);
 
     return res.send(postMessageResult);
 
