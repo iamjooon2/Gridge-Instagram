@@ -365,9 +365,8 @@ class AdminModel {
         const [logRow] = await conn.query(selectLogsQuery, offset);
         return logRow;
     }
-    
-    
-    
+
 }
 
 
+module.exports = AdminModel;
