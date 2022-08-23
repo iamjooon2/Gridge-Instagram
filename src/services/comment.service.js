@@ -8,7 +8,7 @@ const { errResponse, response } = require('../utilities/response');
 class CommentService {
 
     constructor() {
-        this.CommentModel = CommentModel;
+        this.CommentModel = new CommentModel();
     }
 
     // 댓글 생성

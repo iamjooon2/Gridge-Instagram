@@ -1,4 +1,6 @@
 class MessageModel {
+
+    cosntructor(){}
     
     insertMessage = async (connection, insertMessageParams) => {
         const insetMessageQuery = `

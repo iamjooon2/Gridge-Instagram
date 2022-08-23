@@ -1,6 +1,8 @@
 
 class RoomModel {
 
+    cosntructor(){}
+
     startMessageRoom = async (connection, userParmas) => {
         const insertRoomQuery = `
             INSERT INTO room(user_1, user_2)

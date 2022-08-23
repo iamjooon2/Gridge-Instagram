@@ -1,6 +1,7 @@
 const AdminModel = require('../models/admin.model');
 const CommentModel = require('../models/comment.model');
 const PostModel = require('../models/comment.model');
+const UserModel = require('../models/user.model');
 
 const { pool } = require('../assets/db');
 
@@ -12,11 +13,13 @@ class AdminService {
     AdminModel;
     CommentModel;
     PostModel;
+    UserModel;
 
     constructor() {
         this.AdminModel = new AdminModel();
         this.CommentModel = new CommentModel();
         this.PostModel = new PostModel();
+        this.UserModel = new UserModel();
     }
 
     // 사용자 목록 조회
@@ -46,7 +49,7 @@ class AdminService {
     
             // 로그 디비 넣기
             for (i=0; i<adminSelectResult.length; i+=1){
-                await userModel.insertUserLog(connection, adminSelectResult[i].userIdx, 6);
+                await this.UserModel.insertUserLog(connection, adminSelectResult[i].userIdx, 6);
             }
     
             await connection.commit();
@@ -80,7 +83,7 @@ class AdminService {
             const userFollowerMembers = await this.AdminModel.selectUserFollowerByUserIdx(connection, userIdx);
             const userMessages = await this.AdminModel.selectUserMessageByUserIdx(connection, userIdx);
     
-            await userModel.insertUserLog(connection, userIdx, 6);
+            await this.UserModel.insertUserLog(connection, userIdx, 6);
     
             await connection.commit();
             
@@ -114,7 +117,7 @@ class AdminService {
         const connection = await pool.getConnection(async (connection) => connection);
         try {
             const adminSelectResult = await this.AdminModel.updateUserStatus(connection, userIdx);
-            await userModel.insertUserLog(connection, userIdx, 5);
+            await this.UserModel.insertUserLog(connection, userIdx, 5);
             
             await connection.commit();
 

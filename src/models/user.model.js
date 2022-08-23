@@ -1,6 +1,8 @@
 
 class UserModel {
 
+    cosntructor(){}
+
     checkUserExistsByUserId =  async (conn, userId) => {
         const selectByUserIdQuery = `
             SELECT id

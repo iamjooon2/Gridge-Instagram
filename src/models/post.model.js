@@ -1,6 +1,8 @@
 
 class PostModel {
 
+    cosntructor(){}
+
     insertPost = async (connection, insertPostParams) => {
         const insertPostQuery = `
             INSERT INTO post(userIdx, content)

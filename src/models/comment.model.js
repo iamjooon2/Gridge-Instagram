@@ -1,6 +1,8 @@
 
 class CommentModel {
 
+    cosntructor(){}
+
     insertComment = async (conn, commentParmas) => {
         const insertCommentQuery = `
             INSERT INTO comment(userIdx, postIdx, content)
