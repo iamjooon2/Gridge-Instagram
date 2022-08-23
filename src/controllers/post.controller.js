@@ -40,7 +40,7 @@ class PostController {
             return res.send(errResponse(baseResponse.POST_CONTENT_LENGTH));
         }
 
-        const createdPostResult = await postService.createPost(
+        const createdPostResult = await this.PostService.createPost(
             userIdx,
             postImgUrls,
             content
@@ -56,7 +56,7 @@ class PostController {
         const postIdx = req.params.postIdx;
         const content = req.body.content;
 
-        const writerOfPost = await postService.retrieveUserIdx(postIdx);
+        const writerOfPost = await this.PostService.retrieveUserIdx(postIdx);
 
         if (writerOfPost[0].userIdx !== idx[0].userIdx) {
             return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
@@ -74,7 +74,7 @@ class PostController {
             return res.send(errResponse(baseResponse.POST_CONTENT_LENGTH));
         } 
 
-        const editPostResponse = await postService.updatePost(content, postIdx);
+        const editPostResponse = await this.PostService.updatePost(content, postIdx);
 
         return res.send(editPostResponse);
     }
@@ -98,7 +98,7 @@ class PostController {
             return res.send(errResponse(baseResponse.PAGENATION_ERROR));
         }
 
-        const postListResult = await postService.retrievePostLists(userIdx, page);
+        const postListResult = await this.PostService.retrievePostLists(userIdx, page);
 
         return res.send(response(baseResponse.SUCCESS, postListResult));
     }
@@ -115,7 +115,7 @@ class PostController {
             return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
         }
 
-        const postContent = await postService.retrievePostContent(postIdx);
+        const postContent = await this.PostService.retrievePostContent(postIdx);
 
         return res.send(postContent);
 
@@ -127,7 +127,7 @@ class PostController {
         const idx = req.verifiedToken.idx;
         const postIdx = req.params.postIdx;
 
-        const writerOfPost = await postService.retrieveUserIdx(postIdx);
+        const writerOfPost = await this.PostService.retrieveUserIdx(postIdx);
 
         // Authentication
         if (writerOfPost[0].userIdx !== idx[0].userIdx) {
@@ -141,7 +141,7 @@ class PostController {
             return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
         }
 
-        const editPostStatusResponse = await postService.updatePostStatus(postIdx);
+        const editPostStatusResponse = await this.PostService.updatePostStatus(postIdx);
 
         return res.send(editPostStatusResponse);
     }
@@ -160,7 +160,7 @@ class PostController {
             return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
         }
 
-        const postLikeResponse = await postService.createPostLike(userIdx, postIdx);
+        const postLikeResponse = await this.PostService.createPostLike(userIdx, postIdx);
 
         return res.send(postLikeResponse);
     }
@@ -179,7 +179,7 @@ class PostController {
             return res.send(errResponse(baseResponse.POST_POSTIDX_LENGTH));
         }
 
-        const postDislikeResponse = await postService.createPostDislike(userIdx, postIdx);
+        const postDislikeResponse = await this.PostService.createPostDislike(userIdx, postIdx);
 
         return res.send(postDislikeResponse);
     }  
@@ -207,12 +207,12 @@ class PostController {
         }
 
         //자신의 게시글을 신고하려는지 확인
-        const checkMyPostResult = await postService.retrieveUserIdx(postIdx);
+        const checkMyPostResult = await this.PostService.retrieveUserIdx(postIdx);
         if (userIdx==checkMyPostResult) {
             return res.send(errResponse(baseResponse.REPORT_MYPOST));
         }
 
-        const postReportResponse = await postService.createPostReport(userIdx, postIdx, reportCode);
+        const postReportResponse = await this.PostService.createPostReport(userIdx, postIdx, reportCode);
 
         return res.send(postReportResponse);
 }
