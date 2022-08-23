@@ -5,6 +5,8 @@ const { errResponse, response } = require('../utilities/response');
 const MessageModel = require('../models/message.model');
 const RoomModel = require('../models/room.model');
 class MessageService {
+    MessageModel;
+    RoomModel;
 
     constructor(){
         this.MessageModel = new MessageModel();

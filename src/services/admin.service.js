@@ -1,21 +1,27 @@
-const postModel = require('../models/post.model');
-const userModel = require('../models/user.model');
-const commentModel = require('../models/comment.model');
+const AdminModel = require('../models/admin.model');
+const CommentModel = require('../models/comment.model');
+const PostModel = require('../models/comment.model');
+
+const { pool } = require('../assets/db');
+
 const baseResponse = require('../utilities/baseResponseStatus')
 const { errResponse, response } = require('../utilities/response');
 
 class AdminService {
-    serviceDB
-    AdminModel
 
-    constructor(serviceDB, AdminModel) {
-        this.serviceDB = serviceDB;
-        this.AdminModel = AdminModel;
+    AdminModel;
+    CommentModel;
+    PostModel;
+
+    constructor() {
+        this.AdminModel = new AdminModel();
+        this.CommentModel = new CommentModel();
+        this.PostModel = new PostModel();
     }
 
     // 사용자 목록 조회
     retrieveUserList = async (id, name, signUpDate, status, page) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             const offset = (page-1)*10;
 
@@ -36,7 +42,7 @@ class AdminService {
                 whereQuery += ` AND DATE(createdAt) = DATE(${date})`;
             }
     
-            const adminSelectResult = await AdminModel.selectUserList(connection, whereQuery, offset);
+            const adminSelectResult = await this.AdminModel.selectUserList(connection, whereQuery, offset);
     
             // 로그 디비 넣기
             for (i=0; i<adminSelectResult.length; i+=1){
@@ -58,21 +64,21 @@ class AdminService {
 
     // 사용자 상세 정보 조회
     retrieveUserDetailList = async (userIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
 
-            const userLastLoginTime = await adminModel.selectUserLastLoginTime(connection, userIdx);
-            const userPosts = await adminModel.selectUserPostByUserIdx(connection, userIdx);
-            const userPostImg = await adminModel.selectUserProfileImgByUserIdx(connection, userIdx);
-            const userPostLikes = await adminModel.selectUserPostLikeByUserIdx(connection, userIdx);
-            const userPostReports = await adminModel.selectUserPostReportByUserIdx(connection, userIdx);
-            const userComments = await adminModel.selectUserCommentByUserIdx(connection, userIdx);
-            const userCommentLikes = await adminModel.selectUserCommentLikeByUserIdx(connection, userIdx);
-            const userCommentRepoerts = await adminModel.selectUserCommentReportByUserIdx(connection, userIdx);
-            const userFollowingMembers = await adminModel.selectUserFollowingByUserIdx(connection, userIdx);
-            const userFollowerMembers = await adminModel.selectUserFollowerByUserIdx(connection, userIdx);
-            const userMessages = await adminModel.selectUserMessageByUserIdx(connection, userIdx);
+            const userLastLoginTime = await this.AdminModel.selectUserLastLoginTime(connection, userIdx);
+            const userPosts = await this.AdminModel.selectUserPostByUserIdx(connection, userIdx);
+            const userPostImg = await this.AdminModel.selectUserProfileImgByUserIdx(connection, userIdx);
+            const userPostLikes = await this.AdminModel.selectUserPostLikeByUserIdx(connection, userIdx);
+            const userPostReports = await this.AdminModel.selectUserPostReportByUserIdx(connection, userIdx);
+            const userComments = await this.AdminModel.selectUserCommentByUserIdx(connection, userIdx);
+            const userCommentLikes = await this.AdminModel.selectUserCommentLikeByUserIdx(connection, userIdx);
+            const userCommentRepoerts = await this.AdminModel.selectUserCommentReportByUserIdx(connection, userIdx);
+            const userFollowingMembers = await this.AdminModel.selectUserFollowingByUserIdx(connection, userIdx);
+            const userFollowerMembers = await this.AdminModel.selectUserFollowerByUserIdx(connection, userIdx);
+            const userMessages = await this.AdminModel.selectUserMessageByUserIdx(connection, userIdx);
     
             await userModel.insertUserLog(connection, userIdx, 6);
     
@@ -105,9 +111,9 @@ class AdminService {
 
     // 관리자 권한으로 사용자 정지
     sudoBanUser = async (userIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
-            const adminSelectResult = await adminModel.updateUserStatus(connection, userIdx);
+            const adminSelectResult = await this.AdminModel.updateUserStatus(connection, userIdx);
             await userModel.insertUserLog(connection, userIdx, 5);
             
             await connection.commit();
@@ -125,7 +131,7 @@ class AdminService {
 
     // 게시글 목록 조회
     retrievePostList = async (id, postDate, status, page) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
             const offset = (page-1)*10;
@@ -142,11 +148,11 @@ class AdminService {
                 whereQuery += ` AND DATE(createdAt) = DATE(${date})`
             }
 
-            const adminSelectResult = await adminModel.selectPostList(connection, whereQuery, offset);
+            const adminSelectResult = await this.AdminModel.selectPostList(connection, whereQuery, offset);
 
             // 로그 집어넣기
             for (i =0; i<adminSelectResult.length; i+=1){
-                await postModel.insertPostLog(connection, adminSelectResult[i].postIdx, 5);
+                await this.PostModel.insertPostLog(connection, adminSelectResult[i].postIdx, 5);
             }
 
             await connection.commit();
@@ -164,17 +170,17 @@ class AdminService {
 
     // 게시글 세부 내용 조회
     exportsretrievePostDetailList = async (postIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
 
-            const postResult = await adminModel.selectPostByPostIdx(connection, postIdx);
-            const postImgResult = await adminModel.selectPostImgByPostIdx(connection, postIdx);
-            const postLikeResult = await adminModel.selectPostLikeByPostIdx(connection, postIdx);
-            const postReportResult = await adminModel.selectPostReportByPostIdx(connection, postIdx);
-            const postCommentResult = await adminModel.selectPostCommentByPostIdx(connection, postIdx);
+            const postResult = await this.AdminModel.selectPostByPostIdx(connection, postIdx);
+            const postImgResult = await this.AdminModel.selectPostImgByPostIdx(connection, postIdx);
+            const postLikeResult = await this.AdminModel.selectPostLikeByPostIdx(connection, postIdx);
+            const postReportResult = await this.AdminModel.selectPostReportByPostIdx(connection, postIdx);
+            const postCommentResult = await this.AdminModel.selectPostCommentByPostIdx(connection, postIdx);
 
-            await postModel.insertPostLog(connection, postIdx, 5);
+            await this.PostModel.insertPostLog(connection, postIdx, 5);
 
             await connection.commit();
             return response(baseResponse.SUCCESS, 
@@ -195,17 +201,17 @@ class AdminService {
 
     // 게시글, 댓글 강제 삭제
     sudoUpdatePostAndReleatedCommentStatus = async (postIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
 
-            const postStatusResult = await adminModel.updatePostStatus(connection, postIdx);
-            const commentsOfPostResult = await commentModel.selectCommentIdxByPostIdx(connection, postIdx);
-            const commentStatusResult = await adminModel.updateCommentStatusByPostIdx(connection, postIdx);
+            const postStatusResult = await this.AdminModel.updatePostStatus(connection, postIdx);
+            const commentsOfPostResult = await this.AdminModel.selectCommentIdxByPostIdx(connection, postIdx);
+            const commentStatusResult = await this.AdminModel.updateCommentStatusByPostIdx(connection, postIdx);
 
-            await postModel.insertPostLog(connection, postIdx, 4);
+            await this.PostModel.insertPostLog(connection, postIdx, 4);
             for (i = 0; i<commentsOfPostResult.length; i+=1){
-                await commentModel.insertCommetLog(connection, commentsOfPostResult[i].commentIdx, 4);
+                await this.CommentModel.insertCommetLog(connection, commentsOfPostResult[i].commentIdx, 4);
             }
             await connection.commit();
 
@@ -222,13 +228,13 @@ class AdminService {
 
     // 게시글 강제 삭제
     sudoUpdateCommentStatus = async (postIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
             
-            await adminModel.updatePostStatus(connection, postIdx);
+            await this.AdminModel.updatePostStatus(connection, postIdx);
 
-            await postModel.insertPostLog(connection, postIdx, 4);
+            await this.PostModel.insertPostLog(connection, postIdx, 4);
 
             await connection.commit();
 
@@ -245,12 +251,12 @@ class AdminService {
 
     // 댓글 강제 삭제
     sudoUpdateCommentStatus = async (commentIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
 
-            await adminModel.updateCommentStatusByCommentIdx(connection, commentIdx);
-            await commentModel.insertCommetLog(connection, commentIdx, 4);
+            await this.AdminModel.updateCommentStatusByCommentIdx(connection, commentIdx);
+            await this.CommentModel.insertCommetLog(connection, commentIdx, 4);
 
             await connection.commit();
 
@@ -267,18 +273,18 @@ class AdminService {
 
     // 모든 신고 내역 조회
     retrieveReportList = async () => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
-            const postReportResult = await adminModel.selectPostReports(connection);
-            const commentReportResult = await adminModel.selectCommentReports(connection);
+            const postReportResult = await this.AdminModel.selectPostReports(connection);
+            const commentReportResult = await this.AdminModel.selectCommentReports(connection);
 
             for (i = 0; i<postReportResult.length; i+=1){
-                await postModel.insertReportLog(connection, 7, postReportResult[i].postReportIdx,1, 5);
+                await this.PostModel.insertReportLog(connection, 7, postReportResult[i].postReportIdx,1, 5);
             }
         
             for (i = 0; i<commentReportResult.length; i+=1){
-                await commentModel.insertReportLog(connection, commentReportResult[i].connectionReportIdx, 1,  0, 5);  
+                await this.CommentModel.insertReportLog(connection, commentReportResult[i].connectionReportIdx, 1,  0, 5);  
             }
 
             await conneciton.commit();
@@ -298,12 +304,12 @@ class AdminService {
 
     // 신고 게시글 내용 조회
     retrieveReportPostContent = async (postIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
-            const postReportResult = await adminModel.selectReportPostContent(connection, postIdx);
+            const postReportResult = await this.AdminModel.selectReportPostContent(connection, postIdx);
 
-            await postModel.insertPostLog(connection, postIdx, 4);
+            await this.PostModel.insertPostLog(connection, postIdx, 4);
             
             await connection.commit();
 
@@ -320,13 +326,13 @@ class AdminService {
 
     // 신고 댓글 내용 조회
     retrieveReportCommentContent = async (commentIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
 
-            const commentReportResult = await adminModel.selectReportCommentContent(connection, commentIdx);
+            const commentReportResult = await this.AdminModel.selectReportCommentContent(connection, commentIdx);
 
-            await commentModel.insertCommetLog(connection, commentIdx, 4);
+            await this.CommentModel.insertCommetLog(connection, commentIdx, 4);
 
             await connection.commit();
 
@@ -343,12 +349,12 @@ class AdminService {
 
     // 게시글 신고 사유 조회
     retrieveReportPostReportCode = async (postIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
-            const postReportResult = await adminModel.selectReportPostReportCode(connection, postIdx);
+            const postReportResult = await this.AdminModel.selectReportPostReportCode(connection, postIdx);
 
-            await postModel.insertReportLog(connection,7, postReportResult[0].postReportIdx, 1, 5);
+            await this.PostModel.insertReportLog(connection,7, postReportResult[0].postReportIdx, 1, 5);
 
             await connection.commit();
 
@@ -365,12 +371,12 @@ class AdminService {
 
     // 댓글 신고 사유 조회
     retrieveReportCommentReportCode = async (commentIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
-            const commentReportResult = await adminModel.selectReportCommentReportCode(connection, commentIdx);
+            const commentReportResult = await this.AdminModel.selectReportCommentReportCode(connection, commentIdx);
 
-            await commentModel.insertReportLog(connection, commentReportResult[0].commentReportIdx, 1, 0, 5);
+            await this.CommentModel.insertReportLog(connection, commentReportResult[0].commentReportIdx, 1, 0, 5);
 
             await connection.commit();
 
@@ -387,12 +393,12 @@ class AdminService {
 
     // 게시글 신고 강제 삭제
     sudoUpdatePostReportStatus = async (postReportIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
-            const postReportResult = await adminModel.updatePostReportStatus(connection, postReportIdx);
+            const postReportResult = await this.AdminModel.updatePostReportStatus(connection, postReportIdx);
 
-            await postModel.insertReportLog(connection, 7, postReportIdx, 0, 4);
+            await this.PostModel.insertReportLog(connection, 7, postReportIdx, 0, 4);
 
             await connection.commit();
             return response(baseResponse.SUCCESS, postReportResult);
@@ -408,12 +414,12 @@ class AdminService {
 
     // 댓글 신고 강제 삭제
     sudoUpdateCommentReportStatus = async (commentReportIdx) => {
-        const connection = await this.serviceDB.getConnection(async (connection) => connection);
+        const connection = await pool.getConnection(async (connection) => connection);
         try {
             await connection.beginTransaction();
-            const commentReportResult = await adminModel.updateCommentReportStatus(connection, commentReportIdx);
+            const commentReportResult = await this.AdminModel.updateCommentReportStatus(connection, commentReportIdx);
 
-            await commentModel.insertReportLog(connection, commentReportIdx, 1,  1, 4);
+            await this.CommentModel.insertReportLog(connection, commentReportIdx, 1,  1, 4);
 
             await connection.commit();
 
@@ -430,12 +436,12 @@ class AdminService {
 
     // 사용자 관련 로그 조회
     retrieveUserLogs = async (page) => {
-        const connection = await this.serviceDB.getConnection(async(connection)=> connection);
+        const connection = await pool.getConnection(async(connection)=> connection);
         try {
             await connection.beginTransaction();
 
             const offset = (page-1)*10;
-            const logResults = await adminModel.selectUserLogs(connection, offset);
+            const logResults = await this.AdminModel.selectUserLogs(connection, offset);
 
             await connection.commit();
             
@@ -452,12 +458,12 @@ class AdminService {
 
     // 게시글 관련 로그 조회
     retrievePostLogs = async (page) => {
-        const connection = await this.serviceDB.getConnection(async(connection)=> connection);
+        const connection = await pool.getConnection(async(connection)=> connection);
         try {
             await connection.beginTransaction();
 
             const offset = (page-1)*10;
-            const logResults = await adminModel.selectPostLogs(connection, offset);
+            const logResults = await this.AdminModel.selectPostLogs(connection, offset);
 
             await connection.commit();
 
@@ -474,12 +480,12 @@ class AdminService {
 
     // 댓글 관련 로그 조회
     retrieveCommentLogs = async (page) => {
-        const connection = await this.serviceDB.getConnection(async(connection)=> connection);
+        const connection = await pool.getConnection(async(connection)=> connection);
         try {
             await connection.beginTransaction();
 
             const offset = (page-1)*10;
-            const logResults = await adminModel.selectCommentLogs(connection, offset);
+            const logResults = await this.AdminModel.selectCommentLogs(connection, offset);
 
             await connection.commit();
 
@@ -496,12 +502,12 @@ class AdminService {
 
     // 신고 관련 로그 조회
     retrieveReportLogs = async (page) => {
-        const connection = await this.serviceDB.getConnection(async(connection)=> connection);
+        const connection = await pool.getConnection(async(connection)=> connection);
         try {
             await connection.beginTransaction();
 
             const offset = (page-1)*10;
-            const logResults = await adminModel.selectReportLogs(connection, offset);
+            const logResults = await this.AdminModel.selectReportLogs(connection, offset);
 
             await connection.commit();
 
