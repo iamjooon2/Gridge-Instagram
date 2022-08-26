@@ -1,24 +1,24 @@
 const bcrypt = require('bcrypt');
 const { pool } = require('../assets/db');
-const UserModel = require('../models/user.model');
-const PostModel = require('../models/post.model');
+const UserRepository = require('../repositorys/user.repository');
+const PostRepository = require('../repositorys/post.repository');
 const { response, errResponse } = require('../utilities/response');
 const baseResponse = require('../utilities/baseResponseStatus');
 
 class UserService {
-    UserModel;
-    PostModel;
+    UserRepository;
+    PostRepository;
 
     constructor() {
-        this.UserModel = new UserModel();
-        this.PostModel = new PostModel();
+        this.UserRepository = new UserRepository();
+        this.PostRepository = new PostRepository();
     }
     
     // 사용자의 ID가 존재하는지 확인
     checkUserIdExists = async (userId) => {
         try {
             const connection = await pool.getConnection((connection) => connection);
-            const checkedUser = await this.UserModel.checkUserExistsByUserId(connection, userId);
+            const checkedUser = await this.UserRepository.checkUserExistsByUserId(connection, userId);
 
             connection.release();
             
@@ -38,7 +38,7 @@ class UserService {
     checkUserPassword = async (userId, userPassword) => {
         try {
             const connection = await pool.getConnection((connection) => connection);
-            const checkedUserPassword = await this.UserModel.checkUserPassword(connection, userId);
+            const checkedUserPassword = await this.UserRepository.checkUserPassword(connection, userId);
 
             connection.release();
 
@@ -63,9 +63,9 @@ class UserService {
             await connection.beginTransaction();
             // 비밀번호 암호화
             const hashedPassword = await bcrypt.hash(password, 10);
-            const signUpResult = await this.UserModel.insertUser(connection, phone, name, hashedPassword, birth, id, userType, socialId);
+            const signUpResult = await this.UserRepository.insertUser(connection, phone, name, hashedPassword, birth, id, userType, socialId);
 
-            await this.UserModel.insertUserLog(connection, signUpResult.insertId, 0);
+            await this.UserRepository.insertUserLog(connection, signUpResult.insertId, 0);
 
             await connection.commit();
 
@@ -84,7 +84,7 @@ class UserService {
     checkSocialId = async (socialId) => {
         try {
             const connection = await pool.getConnection(async (connection) => connection);
-            const checkedResult = await this.UserModel.getSocialId(conn, socialId);
+            const checkedResult = await this.UserRepository.getSocialId(conn, socialId);
 
             connection.release();
             
@@ -103,7 +103,7 @@ class UserService {
     retrieveUserIdxByKakaoId = async (socialId) => {
         try {
             const connection = await pool.getConnection(async (connection) => connection);
-            const userIdxResult = await this.UserModel.getUserIdxBySocialId(connection, socialId);
+            const userIdxResult = await this.UserRepository.getUserIdxBySocialId(connection, socialId);
 
             connection.release();
 
@@ -118,7 +118,7 @@ class UserService {
     retrieveUserIdxById  = async (userId) =>{
         try {
             const connection = await pool.getConnection(async (connection) => connection);
-            const userIdxResult = await this.UserModel.getUserIdxByUserId(connection, userId);
+            const userIdxResult = await this.UserRepository.getUserIdxByUserId(connection, userId);
             
             connection.release();
 
@@ -141,12 +141,12 @@ class UserService {
         try {
             await connection.beginTransaction();
 
-            const userProfileResult = await this.UserModel.getUserProfile(connection, userIdx);
+            const userProfileResult = await this.UserRepository.getUserProfile(connection, userIdx);
             const offset = (page-1)*9;
             
             
-            const userPostResult = await this.PostModel.selectUserPhotos(connection, userIdx, offset);
-            await this.UserModel.insertUserLog(connection, userIdx, 1);
+            const userPostResult = await this.PostRepository.selectUserPhotos(connection, userIdx, offset);
+            await this.UserRepository.insertUserLog(connection, userIdx, 1);
 
             await connection.commit();
             const userResult = { userProfileResult, userPostResult };
@@ -169,7 +169,7 @@ class UserService {
             await connection.beginTransaction();
 
             const hashedPassword = await bcrypt.hash(password, 10);
-            const userPhoneCheckResult = await this.UserModel.getUserIdxByPhone(connection, phone);
+            const userPhoneCheckResult = await this.UserRepository.getUserIdxByPhone(connection, phone);
 
             // 전화번호에 해당하는 userIdx 확인
             if (!userPhoneCheckResult){
@@ -180,7 +180,7 @@ class UserService {
             const userIdx = userPhoneCheckResult[0].userIdx;
 
             const passwordParams = [ hashedPassword, userIdx ];
-            await this.UserModel.updatePassword(connection, passwordParams);
+            await this.UserRepository.updatePassword(connection, passwordParams);
 
             await connection.commit();
 
@@ -200,9 +200,9 @@ class UserService {
         const connection = await pool.getConnection(async(connection) => connection);
         try {
             await connection.beginTransaction();
-            const updatedProfileResult = await this.UserModel.updateUserProfile(connection, profileImgUrl, name, id, website, introduce, userIdx);
+            const updatedProfileResult = await this.UserRepository.updateUserProfile(connection, profileImgUrl, name, id, website, introduce, userIdx);
             
-            await this.UserModel.insertUserLog(connection, userIdx, 2);
+            await this.UserRepository.insertUserLog(connection, userIdx, 2);
 
             await connection.commit();
 
@@ -221,7 +221,7 @@ class UserService {
     changePrivate = async (userIdx, privateCode) => {
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const updatedPrivateResult = await this.UserModel.updatePrivate(connection, userIdx, privateCode);
+            const updatedPrivateResult = await this.UserRepository.updatePrivate(connection, userIdx, privateCode);
             
             connection.release();
             return response(baseResponse.SUCCESS);
@@ -236,7 +236,7 @@ class UserService {
     checkfollowStatus = async (userIdx, followUserId, status) =>{
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const checkFollowingResult = await this.UserModel.checkFollowByTargetId(connection, userIdx, followUserId, status);
+            const checkFollowingResult = await this.UserRepository.checkFollowByTargetId(connection, userIdx, followUserId, status);
 
             connection.release();
 
@@ -257,7 +257,7 @@ class UserService {
     getFolowRequestExists = async (userIdx, followeeId) => {
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const checkFollowingResult = await this.UserModel.checkFollowByRequesterId(connection, userIdx, followeeId, 2);
+            const checkFollowingResult = await this.UserRepository.checkFollowByRequesterId(connection, userIdx, followeeId, 2);
 
             connection.release();
 
@@ -280,8 +280,8 @@ class UserService {
         try {
             await connection.beginTransaction();
             
-            const userPrivateInfo = await this.UserModel.checkUserPrivateById(connection, followUserId);
-            const followHistoryInfo = await this.UserModel.checkFollowByTargetId(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
+            const userPrivateInfo = await this.UserRepository.checkUserPrivateById(connection, followUserId);
+            const followHistoryInfo = await this.UserRepository.checkFollowByTargetId(connection, userIdx, followUserId, 1); // 이전 팔로우 기록 확인
             
             // 상대방이 비공개 계정인 경우
             if (userPrivateInfo[0].success == 1){
@@ -290,9 +290,9 @@ class UserService {
                 // 이전에 팔로우 했다가 지운 상태인지 확인
                 followHistoryInfo[0].success == 1 ?
                     //  있다면 status를 요청 대기중으로 업데이트
-                    ( await this.UserModel.updateFollowStatusByTargetId(connection, userIdx, followUserId, 2)) :
+                    ( await this.UserRepository.updateFollowStatusByTargetId(connection, userIdx, followUserId, 2)) :
                     // 없다면 새로운 칼럼으로 요청 대기중을 집어넣는다
-                    ( await this.UserModel.insertFollow(connection, userIdx, followUserId, 2));
+                    ( await this.UserRepository.insertFollow(connection, userIdx, followUserId, 2));
 
                 await connection.commit();
 
@@ -303,9 +303,9 @@ class UserService {
             // 이전에 팔로우 했다가 지운 상태인지 확인
             followHistoryInfo[0].success == 1 ?
                 // 있다면 기존 칼럼 status를 업데이트
-                ( await this.UserModel.updateFollowStatusByTargetId(connection, userIdx, followUserId, 0)) :
+                ( await this.UserRepository.updateFollowStatusByTargetId(connection, userIdx, followUserId, 0)) :
                 // 없다면 새로운 칼럼을 삽입
-                ( await this.UserModel.insertFollow(connection, userIdx, followUserId, 0));
+                ( await this.UserRepository.insertFollow(connection, userIdx, followUserId, 0));
 
             await connection.commit();
             
@@ -324,7 +324,7 @@ class UserService {
     unfollowUser = async (userIdx, unfollowUserId) => {
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const unfollowResult = await this.UserModel.updateFollowStatusByTargetId(connection, userIdx, unfollowUserId, 1);
+            const unfollowResult = await this.UserRepository.updateFollowStatusByTargetId(connection, userIdx, unfollowUserId, 1);
 
             connection.release();
             return response(baseResponse.SUCCESS);
@@ -339,7 +339,7 @@ class UserService {
     isUserPrivateTrue = async (userIdx) => {
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const userPrivateInfo = await this.UserModel.checkUserPrivateByUserIdx(connection, userIdx);
+            const userPrivateInfo = await this.UserRepository.checkUserPrivateByUserIdx(connection, userIdx);
             
             connection.release();
 
@@ -359,7 +359,7 @@ class UserService {
     checkMyFollowRequest = async (userIdx) => {
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const userFollowRequestList = await this.UserModel.checkUserFollowRequests(connection, userIdx);
+            const userFollowRequestList = await this.UserRepository.checkUserFollowRequests(connection, userIdx);
             
             connection.release();
 
@@ -375,7 +375,7 @@ class UserService {
     changeFollowStatus = async (userIdx, followeeId, responseCode) => {
         try {
             const connection = await pool.getConnection(async(connection) => connection);
-            const updateFollowStatusResult = await this.UserModel.updateFollowStatusByRequesterId(connection, userIdx, followeeId, responseCode);
+            const updateFollowStatusResult = await this.UserRepository.updateFollowStatusByRequesterId(connection, userIdx, followeeId, responseCode);
 
             connection.release();
 
@@ -394,27 +394,27 @@ class UserService {
             await connection.beginTransaction();
 
             // 사용자 삭제상태로 바꾸고 id, token, 프로필 사진 없애기
-            await this.UserModel.updateUserStatus(connection, userIdx);
-            await this.UserModel.updateUserIdNull(connection, userIdx);
-            await this.UserModel.updateUserTokenNull(connection, userIdx);
-            await this.UserModel.updateUserProfileImgUrlStatus(connection, userIdx);
+            await this.UserRepository.updateUserStatus(connection, userIdx);
+            await this.UserRepository.updateUserIdNull(connection, userIdx);
+            await this.UserRepository.updateUserTokenNull(connection, userIdx);
+            await this.UserRepository.updateUserProfileImgUrlStatus(connection, userIdx);
 
             // 게시물 없애기
-            await this.UserModel.updatePostStatusInactive(connection, userIdx);
-            await this.UserModel.updatePostImgStatusInactive(connection, userIdx);
+            await this.UserRepository.updatePostStatusInactive(connection, userIdx);
+            await this.UserRepository.updatePostImgStatusInactive(connection, userIdx);
 
             // 댓글 없애기
-            await this.UserModel.updateCommentStatusInactive(connection, userIdx);
+            await this.UserRepository.updateCommentStatusInactive(connection, userIdx);
 
             // 좋아요 없애기
-            await this.UserModel.updateCommentLikeStatusInactive(connection, userIdx);
-            await this.UserModel.updatePostLikeStatusInactive(connection, userIdx);
+            await this.UserRepository.updateCommentLikeStatusInactive(connection, userIdx);
+            await this.UserRepository.updatePostLikeStatusInactive(connection, userIdx);
 
             // 팔로우 없애기
-            await this.UserModel.updateFollowStatusInactive(connection, userIdx);
+            await this.UserRepository.updateFollowStatusInactive(connection, userIdx);
 
             // 로그 기록하기
-            await this.UserModel.insertUserLog(connection, userIdx, 3);
+            await this.UserRepository.insertUserLog(connection, userIdx, 3);
 
             await connection.commit(); 
 
@@ -435,8 +435,8 @@ class UserService {
         try {
             await connection.beginTransaction();
 
-            const checkValidAccessResult = await this.UserModel.updateUserToken(connection, userIdx, token);
-            await this.UserModel.updateLoginTime(connection, userIdx);
+            const checkValidAccessResult = await this.UserRepository.updateUserToken(connection, userIdx, token);
+            await this.UserRepository.updateLoginTime(connection, userIdx);
 
             await connection.commit();
 
@@ -455,7 +455,7 @@ class UserService {
     checkValidAccess = async (userIdx) => {
         try {
             const connection = await pool.getConnection(async(conn)=> conn);
-            const checkValidAccessResult = await this.UserModel.selectUserTokenByIdx(connection, userIdx);
+            const checkValidAccessResult = await this.UserRepository.selectUserTokenByIdx(connection, userIdx);
 
             connection.release();
 
@@ -471,7 +471,7 @@ class UserService {
     checkUserType = async (userIdx) => {
         try {
             const connection = await pool.getConnection(async(conn)=> conn);
-            const userTypeResult = await this.UserModel.getUserType(connection, userIdx);
+            const userTypeResult = await this.UserRepository.getUserType(connection, userIdx);
 
             connection.release();
 

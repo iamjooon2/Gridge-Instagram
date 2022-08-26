@@ -1,4 +1,4 @@
-const PostModel = require('../models/post.model');
+const PostRepository = require('../repositorys/post.repository');
 
 const { pool } = require('../assets/db');
 
@@ -6,10 +6,10 @@ const baseResponse = require('../utilities/baseResponseStatus')
 const { errResponse, response } = require('../utilities/response');
 
 class PostService {
-    PostModel;
+    PostRepository;
 
     constructor(){
-        this.PostModel = new PostModel();
+        this.PostRepository = new PostRepository();
     }
 
     // 게시물 생성
@@ -19,15 +19,15 @@ class PostService {
             await connection.beginTransaction();
 
             const insertPostParams =  [userIdx, content];
-            const postResult = await this.PostModel.insertPost(connection, insertPostParams);
+            const postResult = await this.PostRepository.insertPost(connection, insertPostParams);
             const postIdx = postResult.insertId;
 
             for (postImgUrl of postImgUrls) {
                 const insertPostImgParams = [postIdx, postImgUrl];
-                postImgResult = await this.PostModel.insertPostImg(connection, insertPostImgParams);
+                postImgResult = await this.PostRepository.insertPostImg(connection, insertPostImgParams);
             }
 
-            await this.PostModel.insertPostLog(connection, postIdx, 0);
+            await this.PostRepository.insertPostLog(connection, postIdx, 0);
 
             await connection.commit();
 
@@ -49,13 +49,13 @@ class PostService {
             await connection.beginTransaction();
 
             const editPostParams = [content, postIdx];
-            const editPostResult = await this.PostModel.updatePost(connection, editPostParams);
+            const editPostResult = await this.PostRepository.updatePost(connection, editPostParams);
 
             if (!editPostResult) {
                 return errResponse(baseResponse.DB_ERROR);
             }
 
-            await this.PostModel.insertPostLog(connection, postIdx, 2);
+            await this.PostRepository.insertPostLog(connection, postIdx, 2);
 
             await connection.commit();
             
@@ -74,7 +74,7 @@ class PostService {
     retrieveUserIdx = async (postIdx) => {
         try {
             const connection = await pool.getConnection(async (connection) => connection);
-            const userIdx = await this.PostModel.selectUserIdxByPostIdx(connection, postIdx);
+            const userIdx = await this.PostRepository.selectUserIdxByPostIdx(connection, postIdx);
             connection.release();
 
             return userIdx[0].userIdx;
@@ -90,10 +90,10 @@ class PostService {
         try {
             await connection.beginTransaction();
             const offset = (page-1)*9;
-            const postListResult = await this.PostModel.selectUserPhotos(connection, userIdx, offset);
+            const postListResult = await this.PostRepository.selectUserPhotos(connection, userIdx, offset);
 
             for (i = 0; i <postListResult.length; i+=1){
-                await this.PostModel.insertPostLog(connection, postListResult[i].postIdx, 1);
+                await this.PostRepository.insertPostLog(connection, postListResult[i].postIdx, 1);
             }
             
 
@@ -115,7 +115,7 @@ class PostService {
         try {
             const connection = await pool.getConnection(async (conn) => conn);
             const offsets = (page-1)*10;
-            const postListResult = await this.PostModel.selectFollowingUserPosts(connection, userIdx, offsets);
+            const postListResult = await this.PostRepository.selectFollowingUserPosts(connection, userIdx, offsets);
 
             connection.release()
 
@@ -131,15 +131,15 @@ class PostService {
         const connection = await pool.getConnection(async (conn) => conn);
         try {
             await connection.beginTransaction();
-            const postStatusResult = await this.PostModel.selectPostStatus(connection, postIdx);
+            const postStatusResult = await this.PostRepository.selectPostStatus(connection, postIdx);
 
             if (postStatusResult[0].status !== 0) {
                 return errResponse(baseResponse.POST_STATUS_INACTIVE);
             }
 
-            const editPostStatusResult = await this.PostModel.updatePostStatusInactive(connection, postIdx);
+            const editPostStatusResult = await this.PostRepository.updatePostStatusInactive(connection, postIdx);
 
-            await this.PostModel.insertPostLog(connection, postIdx, 3);
+            await this.PostRepository.insertPostLog(connection, postIdx, 3);
 
             await connection.commit();
 
@@ -159,13 +159,13 @@ class PostService {
         const connection = await pool.getConnection(async (conn) => conn);
         try {
             await connection.beginTransaction();
-            const checkPostRealizeList = await this.PostModel.selectPostByPostIdx(connection, postIdx);
+            const checkPostRealizeList = await this.PostRepository.selectPostByPostIdx(connection, postIdx);
             
             if (!checkPostRealizeList) {
                 return errResponse(baseResponse.DB_ERROR);
             }
 
-            const postContentResult = await this.PostModel.selectPostContent(connection, postIdx);
+            const postContentResult = await this.PostRepository.selectPostContent(connection, postIdx);
             
             await connection.commit();
 
@@ -186,16 +186,16 @@ class PostService {
         try {
             await connection.beginTransaction();
 
-            const checkedPostLikeResult = await this.PostModel.checkPostLike(connection, userIdx, postIdx);
+            const checkedPostLikeResult = await this.PostRepository.checkPostLike(connection, userIdx, postIdx);
 
             if (checkedPostLikeResult[0].success == 0){
-                await this.PostModel.insertPostLike(connection, userIdx, postIdx);
+                await this.PostRepository.insertPostLike(connection, userIdx, postIdx);
 
                 await connection.commit();
                 return response(baseResponse.SUCCESS);
             }
 
-            const postLikeResult = await this.PostModel.updatePostLike(connection, userIdx, postIdx);
+            const postLikeResult = await this.PostRepository.updatePostLike(connection, userIdx, postIdx);
 
             await connection.commit();
 
@@ -214,7 +214,7 @@ class PostService {
     createPostDislike = async (userIdx, postIdx) => {
         try {
             const connection = await pool.getConnection(async (conn) => conn);
-            const postLikeResult = await this.PostModel.updatePostDislike(connection, userIdx, postIdx);
+            const postLikeResult = await this.PostRepository.updatePostDislike(connection, userIdx, postIdx);
 
             connection.release();
             return response(baseResponse.SUCCESS);
@@ -231,7 +231,7 @@ class PostService {
         try {
             await connection.beginTransaction();
 
-            const postReportResult = await this.PostModel.checkPostReport(connection, userIdx, postIdx);
+            const postReportResult = await this.PostRepository.checkPostReport(connection, userIdx, postIdx);
 
             // 이미 신고된 게시물이라면
             if (postReportResult[0].success == 1){
@@ -240,9 +240,9 @@ class PostService {
                 // 이미 신고된 게시물임을 사용자에게 알리기
                 return errResponse(baseResponse.REPORT_ENTERED);
             }
-            const reportedPostResult = await this.PostModel.insertPostReport(connection, userIdx, postIdx, reportCode);
+            const reportedPostResult = await this.PostRepository.insertPostReport(connection, userIdx, postIdx, reportCode);
             const reportPostIdx = reportedPostResult.insertId;
-            await this.PostModel.insertReportLog(connection, 7, reportPostIdx, 0, 0);
+            await this.PostRepository.insertReportLog(connection, 7, reportPostIdx, 0, 0);
 
             await connection.commit();
             

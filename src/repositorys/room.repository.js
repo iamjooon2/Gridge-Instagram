@@ -1,5 +1,5 @@
 
-class RoomModel {
+class RoomRepository {
 
     cosntructor(){}
 
@@ -28,4 +28,4 @@ class RoomModel {
 
 }
 
-module.exports = RoomModel;
+module.exports = RoomRepository;

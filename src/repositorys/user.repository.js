@@ -1,5 +1,5 @@
 
-class UserModel {
+class UserRepository {
 
     cosntructor(){}
 
@@ -494,4 +494,4 @@ class UserModel {
 }
 
 
-module.exports = UserModel;
+module.exports = UserRepository;

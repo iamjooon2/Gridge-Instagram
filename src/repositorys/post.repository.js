@@ -1,5 +1,5 @@
 
-class PostModel {
+class PostRepository {
 
     cosntructor(){}
 
@@ -269,4 +269,4 @@ class PostModel {
     }
 }
 
-module.exports = PostModel;
+module.exports = PostRepository;

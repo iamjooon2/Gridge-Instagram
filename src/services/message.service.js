@@ -2,15 +2,15 @@ const { pool } = require('../assets/db');
 const baseResponse = require('../utilities/baseResponseStatus')
 const { errResponse, response } = require('../utilities/response');
 
-const MessageModel = require('../models/message.model');
-const RoomModel = require('../models/room.model');
+const MessageRepository = require('../repositorys/message.repository');
+const RoomRepository = require('../repositorys/room.repository');
 class MessageService {
-    MessageModel;
-    RoomModel;
+    MessageRepository;
+    RoomRepository;
 
     constructor(){
-        this.MessageModel = new MessageModel();
-        this.RoomModel = new RoomModel();
+        this.MessageRepository = new MessageRepository();
+        this.RoomRepository = new RoomRepository();
     }
 
     postMessage = async (userIdx, partnerIdx, content) => {
@@ -20,18 +20,18 @@ class MessageService {
     
             const userParams = [userIdx, partnerIdx];
             const userDoubleParams = [userIdx, partnerIdx, partnerIdx, userIdx];
-            let selectedRoomInfoResult = await this.RoomModel.selectRoom(connection, userDoubleParams);
+            let selectedRoomInfoResult = await this.RoomRepository.selectRoom(connection, userDoubleParams);
     
             if (selectedRoomInfoResult[0] == null){
-                await this.RoomModel.startMessageRoom(connection, userParams);
+                await this.RoomRepository.startMessageRoom(connection, userParams);
     
-                selectedRoomInfoResult = await this.RoomModel.selectRoom(connection, userDoubleParams);
+                selectedRoomInfoResult = await this.RoomRepository.selectRoom(connection, userDoubleParams);
             }
             
             const roomIdx = selectedRoomInfoResult[0].roomIdx;
             const postMessageParams = [roomIdx, userIdx, content];
     
-            await this.MessageModel.insertMessage(connection, postMessageParams);
+            await this.MessageRepository.insertMessage(connection, postMessageParams);
             
             await connection.commit();
     
@@ -51,7 +51,7 @@ class MessageService {
             const connection = await pool.getConnection(async (conn) => conn);
             
             const memberParams = [userIdx, partnerIdx, partnerIdx, userIdx];
-            const getMessageResult = await this.MessageModel.selectMessages(connection, memberParams);
+            const getMessageResult = await this.MessageRepository.selectMessages(connection, memberParams);
             
             connection.release();
     

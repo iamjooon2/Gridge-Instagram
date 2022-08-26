@@ -1,4 +1,4 @@
-class MessageModel {
+class MessageRepository {
 
     cosntructor(){}
     
@@ -33,4 +33,4 @@ class MessageModel {
     }
 }
 
-module.exports = MessageModel;
+module.exports = MessageRepository;

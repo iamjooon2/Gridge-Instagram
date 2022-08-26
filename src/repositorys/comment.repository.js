@@ -1,5 +1,5 @@
 
-class CommentModel {
+class CommentRepository {
 
     cosntructor(){}
 
@@ -191,4 +191,4 @@ class CommentModel {
     }
 }
 
-module.exports = CommentModel;
+module.exports = CommentRepository;
