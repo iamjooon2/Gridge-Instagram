@@ -1,13 +1,15 @@
-const messageController = require('../controllers/message.controller');
+const MessageController = require('../controllers/message.controller');
 const jwtMiddleware = require('../middlewares/jwt.middleware');
 
 const messageRouter = (router) =>{
 
+    this.MessageController = new MessageController();
+
     // 메시지 전송 API
-    router.post('/message', jwtMiddleware, messageController.postMessage);
+    router.post('/message', jwtMiddleware, this.MessageController.postMessage);
     
     // 메시지 수신 API
-    router.get('/message', jwtMiddleware, messageController.getMessages);
+    router.get('/message', jwtMiddleware, this.MessageController.getMessages);
 }
 
 module.exports = messageRouter;
