@@ -2,8 +2,8 @@ const PostRepository = require('../repositorys/post.repository');
 
 const { pool } = require('../assets/db');
 
-const baseResponse = require('../utilities/baseResponseStatus')
-const { errResponse, response } = require('../utilities/response');
+const baseResponse = require('../utility/baseResponseStatus')
+const { errResponse, response } = require('../utility/response');
 
 class PostService {
     PostRepository;

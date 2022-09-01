@@ -1,6 +1,6 @@
-const CommentService = require('../services/comment.service');
+const CommentService = require('../service/comment.service');
 
-const baseResponse = require('../utilities/baseResponseStatus');
+const baseResponse = require('../utility/baseResponseStatus');
 const {errResponse, response} = require('../utilities/response');
 
 class CommentController {

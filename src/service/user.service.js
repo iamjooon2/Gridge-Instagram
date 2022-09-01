@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
-const { pool } = require('../assets/db');
+const { pool } = require('../asset/db');
 const UserRepository = require('../repositorys/user.repository');
 const PostRepository = require('../repositorys/post.repository');
-const { response, errResponse } = require('../utilities/response');
-const baseResponse = require('../utilities/baseResponseStatus');
+const { response, errResponse } = require('../utility/response');
+const baseResponse = require('../utility/baseResponseStatus');
 
 class UserService {
     UserRepository;

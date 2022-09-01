@@ -2,10 +2,10 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const dotenv = require('dotenv');
 dotenv.config();
-const UserService = require('../services/user.service');
-const PostService = require('../services/post.service');
-const { response, errResponse }= require("../utilities/response");
-const baseResponse = require("../utilities/baseResponseStatus");
+const UserService = require('../service/user.service');
+const PostService = require('../service/post.service');
+const { response, errResponse }= require("../utility/response");
+const { errResponse, response } = require('../utility/response');
 
 
 class UserController {

@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
-const { response, errResponse } = require('../utilities/response');
-const userService = require('../services/user.service');
-const baseResponse = require('../utilities/baseResponseStatus');
+const { response, errResponse } = require('../utility/response');
+const userService = require('../service/user.service');
+const baseResponse = require('../utility/baseResponseStatus');
 
 const jwtMiddleware = (req, res, next) => {
     

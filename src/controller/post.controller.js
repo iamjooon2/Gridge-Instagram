@@ -1,7 +1,7 @@
 const PostService = require('../services/post.service');
 
-const baseResponse = require('../utilities/baseResponseStatus');
-const {errResponse, response} = require('../utilities/response');
+const baseResponse = require('../utility/baseResponseStatus');
+const { errResponse, response } = require('../utility/response');
 
 
 class PostController {
