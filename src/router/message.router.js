@@ -1,5 +1,5 @@
-const MessageController = require('../controllers/message.controller');
-const jwtMiddleware = require('../middlewares/jwt.middleware');
+const MessageController = require('../controller/message.controller');
+const jwtMiddleware = require('../middleware/jwt.middleware');
 
 const messageRouter = (router) =>{
 

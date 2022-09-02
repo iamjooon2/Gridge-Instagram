@@ -1,5 +1,5 @@
-const CommentController = require('../controllers/comment.controller');
-const jwtMiddleware = require('../middlewares/jwt.middleware');
+const CommentController = require('../controller/comment.controller');
+const jwtMiddleware = require('../middleware/jwt.middleware');
 
 const commentRouter = (router) =>{
 

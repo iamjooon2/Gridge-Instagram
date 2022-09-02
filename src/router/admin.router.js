@@ -1,4 +1,4 @@
-const AdminController = require('../controllers/admin.controller');
+const AdminController = require('../controller/admin.controller');
 
 const adminRouter = (router) =>{
 

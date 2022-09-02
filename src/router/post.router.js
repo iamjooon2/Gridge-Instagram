@@ -1,5 +1,5 @@
-const PostController = require('../controllers/post.controller');
-const jwtMiddleware = require('../middlewares/jwt.middleware');
+const PostController = require('../controller/post.controller');
+const jwtMiddleware = require('../middleware/jwt.middleware');
 
 const postRouter = (router) =>{
 

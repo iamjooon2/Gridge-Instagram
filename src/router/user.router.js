@@ -1,5 +1,5 @@
-const UserController = require('../controllers/user.controller');
-const jwtMiddleware = require('../middlewares/jwt.middleware');
+const UserController = require('../controller/user.controller');
+const jwtMiddleware = require('../middleware/jwt.middleware');
 
 const userRouter = (router) =>{
 
