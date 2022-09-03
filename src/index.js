@@ -2,15 +2,16 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 const cors = require('cors');
+const path = require('path');
 const compression = require('compression');
 
 const app = express();
-const Router = require('./routers/index.js');
+const Router = require('./router/index.js');
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerJsDoc = require('swagger-jsdoc');
-const options = require('../swagger/swaggerDoc');
-const swaggerSpec = swaggerJsDoc(options);
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load(path.join(__dirname, '../swagger/swagger.yaml'));
+
 
 const { SERVER_HOST, SERVER_PORT } = process.env;
 
@@ -22,7 +23,7 @@ const server = () => {
     app.use(compression());
 
     app.use('/api', Router());
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     app.listen(SERVER_PORT, () => {
         console.log(`GridgeTestServer is now listening to http://${SERVER_HOST}:${SERVER_PORT}`);
