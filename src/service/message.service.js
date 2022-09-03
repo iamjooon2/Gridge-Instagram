@@ -1,9 +1,9 @@
-const { pool } = require('../assets/db');
-const baseResponse = require('../utilities/baseResponseStatus')
-const { errResponse, response } = require('../utilities/response');
+const { pool } = require('../asset/db');
+const baseResponse = require('../utility/baseResponseStatus')
+const { errResponse, response } = require('../utility/response');
 
-const MessageRepository = require('../repositorys/message.repository');
-const RoomRepository = require('../repositorys/room.repository');
+const MessageRepository = require('../repository/message.repository');
+const RoomRepository = require('../repository/room.repository');
 class MessageService {
     MessageRepository;
     RoomRepository;

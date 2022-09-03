@@ -1,4 +1,4 @@
-const PostService = require('../services/post.service');
+const PostService = require('../service/post.service');
 
 const baseResponse = require('../utility/baseResponseStatus');
 const { errResponse, response } = require('../utility/response');

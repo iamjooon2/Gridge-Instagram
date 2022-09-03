@@ -1,9 +1,9 @@
-const CommentRepository = require('../repositorys/comment.repository');
+const CommentRepository = require('../repository/comment.repository');
 
-const { pool } = require('../assets/db');
+const { pool } = require('../asset/db');
 
-const baseResponse = require('../utilities/baseResponseStatus')
-const { errResponse, response } = require('../utilities/response');
+const baseResponse = require('../utility/baseResponseStatus')
+const { errResponse, response } = require('../utility/response');
 
 class CommentService {
 

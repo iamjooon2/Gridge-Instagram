@@ -1,6 +1,6 @@
-const PostRepository = require('../repositorys/post.repository');
+const PostRepository = require('../repository/post.repository');
 
-const { pool } = require('../assets/db');
+const { pool } = require('../asset/db');
 
 const baseResponse = require('../utility/baseResponseStatus')
 const { errResponse, response } = require('../utility/response');

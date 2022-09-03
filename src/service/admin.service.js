@@ -1,7 +1,7 @@
-const AdminRepository = require('../repositorys/admin.repository');
-const CommentRepository = require('../repositorys/comment.repository');
-const PostRepository = require('../repositorys/comment.repository');
-const UserRepository = require('../repositorys/user.repository');
+const AdminRepository = require('../repository/admin.repository');
+const CommentRepository = require('../repository/comment.repository');
+const PostRepository = require('../repository/comment.repository');
+const UserRepository = require('../repository/user.repository');
 
 const { pool } = require('../asset/db');
 

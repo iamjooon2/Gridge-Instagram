@@ -4,8 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const UserService = require('../service/user.service');
 const PostService = require('../service/post.service');
-const { response, errResponse }= require("../utility/response");
-const { errResponse, response } = require('../utility/response');
+const { response, errResponse }= require("../utility/response");;
 
 
 class UserController {
