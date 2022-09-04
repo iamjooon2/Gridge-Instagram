@@ -9,8 +9,7 @@ const app = express();
 const Router = require('./router/index.js');
 
 const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDocument = YAML.load(path.join(__dirname, '../swagger/swagger.yaml'));
+const swaggerFile = require("../swagger/swagger-output");
 
 
 const { SERVER_HOST, SERVER_PORT } = process.env;
@@ -23,7 +22,7 @@ const server = () => {
     app.use(compression());
 
     app.use('/api', Router());
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile), express.json());
 
     app.listen(SERVER_PORT, () => {
         console.log(`GridgeTestServer is now listening to http://${SERVER_HOST}:${SERVER_PORT}`);
