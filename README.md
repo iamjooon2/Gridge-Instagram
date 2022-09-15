@@ -14,6 +14,7 @@
     ┣📂 utilitiy # response 관련 status와 함수들, 그 외 유틸관련 모아둔 곳
     ┣📜 index.js 
   ┣📂 swagger
+  ┣📂 test
   ┣ .env.example 
   ┣ docker-compose.yml # AWS 프리티어 안되서.. 도커로 로컬에서 디비 띄우자~
   ┣ package.json 
