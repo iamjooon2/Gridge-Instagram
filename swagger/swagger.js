@@ -2,9 +2,9 @@ const options = {
     swaggerDefinition: {
         openapi: "3.0.0",
         info :{
-            title: "시시콜콜 API",
+            title: "GridgeTestChallenge",
             version: "1.0.0",
-            description: "시시콜콜 Swagger API"
+            description: "그릿지테스트챌린지 API"
         },
         servers: [
             {
