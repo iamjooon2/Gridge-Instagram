@@ -1,4 +1,4 @@
-const MessageController = require('../../src/controller/message.controller');
+const MessageController = require('../../../src/controller/message.controller');
 
 this.MessageController = new MessageController();
 
