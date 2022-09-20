@@ -30,6 +30,9 @@ const server = () => {
     
 };
 
+module.exports = server;
+
+
 try {
     server(SERVER_PORT);
 } catch (e) {

@@ -13,8 +13,7 @@ class MessageController {
     postMessage = async (req, res) => {
         const toeknIdxData = req.verifiedToken.idx;
         const userIdx = toeknIdxData[0].userIdx;
-        const partnerIdx = req.body.partnerIdx;
-        const content = req.body.content;
+        const { partnerIdx, content } = req.body;
 
         // validation
         if (!partnerIdx) {
@@ -33,11 +32,9 @@ class MessageController {
         const postMessageResult = await this.MessageService.postMessage(userIdx, partnerIdx, content);
 
         return res.send(postMessageResult);
-
     }
 
     getMessages = async (req, res) => {
-
         const toeknIdxData = req.verifiedToken.idx;
         const userIdx = toeknIdxData[0].userIdx;
         const partnerIdx = req.body.partnerIdx;
