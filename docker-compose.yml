@@ -13,3 +13,8 @@ services:
       - MYSQL_USER=comgongbro
       - MYSQL_PASSWORD=p@ssword
       - MYSQL_ROOT_PASSWORD=p@ssword
+  session-db:
+    image: redis
+    container_name: gridge-session
+    prots:
+      - "6379:6379"

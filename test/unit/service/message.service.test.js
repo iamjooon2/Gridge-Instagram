@@ -1,4 +1,4 @@
-const MessageService = require('../../src/service/message.service');
+const MessageService = require('../../../src/service/message.service');
 
 this.MessageService = new MessageService();
 
