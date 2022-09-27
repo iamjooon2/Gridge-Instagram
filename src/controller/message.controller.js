@@ -3,6 +3,7 @@ const MessageService = require('../service/message.service');
 const baseResponse = require('../utility/baseResponseStatus');
 const {errResponse, response} = require('../utility/response');
 
+
 class MessageController {
     MessageService;
 
