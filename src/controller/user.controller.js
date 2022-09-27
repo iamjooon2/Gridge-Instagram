@@ -199,7 +199,6 @@ class UserController {
         
         const userSignUpResult = await this.UserService.postSignUp(phone, name, password, birth, id, '0', '0');
 
-
         return res.send(response(baseResponse.SUCCESS));
     }
 
@@ -207,7 +206,6 @@ class UserController {
     socialSignUp = async (req, res) => {
 
         const { kakaoId, phone, authNumber, name, birth, id } = req.body;
-
 
         if (!kakaoId){
             return res.send(errResponse(baseResponse.KAKAO_ID_EMPTY));
@@ -289,8 +287,6 @@ class UserController {
         
         const userIdxInfoFromToken = req.verifiedToken.idx;
         const userIdx = userIdxInfoFromToken;
-
-        console.log(userIdx);
         const page = req.query.page;
 
         // validation
@@ -300,7 +296,6 @@ class UserController {
             return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));
         }
 
-        // 
         if (!page) {
             return res.send(errResponse(baseResponse.PAGENATION_ERROR));
         } else if (page <= 0) {
@@ -317,8 +312,6 @@ class UserController {
         const userIdxInfoFromToken = req.verifiedToken.idx;
         const userIdx = userIdxInfoFromToken;
         const page = req.query.page;
-
-        console.log(userIdx);
 
         const userFeedResult = await this.PostService.retrieveUserFeed(userIdx, page);
 
@@ -541,7 +534,7 @@ class UserController {
 
         return res.send(deleteUserResult);
     }
-
+    
 }
 
 module.exports = UserController;

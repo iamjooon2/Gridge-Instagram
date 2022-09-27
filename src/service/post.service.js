@@ -5,6 +5,7 @@ const { pool } = require('../asset/db');
 const baseResponse = require('../utility/baseResponseStatus')
 const { errResponse, response } = require('../utility/response');
 
+
 class PostService {
     PostRepository;
 

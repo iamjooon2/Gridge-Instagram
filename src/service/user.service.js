@@ -5,6 +5,7 @@ const PostRepository = require('../repository/post.repository');
 const { response, errResponse } = require('../utility/response');
 const baseResponse = require('../utility/baseResponseStatus');
 
+
 class UserService {
     UserRepository;
     PostRepository;
@@ -482,8 +483,6 @@ class UserService {
             return response(baseResponse.DB_ERROR);
         }
     }
-
-
 
 }
 
