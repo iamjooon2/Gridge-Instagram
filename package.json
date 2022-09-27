@@ -1,10 +1,10 @@
 {
     "name": "GridgeTestChallenge",
-    "main": "src/index.js",
+    "main": "src/app.js",
     "scripts": {
         "test": "jest --runInBand --detectOpenHandles",
         "api-docs": "swagger-cli bundle ./swagger/swagger.yaml --outfile build/swagger.yaml --type yaml",
-        "start": "NODE_ENV=development nodemon src/index.js",
+        "start": "NODE_ENV=development nodemon src/app.js",
         "db:init": "NODE_PATH=src NODE_ENV=development node src/assets/init.js",
         "db:drop": "NODE_PATH=src NODE_ENV=development node src/assets/drop.js"
     },
