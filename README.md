@@ -1,6 +1,3 @@
-# GridgeTestChallenge  
-#### 07.25 ~ 8.5 컴공선배팀 그릿지테스트
-
 ## Package Structure
 ```
 📂 git@iamjooon2/GridgeTestChallenge
@@ -49,9 +46,3 @@ https://drive.google.com/file/d/12tflQMZaL7TZuIMznBwQQKGe7IpBJMDD/view?usp=shari
 
 ## Swagger
 https://app.swaggerhub.com/apis-docs/iamjooon2/GridgeTestChallenge/1.0.0#/
-
-
-## Feedback
- 
-- 게시글 좋아요/좋아요 취소의 경우 다중클릭시에도 계속 성공값이라는 reponse를 보내고 있습니다. type 값을 검사하는 형식적 validation 뿐만이 아니라, 로직적으로 이상을 감지하는 의미적 Validation 도 반드시 적용되어야 합니다.
-- 서버 개발자로써 서버 코드를 작성하는 것이 중요한 것도 맞지만, 데이터베이스 쿼리 또한 중요한 영역이기 때문에 API기능개발에 익숙해지셨다면 쿼리를 더 효율적으로 작성하는법, 설계를 잘하는 법을 기르기 위해 SQL튜닝쪽도 공부해보시는 것을 추천드립니다
