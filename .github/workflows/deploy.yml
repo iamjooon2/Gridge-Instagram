@@ -1,0 +1,42 @@
+name: server CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout source code
+      - uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://www.github.com/iamjooon2/GridgeTestChallenge"
+
+      - name: Create .env file
+        run: |
+          cd server
+          touch << EDF >> .env.development
+          ${{ secrets.ENV_DEVLOPMENT }}
+
+      - name: Dependency install and build
+        run : |
+          cd server
+          echo "@ryan-cha: registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "//npm.pkg.github.com/:authToken=${{ secrets.GITHUB_ACTION }}" >> .npmrc
+          npm ci
+          npm run build
+      
+      - name: Configure AWS credential
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id : ${{ secrets.AWS_CODEDEPLOY_ACCESS_KEY_ID}}
+          aws-secret-access-key : ${{ secrets.AWS_CODEDEPLOY_SECRET_ACCESS_KEY}}
