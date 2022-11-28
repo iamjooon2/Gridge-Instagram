@@ -23,20 +23,22 @@ jobs:
 
       - name: Create .env file
         run: |
-          cd server
+          cd /home/ubuntu/server
           touch << EDF >> .env.development
           ${{ secrets.ENV_DEVLOPMENT }}
 
-      - name: Dependency install and build
-        run : |
-          cd server
-          echo "@ryan-cha: registry=https://npm.pkg.github.com/" >> .npmrc
-          echo "//npm.pkg.github.com/:authToken=${{ secrets.GITHUB_ACTION }}" >> .npmrc
-          npm ci
-          npm run build
-      
-      - name: Configure AWS credential
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: executing remote ssh commands
+        uses: actions/setup-node@v1
         with:
-          aws-access-key-id : ${{ secrets.AWS_CODEDEPLOY_ACCESS_KEY_ID}}
-          aws-secret-access-key : ${{ secrets.AWS_CODEDEPLOY_SECRET_ACCESS_KEY}}
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            cd /home/ubuntu/server/GridgeTestChallenge
+            git pull origin main
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            npm ci
+            npm install
+            pm2 restart src/app.js
