@@ -26,28 +26,12 @@ class AdminService {
     // 사용자 목록 조회
     retrieveUserList = async (id, name, signUpDate, status, page) => {
         const connection = await pool.getConnection(async (connection) => connection);
+        const offset = (page-1)*10;
         try {
-            const offset = (page-1)*10;
-
             await connection.beginTransaction();
-            
-            let whereQuery='';
-            if (name !== undefined) {
-                whereQuery += ` AND name = ${name}`;
-            }
-            if (id !== undefined) {
-                whereQuery += ` AND ID = ${id}`;
-            }
-            if (status !== undefined) {
-                whereQuery += ` AND status = ${status}`;
-            }
-            if (signUpDate !== undefined) {
-                let date = signUpDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`)
-                whereQuery += ` AND DATE(createdAt) = DATE(${date})`;
-            }
-    
-            const adminSelectResult = await this.AdminRepository.selectUserList(connection, whereQuery, offset);
-    
+
+            const adminSelectResult = await this.AdminRepository.selectUserList(connection, id, name, signUpDate, status, offset);
+
             // 로그 디비 넣기
             for (i=0; i<adminSelectResult.length; i+=1){
                 await this.UserRepository.insertUserLog(connection, adminSelectResult[i].userIdx, 6);

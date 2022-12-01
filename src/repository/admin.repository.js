@@ -2,10 +2,29 @@ class AdminRepository {
 
     cosntructor(){}
 
-    selectUserList = async (conn, whereQuery, offset) => {
+    selectUserList = async (conn, id, name, signUpDate, status, offset) => {
         const adminSelectUserQuery = `SELECT * FROM user WHERE 1 = 1`;
+        let whereQuery = '';
+        let executes = [];
+        if (name !== undefined) {
+            whereQuery += ` AND name = ?`;
+            executes.push(name);
+        }
+        if (id !== undefined) {
+            whereQuery += ` AND ID = ?`;
+            executes.push(id);
+        }
+        if (status !== undefined) {
+            whereQuery += ` AND status = ?`;
+            executes.push(status);
+        }
+        if (signUpDate !== undefined) {
+            let date = signUpDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`);
+            whereQuery += ` AND DATE(createdAt) = DATE(${date})`;
+        }
         const offsetQuery = ` limit 10 offset ?`;
-        const [userRow] = await conn.query(adminSelectUserQuery+whereQuery+offsetQuery, offset);
+
+        const [userRow] = await conn.query(adminSelectUserQuery+whereQuery+offsetQuery, temp ,offset);
     
         return userRow;
     }
