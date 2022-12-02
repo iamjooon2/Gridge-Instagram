@@ -1,31 +1,28 @@
 class AdminRepository {
-
     cosntructor(){}
-
-    selectUserList = async (conn, id, name, signUpDate, status, offset) => {
-        const adminSelectUserQuery = `SELECT * FROM user WHERE 1 = 1`;
-        let whereQuery = '';
+    
+    selectUserList = async (conn, id , name , signUpDate , status , offset) => {
+        let query = `SELECT * FROM user WHERE 1 = 1`;
         let executes = [];
-        if (name !== undefined) {
-            whereQuery += ` AND name = ?`;
+        if (!!name) {
+            query = `${query} AND name = ?`;
             executes.push(name);
         }
-        if (id !== undefined) {
-            whereQuery += ` AND ID = ?`;
+        if (!!id) {
+            query = `${query} AND ID = ?`;
             executes.push(id);
         }
-        if (status !== undefined) {
-            whereQuery += ` AND status = ?`;
+        if (!!status) {
+            query = `${query} AND status = ?`;
             executes.push(status);
         }
-        if (signUpDate !== undefined) {
-            let date = signUpDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`);
-            whereQuery += ` AND DATE(createdAt) = DATE(${date})`;
+        if (!!signUpDate) {
+            query = `${query} AND DATE(createdAt) = STR_TO_DATE(?, '%Y%m%d')`;
+            executes.push(signUpDate);
         }
-        const offsetQuery = ` limit 10 offset ?`;
 
-        const [userRow] = await conn.query(adminSelectUserQuery+whereQuery+offsetQuery, temp ,offset);
-    
+        const [userRow] = await conn.query(`${query} LIMIT 10 OFFSET ?`, [...executes, offset]);
+
         return userRow;
     }
     
@@ -162,13 +159,25 @@ class AdminRepository {
         return userRow;
     }
     
-    selectPostList = async (conn, whereQuery, offset) => {
-        const adminSelectListQuery = `SELECT * FROM post WHERE 1=1 `;
-        const offsetquery = `LIMIT 10 offset ?`;
-        
-        const [userRow] = await conn.query(adminSelectListQuery+whereQuery+offsetquery, offset);
+    selectPostList = async (conn, id, postDate, status, offset) => {
+        let query = `SELECT * FROM post WHERE 1 = 1`;
+        let executes = [];
+        if (!!id) {
+            query = `${query} AND name = ?`;
+            executes.push(id);
+        }
+        if (!!status) {
+            query = `${query} AND status = ?`;
+            executes.push(status);
+        }
+        if (!!postDate) {
+            query = `${query} AND DATE(createdAt) = STR_TO_DATE(?, '%Y%m%d')`;
+            executes.push(postDate);
+        }
     
-        return userRow;
+        const [postRow] = await conn.query(`${query} LIMIT 10 OFFSET ?`, [...executes, offset]);
+    
+        return postRow;
     }
     
     selectPostByPostIdx = async (conn, postIdx) => {

@@ -120,24 +120,12 @@ class AdminService {
     // 게시글 목록 조회
     retrievePostList = async (id, postDate, status, page) => {
         const connection = await pool.getConnection(async (connection) => connection);
+        const offset = (page-1)*10;
         try {
             await connection.beginTransaction();
-            const offset = (page-1)*10;
             
-            let whereQuery='';
-            if (id !== undefined) {
-                whereQuery += ` AND ID = ${id}`;
-            }
-            if (status !== undefined) {
-                whereQuery = ` AND status = ${status}`
-            }
-            if (postDate !== undefined) {
-                let date = postDate.replace(/(\d{4})(\d{2})(\d{2})/,`'$1-$2-$3'`)
-                whereQuery += ` AND DATE(createdAt) = DATE(${date})`
-            }
-
-            const adminSelectResult = await this.AdminRepository.selectPostList(connection, whereQuery, offset);
-
+            const adminSelectResult = await this.AdminRepository.selectPostList(connection, id, postDate, status, offset);
+            
             // 로그 집어넣기
             for (i =0; i<adminSelectResult.length; i+=1){
                 await this.PostRepository.insertPostLog(connection, adminSelectResult[i].postIdx, 5);
